@@ -1,0 +1,48 @@
+Name:		CPL
+Version:	0.0.6
+License:	BSD3
+License-File:	COPYING
+Author:		Masahiro Sakai (masahiro.sakai@gmail.com)
+Maintainer:	masahiro.sakai@gmail.com
+Category:	Compilers/Interpreters
+Cabal-Version:	>= 1.2
+Synopsis:	An interpreter of Hagino's Categorical Programming Language (CPL).
+Description:	An interpreter of Hagino's Categorical Programming Language (CPL).
+Extra-Source-Files:
+   README,
+   NEWS,
+   samples/ack.cpl,
+   samples/automata.cdt,
+   samples/ccc.cdt,
+   samples/examples.cpl,
+   samples/examples.txt,
+   samples/misc.cdt,
+   samples/obscure.cdt,
+   samples/rec.cdt,
+   samples/benchmark.cpl,
+   samples/ack_3_4.cpl,
+   samples/function.cpl,
+   src/CDT.hs-boot
+Build-Type: Simple
+
+Flag Readline
+  Description: Use Readline
+  Default: False
+
+Flag Haskeline
+  Description: Use Haskeline
+  Default: False
+
+Executable cpl
+  Main-is: Main.hs
+  HS-Source-Dirs: src
+  Other-Modules: AExp CDT CDTParser CPLSystem Exp ExpParser FE Funct ParserUtils Simp Statement Subst Type Typing Variance 
+  Build-Depends: base >=4 && <5, mtl, containers, array, parsec
+  Extensions: CPP, GeneralizedNewtypeDeriving
+  if flag(Readline)
+    CPP-Options: "-DUSE_READLINE_PACKAGE"
+    Build-Depends: readline
+  else
+    if flag(Haskeline)
+      CPP-Options: "-DUSE_HASKELINE_PACKAGE"
+      Build-Depends: haskeline

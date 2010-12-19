@@ -1,0 +1,12 @@
+# Examples of obscure categorical data type
+# which are not computable in the sense of CPL.
+
+# the left adjoint functor of the list functor
+left object ladjlist(X) with psi is
+  a: X -> list(ladjlist)
+end object;
+
+# the right adjoint functor of the list functor
+right object radjlist(X) with psi' is
+  a': list(radjlist) -> X
+end object;

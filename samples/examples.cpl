@@ -1,0 +1,81 @@
+right object 1 with !
+end object;
+
+right object prod(a,b) with pair is
+  pi1: prod -> a
+  pi2: prod -> b
+end object;
+
+right object exp(a,b) with curry is
+  eval: prod(exp,a) -> b
+end object;
+
+left object nat with pr is
+  0: 1 -> nat
+  s: nat -> nat
+end object;
+
+left object coprod(a,b) with case is
+  in1: a -> coprod
+  in2: b -> coprod
+end object;
+
+show pair(pi2,eval);
+
+let add=eval.prod(pr(curry(pi2), curry(s.eval)), I);
+
+simp add.pair(s.s.0, s.0);
+
+let mult=eval.prod(pr(curry(0.!), curry(add.pair(eval, pi2))), I);
+
+let fact=pi1.pr(pair(s.0,0), pair(mult.pair(s.pi2,pi1), s.pi2));
+
+simp fact.s.s.s.s.0;
+
+left object list(p) with prl is
+  nil: 1 -> list
+  cons: prod(p,list) -> list
+end object;
+
+let append = eval.prod(prl(curry(pi2), curry(cons.pair(pi1.pi1, eval.pair(pi2.pi1, pi2)))), I);
+
+let reverse=prl(nil, append.pair(pi2, cons.pair(pi1, nil.!)));
+
+let hd = prl(in2, in1.pi1);
+
+let hdp=case(hd,in2);
+
+let tl = coprod(pi2,I).prl(in2, in1.prod(I, case(cons,nil)));
+
+let tlp = case(tl, in2);
+
+let seq = pi2.pr(pair(0,nil), pair(s.pi1, cons));
+
+simp seq.s.s.s.0;
+
+simp full seq.s.s.s.0;
+
+simp hdp.tl.seq.s.s.s.0;
+
+simp full append.pair(seq.s.s.0, seq.s.s.s.0);
+
+simp full reverse.it;
+
+right object inflist(a) with fold is
+  head: inflist -> a
+  tail: inflist -> inflist
+end object;
+
+let incseq=fold(I,s).0;
+
+simp head.incseq;
+
+simp head.tail.tail.tail.incseq;
+
+let alt=fold(head.pi1, pair(pi2, tail.pi1));
+
+let infseq=fold(I,I).0;
+
+simp head.tail.tail.alt.pair(incseq, infseq);
+
+#exit;

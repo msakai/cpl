@@ -1,0 +1,17 @@
+# Cartesian Closed Category
+
+# terminal object
+right object 1 with !
+end object;
+
+# product functor 
+right object prod(X,Y) with pair is
+  pi1: prod -> X
+  pi2: prod -> Y
+end object;
+
+# exponential functor
+right object exp(X,Y) with curry is
+  eval: prod(exp,X) -> Y
+end object;
+

@@ -1,0 +1,55 @@
+
+right object 1 with ! is
+end object;
+
+right object prod(a,b) with pair is
+  pi1: prod -> a
+  pi2: prod -> b
+end object;
+
+right object exp(a,b) with curry is
+  eval: prod(exp,a) -> b
+end object;
+
+left object nat with pr is
+  0: 1 -> nat
+  s: nat -> nat
+end object;
+
+let times=eval.prod(pr(curry(curry(pi2)), curry(curry(eval.pair(eval.pi1,eval.pair(pi2.pi1,pi2))))),I);
+let ack_0=curry(s.pi2);
+let ack_s=curry(eval.pair(times.pair(s.pi2,pi1),s.0.!));
+let ack=eval.prod(pr(ack_0,ack_s),I);
+
+#show aexp eval.prod(pr(curry(curry(pi2)), curry(curry(eval.pair(eval.pi1,eval.pair(pi2.pi1,pi2))))),I);
+#show aexp curry(s.pi2);
+#show aexp curry(eval.pair(times.pair(s.pi2,pi1),s.0.!));
+#show aexp eval.prod(pr(ack_0,ack_s),I);
+
+simp full ack.pair(s.s.s.0,s.s.s.0);
+
+# time ~/cpl/cpl/bin/cpl.rb ack.cpl
+# cpl.rb (An implementation of Categorical Programming Language)
+# version 0.0.4
+# Type help for help
+# right object 1 defined
+# right object prod(+,+) defined
+# right object exp(-,+) defined
+# left object nat defined
+# times : prod(nat,exp(*a,*a)) -> exp(*a,*a)  defined
+# ack_0 : *a -> exp(nat,nat)  defined
+# ack_s : exp(nat,nat) -> exp(nat,nat)  defined
+# ack : prod(nat,nat) -> nat  defined
+# s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.0.!
+#     : *a -> nat
+# 
+# real	21m17.567s
+# user	20m43.233s
+# sys	0m0.296s
+
+
+# Haskell”Å
+# real	0m9.230s
+# user	0m0.031s
+# sys	0m0.000s
+

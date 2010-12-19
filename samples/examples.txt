@@ -1,0 +1,102 @@
+% cpl.rb 
+cpl.rb (An Implementation of Categorical Programming Language)
+version 0.0.1
+cpl> edit
+| right object 1 with !
+| end object;
+right object 1 defined
+cpl> edit
+| right object prod(a,b) with pair is
+|   pi1: prod -> a
+|   pi2: prod -> b
+| end object;
+right object prod(+,+) defined
+cpl> edit
+| right object exp(a,b) with curry is
+|   eval: prod(exp,a) -> b
+| end object;
+right object exp(-,+) defined
+cpl> edit
+| left object nat with pr is
+|   0: 1 -> nat
+|   s: nat -> nat
+| end object;
+left object nat defined
+cpl> edit
+| left object coprod(a,b) with case is
+|   in1: a -> coprod
+|   in2: b -> coprod
+| end object;
+left object coprod(+,+) defined
+cpl> show pair(pi2,eval)
+pair(pi2,eval)
+    : prod(exp(*a,*b),*a) -> prod(*a,*b)
+cpl> let add=eval.prod(pr(curry(pi2), curry(s.eval)), I)
+add : prod(nat,nat) -> nat  defined
+cpl> simp add.pair(s.s.0, s.0)
+s.s.s.0
+    : 1 -> nat
+cpl> let mult=eval.prod(pr(curry(0.!), curry(add.pair(eval, pi2))), I)
+mult : prod(nat,nat) -> nat
+cpl> let fact=pi1.pr(pair(s.0,0), pair(mult.pair(s.pi2,pi1), s.pi2))
+fact : nat -> nat  defined
+cpl> simp fact.s.s.s.s.0
+s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.0
+    : 1 -> nat
+cpl> edit
+| left object list(p) with prl is
+|   nil: 1 -> list
+|   cons: prod(p,list) -> list
+| end object;
+left object list(+) defined
+cpl> let append = eval.prod(prl(curry(pi2), curry(cons.pair(pi1.pi1, eval.pair(pi2.pi1, pi2)))), I)
+append : prod(list(*a),list(*a)) -> list(*a)  defined
+cpl> let reverse=prl(nil, append.pair(pi2, cons.pair(pi1, nil.!)))
+reverse : list(*a) -> list(*a)  defined
+cpl> let hd = prl(in2, in1.pi1)
+hd : list(*a) -> coprod(*a,1)  defined
+cpl> let hdp=case(hd,in2)
+hdp : coprod(list(*a),1) -> coprod(*a,1)  defined
+cpl> let tl = coprod(pi2,I).prl(in2, in1.prod(I, case(cons,nil)))
+tl : list(*a) -> coprod(list(*a),1)  defined
+cpl> let tlp = case(tl, in2)
+tlp : coprod(list(*a),1) -> coprod(list(*a),1)  defined
+cpl> let seq = pi2.pr(pair(0,nil), pair(s.pi1, cons))
+seq : nat -> list(nat)  defined
+cpl> simp seq.s.s.s.0
+cons.pair(s.pi1,cons).pair(s.pi1,cons).pair(0,nil)
+    : 1 -> list(nat)
+cpl> simp full seq.s.s.s.0
+cons.pair(s.s.0,cons.pair(s.0,cons.pair(0,nil)))
+    : 1 -> list(nat)
+cpl> simp hdp.tl.seq.s.s.s.0
+in1.s.0
+    : 1 -> coprod(nat,*a)
+cpl> simp full append.pair(seq.s.s.0, seq.s.s.s.0)
+cons.pair(s.0,cons.pair(0,cons.pair(s.s.0,cons.pair(s.0,cons.pair(0,nil)))))
+    : 1 -> list(nat)
+cpl> simp full reverse.it
+cons.pair(0,cons.pair(s.0,cons.pair(s.s.0,cons.pair(0,cons.pair(s.0,nil.!)))))
+    : 1 -> list(nat)
+cpl> edit
+| right object inflist(a) with fold is
+|   head: inflist -> a
+|   tail: inflist -> inflist
+| end object;
+right object inflist(+) defined
+cpl> let incseq=fold(I,s).0
+incseq : 1 -> inflist(nat)  defined
+cpl> simp head.incseq
+0
+    : 1 -> nat
+cpl> simp head.tail.tail.tail.incseq
+s.s.s.0
+    : 1 -> nat
+cpl> let alt=fold(head.pi1, pair(pi2, tail.pi1))
+alt : prod(inflist(*a),inflist(*a)) -> inflist(*a)  defined
+cpl> let infseq=fold(I,I).0
+infseq : 1 -> inflist(nat)  defined
+cpl> simp head.tail.tail.alt.pair(incseq, infseq)
+s.0
+    : 1 -> nat
+cpl> exit

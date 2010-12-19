@@ -1,0 +1,12 @@
+# categorical data type of automata
+
+# Moore automata
+right object dyn'(I,O) with univ' is
+  next': prod(dyn',I) -> dyn'
+  output': dyn' -> O
+end object;
+
+# Mealy automata
+right object dyn''(I,O) with univ'' is
+  next'': prod(dyn'',I) -> prod(dyn'',O)
+end object;

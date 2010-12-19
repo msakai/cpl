@@ -1,0 +1,19 @@
+# Some of the recursively defined object
+
+# natural number object
+left object nat with pr is
+   0: 1 -> nat
+   s: nat -> nat
+end object;
+
+# list
+left object list(X) with prl is
+  nil:  1 -> list
+  cons: prod(X,list) -> list
+end object;
+
+# infinite list (a.k.a stream)
+right object inflist(X) with fold is
+  head: inflist -> X
+  tail: inflist -> inflist
+end object;

@@ -1,0 +1,28 @@
+# initial object
+left object 0 with !! is
+end object;
+
+# coproduct functor
+left object coprod(X,Y) with case is
+  in1: X -> coprod
+  in2: Y -> coprod
+end object;
+
+# co-"natural number object"
+right object conat with copr is
+  pred: conat -> coprod(1,conat)
+end object;
+
+right object colist(X) with coprl is
+  delist: colist -> coprod(1,prod(X,colist))
+end object;
+
+# let list2colist = coprl(prl(in1, in2.prod(I, case(nil, cons))));
+# let inflist2colist = coprl(in2.pair(head,tail));
+# let colist-length = copr(coprod(I, pi2).delist);
+
+# ordinals
+left object ord with pro is
+  ozero: 1 -> ord
+  sup: exp(nat, ord) -> ord
+end object;
