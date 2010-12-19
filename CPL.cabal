@@ -25,6 +25,10 @@ Extra-Source-Files:
    src/CDT.hs-boot
 Build-Type: Simple
 
+source-repository head
+  type:     git
+  location: git://github.com/msakai/cpl.git
+
 Flag Readline
   Description: Use Readline
   Default: False
