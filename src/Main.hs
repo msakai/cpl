@@ -29,16 +29,17 @@ import Data.Char (isSpace)
 import System.Environment
 import System.Exit
 import System.IO
-import Control.Monad.State
-import Control.Monad.Error
+import Control.Monad.State.Strict -- haskeline's MonadException requries strict version
 import System.Console.GetOpt
 #if defined(USE_READLINE_PACKAGE)
 import qualified System.Console.SimpleLineEditor as SLE
 import Control.Exception (bracket)
+import Control.Monad.Error (catchError)
 #elif defined(USE_HASKELINE_PACKAGE)
 import System.Console.Haskeline
 #else
 import Control.Exception (bracket)
+import Control.Monad.Error (catchError)
 #endif
 
 ----------------------------------------------------------------------------
