@@ -32,11 +32,11 @@ source-repository head
 
 Flag Readline
   Description: Use Readline
-  Default: False
+  Default: True
 
 Flag Haskeline
   Description: Use Haskeline
-  Default: False
+  Default: True
 
 Executable cpl
   Main-is: Main.hs
