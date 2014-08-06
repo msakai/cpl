@@ -256,9 +256,9 @@ cmdLoad s =
        contents <- liftIO $ hGetContents h
        let src  = unlines (map removeComment (lines contents))
            cmds = split src
-       mapM_ (\x -> do liftIO $ (putStr . unlines . map ("> "++) . lines $ x)
-                       dispatchCommand x)
-             cmds
+       forM_ cmds $ \cmd -> do
+         liftIO $ (putStr . unlines . map ("> "++) . lines $ cmd)
+         dispatchCommand cmd
     where filename = -- FIXME
               let s' = strip s in
                   case s' of
