@@ -120,6 +120,12 @@ readLine prompt = fmap (fromMaybe "") (lift (getInputLine prompt))
 readLine prompt = liftIO $ putStr prompt >> getLine
 #endif
 
+printLine :: String -> UI ()
+printLine s = liftIO $ putStrLn $ s
+
+printLines :: [String] -> UI ()
+printLines = mapM_ printLine
+
 ----------------------------------------------------------------------------
 
 type Command = String -> UI ()
@@ -163,7 +169,7 @@ defineObject src =
                      LeftObject  -> "left"
                      RightObject -> "right"
            msg = concat [lr, " object ", showFunctNameWithVariance obj, " is defined"]
-       liftIO $ putStrLn $ msg
+       printLine msg
 
 cmdLeft, cmdRight :: Command
 cmdLeft  s = defineObject ("left " ++ s)
@@ -176,24 +182,21 @@ cmdShow arg =
         do sys <- get
            let name    = strip arg'
                objects = Sys.objects sys
-           liftIO $ putStrLn $
-                case find (\x -> CDT.functName x == name) objects of
-                Just obj -> showObjectInfo obj
-                Nothing  -> "unknown object: " ++ name
+           case find (\x -> CDT.functName x == name) objects of
+             Just obj -> printLines $ lines $ showObjectInfo obj
+             Nothing  -> printLine $ "unknown object: " ++ name
     ("aexp", arg') -> do -- XXX
       sys <- get
       case Sys.parseExp sys (strip arg') of
         Left err -> fail err
-        Right (_, e :! t) -> liftIO $ do
-          putStrLn $ show e
-          putStrLn $ "    : " ++ show t
+        Right (_, e :! t) ->
+          printLines $ [show e, "    : " ++ show t]
     _ -> do
       sys <- get
       case Sys.parseExp sys (strip arg) of
         Left err -> fail err
-        Right (_, e :! t) -> liftIO $ do
-          putStrLn $ show $ AExp.skelton e
-          putStrLn $ "    : " ++ show t
+        Right (_, e :! t) ->
+          printLines $ [show $ AExp.skelton e, "    : " ++ show t]
 
 cmdLet :: Command
 cmdLet arg = do
@@ -204,19 +207,17 @@ cmdLet arg = do
       sys' <- Sys.letExp sys def
       put sys'
       if null args
-        then liftIO $ do
-          putStrLn $ name ++ " = " ++ show (AExp.skelton e)
-          putStrLn $ "    : " ++ show t
-        else liftIO $ do
+        then printLines [name ++ " = " ++ show (AExp.skelton e), "    : " ++ show t]
+        else do
           let lhs = name ++ "(" ++ intercalate "," args ++ ")"
-          putStrLn $ lhs ++ " = " ++ show (AExp.skelton e)
-          let upper = intercalate "  " $ [p ++ ": " ++ show t | (p,t) <- zip args args']
+              upper = intercalate "  " $ [p ++ ": " ++ show t | (p,t) <- zip args args']
               lower = lhs ++ ": " ++ show t
-              s = upper ++ "\n" ++
-                  replicate (max (length upper) (length lower)) '-' ++ "\n" ++
-                  lower
-          putStrLn $ s
-          -- putStrLn $ "    : " ++ intercalate ", " (map show args') ++ " => " ++ show t
+          printLines
+            [ upper
+            , replicate (max (length upper) (length lower)) '-'
+            , lower
+            -- , "    : " ++ intercalate ", " (map show args') ++ " => " ++ show t
+            ]
 
 cmdSimp :: Command
 cmdSimp arg =
@@ -239,12 +240,11 @@ cmdSimp arg =
                 let line = show step
                          ++ (if depth==0 then "" else "[" ++ show depth ++ "]")
                          ++ ":" ++ show (Simp.decompile exp) ++ "*" ++ show (Simp.decompile cexp)
-                when (Sys.trace sys) $ liftIO $ putStrLn line
+                when (Sys.trace sys) $ printLine line
                 if null xs
                   then do
                     let it = Simp.decompile cexp
-                    liftIO $ putStrLn (show it)
-                    liftIO $ putStrLn ("    : " ++ show t)
+                    printLines [show it, "    : " ++ show t]
                     put sys{ Sys.lastExp = Just it }
                   else
                     loop xs
@@ -257,7 +257,7 @@ cmdLoad s =
        let src  = unlines (map removeComment (lines contents))
            cmds = split src
        forM_ cmds $ \cmd -> do
-         liftIO $ (putStr . unlines . map ("> "++) . lines $ cmd)
+         printLines ["> " ++ l | l <- lines cmd]
          dispatchCommand cmd
     where filename = -- FIXME
               let s' = strip s in
@@ -288,7 +288,7 @@ cmdQuit :: Command
 cmdQuit _ = liftIO $ exitWith ExitSuccess
 
 cmdHelp :: Command
-cmdHelp _ = liftIO $ mapM_ putStrLn l
+cmdHelp _ = mapM_ printLine l
     where l = [ "  exit                        exit the interpreter"
               , "  quit                        ditto"
               , "  bye                         ditto"
@@ -310,10 +310,9 @@ cmdSet arg =
             case flag of
             "trace" ->
                 do sys <- get
-                   liftIO $ putStrLn $
-                            "trace=" ++ (if Sys.trace sys then "on" else "off")
+                   printLine $ "trace=" ++ (if Sys.trace sys then "on" else "off")
             _ ->
-                liftIO $ putStrLn $ "unknown flag:" ++ flag
+                printLine $ "unknown flag:" ++ flag
         (value, _) ->
             case flag of
             "trace" ->
@@ -325,9 +324,9 @@ cmdSet arg =
                     do sys <- get
                        put (sys{ Sys.trace = False })
                 _ ->
-                    liftIO $ putStrLn ("unknown value:" ++ value)
+                    printLine $ "unknown value:" ++ value
             _ ->
-                liftIO $ putStrLn ("unknown flag:" ++ flag)
+                printLine $ "unknown flag:" ++ flag
 
 cmdReset :: Command
 cmdReset _ = put initialState
@@ -422,6 +421,6 @@ mainLoop = do
   mainLoop
   where
     h :: IOError -> UI ()
-    h = liftIO . putStrLn . show
+    h = printLine . show
 
 ----------------------------------------------------------------------------
