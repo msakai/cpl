@@ -252,8 +252,7 @@ cmdSimp arg =
 
 cmdLoad :: Command
 cmdLoad s =
-    do h <- liftIO $ openFile filename ReadMode
-       contents <- liftIO $ hGetContents h
+    do contents <- liftIO $ readFile filename
        let src  = unlines (map removeComment (lines contents))
            cmds = split src
        forM_ cmds $ \cmd -> do
