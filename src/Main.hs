@@ -1,9 +1,8 @@
 {-# LANGUAGE CPP #-}
-
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Main
--- Copyright   :  (c) Masahiro Sakai 2004,2009
+-- Copyright   :  (c) Masahiro Sakai 2004,2009,2014
 -- License     :  BSD-style
 -- 
 -- Maintainer  :  masahiro.sakai@gmail.com
@@ -36,13 +35,45 @@ import System.Console.GetOpt
 #if defined(USE_READLINE_PACKAGE)
 import qualified System.Console.SimpleLineEditor as SLE
 import Control.Exception (bracket)
-import Control.Monad.Error (catchError)
 #elif defined(USE_HASKELINE_PACKAGE)
 import System.Console.Haskeline
 #else
 import Control.Exception (bracket)
-import Control.Monad.Error (catchError)
 #endif
+
+----------------------------------------------------------------------------
+
+#ifdef USE_HASKELINE_PACKAGE
+type Console = InputT IO
+#else
+type Console = IO
+#endif
+
+runConsole :: Console a -> IO a
+#if defined(USE_READLINE_PACKAGE)
+runConsole m = bracket SLE.initialise (const SLE.restore) (const m)
+#elif defined(USE_HASKELINE_PACKAGE)
+runConsole m = runInputT defaultSettings m
+#else
+runConsole m = bracket initialie (hSetBuffering stdout) (const m)
+  where
+    initialie = do
+      x <- hGetBuffering stdout
+      hSetBuffering stdout NoBuffering
+      return x
+#endif
+
+readLine' :: String -> Console String
+#if defined(USE_READLINE_PACKAGE)
+readLine' prompt = liftM (fromMaybe "") $ SLE.getLineEdited prompt
+#elif defined(USE_HASKELINE_PACKAGE)
+readLine' prompt = liftM (fromMaybe "") $ getInputLine prompt
+#else
+readLine' prompt = putStr prompt >> getLine
+#endif
+
+printLine' :: String -> Console ()
+printLine' s = liftIO $ putStrLn $ s
 
 ----------------------------------------------------------------------------
 
@@ -53,23 +84,13 @@ initialState = Sys.emptySystem
 
 ----------------------------------------------------------------------------
 
-#ifdef USE_HASKELINE_PACKAGE
-type UI a = StateT UIState (InputT IO) a
-#else
-type UI a = StateT UIState IO a
-#endif
+type UI a = StateT UIState Console a
 
 readLine :: String -> UI String
-#if defined(USE_READLINE_PACKAGE)
-readLine prompt = liftIO $ fmap (fromMaybe "") (SLE.getLineEdited prompt)
-#elif defined(USE_HASKELINE_PACKAGE)
-readLine prompt = fmap (fromMaybe "") (lift (getInputLine prompt))
-#else
-readLine prompt = liftIO $ putStr prompt >> getLine
-#endif
+readLine prompt = lift $ readLine' prompt
 
 printLine :: String -> UI ()
-printLine s = liftIO $ putStrLn $ s
+printLine s = lift $ printLine' s
 
 printLines :: [String] -> UI ()
 printLines = mapM_ printLine
@@ -355,33 +376,22 @@ options =
     ]
 
 main :: IO ()
-#if defined(USE_READLINE_PACKAGE)
-main = bracket SLE.initialise (const SLE.restore) (const main_)
-#elif defined(USE_HASKELINE_PACKAGE)
-main = runInputT defaultSettings main_
-#else
-main = 
-    do bracket (do x <- hGetBuffering stdout
-                   hSetBuffering stdout NoBuffering
-                   return x)
-               (hSetBuffering stdout)
-               (const main_)
-#endif
-
-main_ =
-    do args <- liftIO $ getArgs
+main =
+    do args <- getArgs
        case getOpt Permute options args of
          (opts,_,[])
            | Help `elem` opts -> liftIO $ putStrLn (usageInfo header options)
            | ShowVersion `elem` opts -> liftIO $ putStrLn $ showVersion version
          (opts,files,[]) ->
-           flip evalStateT initialState $ do
+           runConsole $ flip evalStateT initialState $ do
              printLines banner
              mapM_ processOpt opts
              mapM_ cmdLoad files
              when (null files || Interactive `elem` opts) $ mainLoop
-         (_,_,errs) ->
-             liftIO $ ioError $ userError $ concat errs ++ usageInfo header options
+         (_,_,errs) -> do
+           forM_ errs $ \err -> hPutStr stderr err
+           hPutStrLn stderr $ usageInfo header options
+           exitFailure             
 
 header :: String
 header = "Usage: cpl [OPTION...] files..."
@@ -407,16 +417,13 @@ processOpt (Trace s) =
 processOpt _ = return ()
 
 mainLoop :: UI ()
-mainLoop = do
+mainLoop = forever $ do
   l <- readLine "cpl> "
-#if defined(USE_HASKELINE_PACKAGE)
-  handle h (dispatchCommand l)
-#else
-  dispatchCommand l `catchError`  h
-#endif
-  mainLoop
-  where
-    h :: IOError -> UI ()
-    h = printLine . show
+  case shift l of
+    ([], _) -> return ()
+    (cmdStr, arg) -> do
+      case lookup cmdStr commandTable of
+        Just cmd -> cmd arg
+        Nothing  -> printLine ("unknown command: " ++ l)
 
 ----------------------------------------------------------------------------
