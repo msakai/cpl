@@ -46,14 +46,31 @@ import Control.Monad.Error (catchError)
 
 type UIState = Sys.System
 
+initialState :: UIState
+initialState = Sys.emptySystem
+
+----------------------------------------------------------------------------
+
 #ifdef USE_HASKELINE_PACKAGE
 type UI a = StateT UIState (InputT IO) a
 #else
 type UI a = StateT UIState IO a
 #endif
 
-initialState :: UIState
-initialState = Sys.emptySystem
+readLine :: String -> UI String
+#if defined(USE_READLINE_PACKAGE)
+readLine prompt = liftIO $ fmap (fromMaybe "") (SLE.getLineEdited prompt)
+#elif defined(USE_HASKELINE_PACKAGE)
+readLine prompt = fmap (fromMaybe "") (lift (getInputLine prompt))
+#else
+readLine prompt = liftIO $ putStr prompt >> getLine
+#endif
+
+printLine :: String -> UI ()
+printLine s = liftIO $ putStrLn $ s
+
+printLines :: [String] -> UI ()
+printLines = mapM_ printLine
 
 ----------------------------------------------------------------------------
 --- Utility
@@ -110,21 +127,6 @@ showObjectInfo obj =
                     lr = case CDT.objectType obj of
                          LeftObject  -> "L"
                          RightObject -> "R"
-
-readLine :: String -> UI String
-#if defined(USE_READLINE_PACKAGE)
-readLine prompt = liftIO $ fmap (fromMaybe "") (SLE.getLineEdited prompt)
-#elif defined(USE_HASKELINE_PACKAGE)
-readLine prompt = fmap (fromMaybe "") (lift (getInputLine prompt))
-#else
-readLine prompt = liftIO $ putStr prompt >> getLine
-#endif
-
-printLine :: String -> UI ()
-printLine s = liftIO $ putStrLn $ s
-
-printLines :: [String] -> UI ()
-printLines = mapM_ printLine
 
 ----------------------------------------------------------------------------
 
@@ -367,17 +369,15 @@ main =
 main_ =
     do args <- liftIO $ getArgs
        case getOpt Permute options args of
-         (o,_,[])
-           | Help `elem` o    -> liftIO $ putStrLn (usageInfo header options)
-           | Version `elem` o -> liftIO $ putStrLn versionStr
-         (o,n,[]) ->
-             do liftIO $ putStr banner
-                evalStateT (do mapM_ processOpt o
-                               mapM_ cmdLoad n
-                               if null n || Interactive `elem` o
-                                   then mainLoop
-                                   else return ())
-                           initialState
+         (opts,_,[])
+           | Help `elem` opts    -> liftIO $ putStrLn (usageInfo header options)
+           | Version `elem` opts -> liftIO $ putStrLn versionStr
+         (opts,files,[]) ->
+           flip evalStateT initialState $ do
+             printLines banner
+             mapM_ processOpt opts
+             mapM_ cmdLoad files
+             when (null files || Interactive `elem` opts) $ mainLoop
          (_,_,errs) ->
              liftIO $ ioError $ userError $ concat errs ++ usageInfo header options
 
@@ -390,13 +390,14 @@ versionStr = intercalate "." $ map show $ version
 header :: String
 header = "Usage: cpl [OPTION...] files..."
 
-banner :: String
+banner :: [String]
 banner =
-    "Categorical Programming Language (Haskell version)\n" ++
-    "version " ++ versionStr ++ "\n" ++
-    "\n" ++
-    "Type help for help\n" ++
-    "\n"
+  [ "Categorical Programming Language (Haskell version)"
+  , "version " ++ versionStr
+  , ""
+  , "Type help for help"
+  , ""
+  ]
 
 processOpt :: Flag -> UI ()
 processOpt (Trace s) =
