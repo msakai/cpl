@@ -41,7 +41,7 @@ Flag Haskeline
 Executable cpl
   Main-is: Main.hs
   HS-Source-Dirs: src
-  Other-Modules: AExp CDT CDTParser CPLSystem Exp ExpParser FE Funct ParserUtils Simp Statement Subst Type Typing Variance 
+  Other-Modules: AExp CDT CDTParser CPLSystem Exp ExpParser FE Funct ParserUtils Simp Statement Subst Type Typing Variance Paths_CPL
   Build-Depends: base >=4 && <5, mtl >=1.1, containers, array, parsec
   Default-Language: Haskell2010
   Other-Extensions: TypeSynonymInstances, FlexibleInstances, CPP, GeneralizedNewtypeDeriving

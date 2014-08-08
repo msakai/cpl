@@ -22,10 +22,12 @@ import qualified AExp
 import Type
 import Typing (Typing(..))
 import qualified Simp
+import Paths_CPL
 
 import Data.Maybe
 import Data.List
 import Data.Char (isSpace)
+import Data.Version
 import System.Environment
 import System.Exit
 import System.IO
@@ -336,7 +338,7 @@ cmdReset _ = put initialState
 
 data Flag
     = Help
-    | Version
+    | ShowVersion
     | Interactive
     -- | Load String
     | Trace String
@@ -345,7 +347,7 @@ data Flag
 options :: [OptDescr Flag]
 options =
     [ Option ['h'] ["help"]    (NoArg Help)            "show help"
-    , Option ['v'] ["version"] (NoArg Version)         "show version number"
+    , Option ['v'] ["version"] (NoArg ShowVersion)     "show version number"
     , Option ['i'] ["interactive"] (NoArg Interactive) "force interactive mode"
     -- , Option ['l'] ["load"]    (ReqArg Load "FILE") "load FILE"
     , Option ['t'] ["trace"]    (OptArg (Trace . fromMaybe "on") "[on|off]")
@@ -370,8 +372,8 @@ main_ =
     do args <- liftIO $ getArgs
        case getOpt Permute options args of
          (opts,_,[])
-           | Help `elem` opts    -> liftIO $ putStrLn (usageInfo header options)
-           | Version `elem` opts -> liftIO $ putStrLn versionStr
+           | Help `elem` opts -> liftIO $ putStrLn (usageInfo header options)
+           | ShowVersion `elem` opts -> liftIO $ putStrLn $ showVersion version
          (opts,files,[]) ->
            flip evalStateT initialState $ do
              printLines banner
@@ -381,19 +383,13 @@ main_ =
          (_,_,errs) ->
              liftIO $ ioError $ userError $ concat errs ++ usageInfo header options
 
-version :: [Int]
-version = [0,0,6]
-
-versionStr :: String
-versionStr = intercalate "." $ map show $ version
-
 header :: String
 header = "Usage: cpl [OPTION...] files..."
 
 banner :: [String]
 banner =
   [ "Categorical Programming Language (Haskell version)"
-  , "version " ++ versionStr
+  , "version " ++ showVersion version
   , ""
   , "Type help for help"
   , ""
