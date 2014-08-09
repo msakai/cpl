@@ -36,7 +36,7 @@ import System.Console.GetOpt
 import qualified System.Console.SimpleLineEditor as SLE
 import Control.Exception (bracket)
 #elif defined(USE_HASKELINE_PACKAGE)
-import System.Console.Haskeline
+import qualified System.Console.Haskeline as Haskeline
 #else
 import Control.Exception (bracket)
 #endif
@@ -44,7 +44,7 @@ import Control.Exception (bracket)
 ----------------------------------------------------------------------------
 
 #ifdef USE_HASKELINE_PACKAGE
-type Console = InputT IO
+type Console = Haskeline.InputT IO
 #else
 type Console = IO
 #endif
@@ -53,7 +53,7 @@ runConsole :: Console a -> IO a
 #if defined(USE_READLINE_PACKAGE)
 runConsole m = bracket SLE.initialise (const SLE.restore) (const m)
 #elif defined(USE_HASKELINE_PACKAGE)
-runConsole m = runInputT defaultSettings m
+runConsole m = Haskeline.runInputT Haskeline.defaultSettings m
 #else
 runConsole m = bracket initialie (hSetBuffering stdout) (const m)
   where
@@ -67,7 +67,7 @@ readLine' :: String -> Console String
 #if defined(USE_READLINE_PACKAGE)
 readLine' prompt = liftM (fromMaybe "") $ SLE.getLineEdited prompt
 #elif defined(USE_HASKELINE_PACKAGE)
-readLine' prompt = liftM (fromMaybe "") $ getInputLine prompt
+readLine' prompt = liftM (fromMaybe "") $ Haskeline.getInputLine prompt
 #else
 readLine' prompt = putStr prompt >> getLine
 #endif
