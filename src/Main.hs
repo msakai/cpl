@@ -30,6 +30,7 @@ import Data.Version
 import System.Environment
 import System.Exit
 import System.IO
+import Control.Monad.Error
 import Control.Monad.State.Strict -- haskeline's MonadException requries strict version
 import System.Console.GetOpt
 #if defined(USE_READLINE_PACKAGE)
@@ -84,13 +85,13 @@ initialState = Sys.emptySystem
 
 ----------------------------------------------------------------------------
 
-type UI a = StateT UIState Console a
+type UI a = ErrorT String (StateT UIState Console) a
 
 readLine :: String -> UI String
-readLine prompt = lift $ readLine' prompt
+readLine prompt = lift $ lift $ readLine' prompt
 
 printLine :: String -> UI ()
-printLine s = lift $ printLine' s
+printLine s = lift $ lift $ printLine' s
 
 printLines :: [String] -> UI ()
 printLines = mapM_ printLine
@@ -180,7 +181,7 @@ dispatchCommand l =
         (cmdStr, arg) ->
             case lookup cmdStr commandTable of
             Just cmd -> cmd arg
-            Nothing  -> printLine ("unknown command: " ++ l)
+            Nothing  -> throwError ("unknown command: " ++ l)
 
 ----------------------------------------------------------------------------
 
@@ -188,10 +189,10 @@ defineObject :: Command
 defineObject src = do
   sys <- get
   case Sys.parseCDT sys src of
-    Left err -> printLines $ lines $ err
+    Left err -> throwError err
     Right obj -> do
       case Sys.addCDT sys obj of
-        Left err -> printLines $ lines $ err
+        Left err -> throwError err
         Right sys' -> do
           put sys'
           let lr = case CDT.objectType obj of
@@ -213,7 +214,7 @@ cmdShow arg =
                objects = Sys.objects sys
            case find (\x -> CDT.functName x == name) objects of
              Just obj -> printLines $ lines $ showObjectInfo obj
-             Nothing  -> printLine $ "unknown object: " ++ name
+             Nothing  -> throwError $ "unknown object: " ++ name
     ("aexp", arg') -> do -- XXX
       sys <- get
       case Sys.parseExp sys (strip arg') of
@@ -223,7 +224,7 @@ cmdShow arg =
     _ -> do
       sys <- get
       case Sys.parseExp sys (strip arg) of
-        Left err -> printLines $ lines $ err
+        Left err -> throwError $ err
         Right (_, e :! t) ->
           printLines $ [show $ AExp.skelton e, "    : " ++ show t]
 
@@ -231,10 +232,10 @@ cmdLet :: Command
 cmdLet arg = do
   sys <- get
   case Sys.parseDef sys (strip arg) of
-    Left err -> printLines $ lines $ err
+    Left err -> throwError err
     Right def@(name, args, e, FType _ args' t) -> do
       case Sys.letExp sys def of
-        Left err -> printLines $ lines $ err
+        Left err -> throwError err
         Right sys' -> do
           put sys'
           if null args
@@ -261,12 +262,12 @@ cmdSimp arg =
     doSimp full str = do
       sys <- get
       if not (any isTerminalObject (Sys.objects sys)) then do
-        printLine "No terminal object is defined."
+        throwError "No terminal object is defined."
       else
         case Sys.parseExp sys str of
-          Left err -> printLines $ lines $ err
+          Left err -> throwError err
           Right (_, e :! t) -> do
-            if not (AExp.isElement e) then printLine "not a element"
+            if not (AExp.isElement e) then throwError "not a element"
             else do
               let traces = Sys.simp sys full (AExp.skelton e)
                   loop ((step,(depth,exp,cexp)) : xs) = do
@@ -344,7 +345,7 @@ cmdSet arg =
                 do sys <- get
                    printLine $ "trace=" ++ (if Sys.trace sys then "on" else "off")
             _ ->
-                printLine $ "unknown flag:" ++ flag
+                throwError $ "unknown flag:" ++ flag
         (value, _) ->
             case flag of
             "trace" ->
@@ -356,9 +357,9 @@ cmdSet arg =
                     do sys <- get
                        put (sys{ Sys.trace = False })
                 _ ->
-                    printLine $ "unknown value:" ++ value
+                    throwError  $ "unknown value:" ++ value
             _ ->
-                printLine $ "unknown flag:" ++ flag
+                throwError $ "unknown flag:" ++ flag
 
 cmdReset :: Command
 cmdReset _ = put initialState
@@ -392,10 +393,14 @@ main =
            | ShowVersion `elem` opts -> putStrLn $ showVersion version
          (opts,files,[]) ->
            runConsole $ flip evalStateT initialState $ do
-             printLines banner
-             mapM_ processOpt opts
-             mapM_ cmdLoad files
-             when (null files || Interactive `elem` opts) $ mainLoop
+             ret <- runErrorT $ do
+               printLines banner
+               mapM_ processOpt opts
+               mapM_ cmdLoad files
+               when (null files || Interactive `elem` opts) $ mainLoop
+             case ret of
+               Left err -> lift $ mapM_ printLine' (lines err)
+               Right () -> return ()
          (_,_,errs) -> do
            forM_ errs $ \err -> hPutStr stderr err
            hPutStrLn stderr $ usageInfo header options
@@ -418,12 +423,12 @@ processOpt (Trace s) =
   case s of
     "on"  -> modify (\sys -> sys{ Sys.trace = True })
     "off" -> modify (\sys -> sys{ Sys.trace = False })
-    _     -> printLine "invalid option"
+    _     -> throwError "invalid option"
 processOpt _ = return ()
 
 mainLoop :: UI ()
 mainLoop = forever $ do
   l <- readLine "cpl> "
-  dispatchCommand l
+  dispatchCommand l `catchError` (\err -> printLines $ lines $ err)
 
 ----------------------------------------------------------------------------
