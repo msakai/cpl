@@ -23,7 +23,8 @@ Extra-Source-Files:
    samples/benchmark.cpl,
    samples/ack_3_4.cpl,
    samples/function.cpl,
-   src/CDT.hs-boot
+   src/CDT.hs-boot,
+   haste/index.html
 Build-Type: Simple
 
 source-repository head
@@ -37,6 +38,10 @@ Flag Readline
 Flag Haskeline
   Description: Use Haskeline
   Default: True
+
+Flag WebConsole
+  Description: Compile to javascript using Haste
+  Default: False
 
 Executable cpl
   Main-is: Main.hs
@@ -52,3 +57,6 @@ Executable cpl
     if flag(Haskeline)
       CPP-Options: "-DUSE_HASKELINE_PACKAGE"
       Build-Depends: haskeline
+  if flag(WebConsole)
+      CPP-Options: "-DWEB_CONSOLE"
+      Build-Depends: haste-lib

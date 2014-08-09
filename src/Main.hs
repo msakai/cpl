@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP, OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Main
@@ -12,6 +12,10 @@
 -----------------------------------------------------------------------------
 
 module Main where
+
+#if defined(WEB_CONSOLE) && !defined(__HASTE__)
+#error WebConsole flag requires haste compiler
+#endif
 
 import CDT
 import Exp
@@ -33,7 +37,12 @@ import System.IO
 import Control.Monad.Error
 import Control.Monad.State.Strict -- haskeline's MonadException requries strict version
 import System.Console.GetOpt
-#if defined(USE_READLINE_PACKAGE)
+#if defined(WEB_CONSOLE)
+import Control.Monad.Reader
+import Haste
+import Haste.Concurrent
+import Haste.Foreign
+#elif defined(USE_READLINE_PACKAGE)
 import qualified System.Console.SimpleLineEditor as SLE
 import Control.Exception (bracket)
 #elif defined(USE_HASKELINE_PACKAGE)
@@ -43,6 +52,8 @@ import Control.Exception (bracket)
 #endif
 
 ----------------------------------------------------------------------------
+
+#ifndef WEB_CONSOLE
 
 #ifdef USE_HASKELINE_PACKAGE
 type Console = Haskeline.InputT IO
@@ -75,6 +86,100 @@ readLine' prompt = putStr prompt >> getLine
 
 printLine' :: String -> Console ()
 printLine' s = liftIO $ putStrLn $ s
+
+#else
+
+type Console = ReaderT (String -> CIO (), String -> CIO String) CIO
+
+runConsole :: Console () -> IO ()
+runConsole m = withElems ["console", "log", "prompt", "input"] $ \[console, log, prompt, input] -> do
+  mv <- newEmptyMVar
+
+  let printLineImpl :: String -> CIO ()
+      printLineImpl s = do
+        let f ' ' = '\xa0' -- replace space with nbsp
+            f c = c
+        txt <- newTextElem $ map f s
+        addChild txt log
+        br <- newElem "br"
+        addChild br log
+        wait 0
+        scrollConsoleToBottom
+        return ()
+
+      readLineImpl :: String -> CIO String
+      readLineImpl p = do
+        setPrompt p
+        setDisabled input False
+        setFocus input
+        s <- takeMVar mv
+        printLineImpl (p ++ s)
+        clearChildren prompt
+        return s
+
+      setPrompt :: String -> CIO ()
+      setPrompt p = do
+        clearChildren prompt
+        txt <- newTextElem p
+        addChild txt prompt
+        wait 10
+{-
+        w1 <- liftM read $ getProp console "clientWidth"
+        w2 <- liftM read $ getProp prompt "clientWidth"
+        setStyle input "width" (show (w1 - w2) ++ "px")
+-}
+
+  onEvent input OnKeyPress $ \c -> do
+    when (c == fromEnum '\r' || c == fromEnum '\n') $ do
+      s <- getProp input "value"
+      setProp input "value" ""
+      setDisabled input True
+      concurrent $ putMVar mv s
+
+  onEvent console OnClick $ \_ (x,y) -> do
+    setFocus input
+
+  concurrent $ runReaderT m (printLineImpl, readLineImpl)
+
+printLine' :: String -> Console ()
+printLine' s = do
+  (f,_) <- ask
+  lift $ f s
+
+readLine' :: String -> Console String
+readLine' p = do
+  (_,f) <- ask
+  lift $ f p
+
+scrollConsoleToBottom :: MonadIO m => m ()
+scrollConsoleToBottom = liftIO m
+  where
+    {-# NOINLINE m #-}
+    m :: IO ()
+    m = ffi "(function() {$(\"#console\").scrollTop($(\"#console\")[0].scrollHeight);})"
+
+setReadOnly :: MonadIO m => Elem -> Bool -> m ()
+setReadOnly e b = liftIO $ f e b
+  where
+    {-# NOINLINE f #-}
+    f :: Elem -> Bool -> IO ()
+    f = ffi "(function(e,b) { e.readonly = b; })"
+
+setDisabled :: MonadIO m => Elem -> Bool -> m ()
+setDisabled e b = liftIO $ f e b
+  where
+    {-# NOINLINE f #-}
+    f :: Elem -> Bool -> IO ()
+    f = ffi "(function(e,b) { e.disabled = b; })"
+
+setFocus :: MonadIO m => Elem -> m ()
+setFocus e = liftIO $ f e
+  where
+    {-# NOINLINE f #-}
+    f :: Elem -> IO ()
+    f = ffi "(function(e) { e.focus(); })"
+
+#endif
 
 ----------------------------------------------------------------------------
 
@@ -379,6 +484,8 @@ options =
              "enable/disable trace"
     ]
 
+#ifndef WEB_CONSOLE
+
 main :: IO ()
 main =
     do args <- getArgs
@@ -399,7 +506,20 @@ main =
          (_,_,errs) -> do
            forM_ errs $ \err -> hPutStr stderr err
            hPutStrLn stderr $ usageInfo header options
-           exitFailure             
+           exitFailure
+
+#else
+
+main :: IO ()
+main = do
+  runConsole $ flip evalStateT initialState $ do
+    ret <- runErrorT $ do
+      printLines banner
+      mainLoop
+    case ret of
+      Left err -> lift $ mapM_ printLine' (lines err)
+      Right () -> return ()
+#endif
 
 header :: String
 header = "Usage: cpl [OPTION...] files..."
