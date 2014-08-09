@@ -388,8 +388,8 @@ main =
     do args <- getArgs
        case getOpt Permute options args of
          (opts,_,[])
-           | Help `elem` opts -> liftIO $ putStrLn (usageInfo header options)
-           | ShowVersion `elem` opts -> liftIO $ putStrLn $ showVersion version
+           | Help `elem` opts -> putStrLn (usageInfo header options)
+           | ShowVersion `elem` opts -> putStrLn $ showVersion version
          (opts,files,[]) ->
            runConsole $ flip evalStateT initialState $ do
              printLines banner
