@@ -307,22 +307,22 @@ cmdLoad s =
                     f [] tmp       = [tmp]
 
 cmdEdit :: Command
-cmdEdit _ =
-    do s <- editLoop
-       dispatchCommand s
-    where editLoop =
-              do l <- readLine "| "
-                 case dropWhile isSpace (reverse l) of
-                     ';':s -> return (reverse s)
-                     _ -> do s <- editLoop
-                             return $ l ++ "\n" ++ s
+cmdEdit _ = loop >>= dispatchCommand
+  where
+    loop = do
+      l <- readLine "| "
+      case dropWhile isSpace (reverse l) of
+        ';':s -> return (reverse s)
+        _ -> do
+          s <- loop
+          return $ l ++ "\n" ++ s
 
 cmdQuit :: Command
 cmdQuit _ = liftIO $ exitWith ExitSuccess
 
 cmdHelp :: Command
-cmdHelp _ = mapM_ printLine l
-    where l = [ "  exit                        exit the interpreter"
+cmdHelp _ = printLines 
+              [ "  exit                        exit the interpreter"
               , "  quit                        ditto"
               , "  bye                         ditto"
               , "  edit                        enter editing mode"
@@ -345,21 +345,16 @@ cmdSet arg =
                 do sys <- get
                    printLine $ "trace=" ++ (if Sys.trace sys then "on" else "off")
             _ ->
-                throwError $ "unknown flag:" ++ flag
+                throwError $ "unknown flag: " ++ flag
         (value, _) ->
             case flag of
             "trace" ->
                 case value of
-                "on"  ->
-                    do sys <- get
-                       put (sys{ Sys.trace = True })
-                "off" ->
-                    do sys <- get
-                       put (sys{ Sys.trace = False })
-                _ ->
-                    throwError  $ "unknown value:" ++ value
+                "on"  -> modify (\sys -> sys{ Sys.trace = True })
+                "off" -> modify (\sys -> sys{ Sys.trace = False })
+                _ -> throwError  $ "unknown value: " ++ value
             _ ->
-                throwError $ "unknown flag:" ++ flag
+                throwError $ "unknown flag: " ++ flag
 
 cmdReset :: Command
 cmdReset _ = put initialState
