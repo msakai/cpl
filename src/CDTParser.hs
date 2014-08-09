@@ -76,18 +76,18 @@ fe lookupVar = fe'
 
 type CDTEnv = [CDT]
 
-evalCDTDecl :: Monad m => CDTEnv -> CDTDecl -> m CDT
+evalCDTDecl :: CDTEnv -> CDTDecl -> Either String CDT
 evalCDTDecl cenv (CDTDecl lr name arity fact_name nat_decls) =
     do nat_decls' <- mapM (evalNatDecl cenv) nat_decls
        return $ mkCDT lr name arity fact_name nat_decls'
 
-evalNatDecl :: Monad m => CDTEnv -> (String, Type) -> m (String, T.Type)
+evalNatDecl :: CDTEnv -> (String, Type) -> Either String (String, T.Type)
 evalNatDecl cenv (name, a :-> b) =
     do a' <- evalFE cenv a
        b' <- evalFE cenv b
        return (name, a' :-> b')
 
-evalFE :: Monad m => CDTEnv -> FE -> m FE.FE
+evalFE :: CDTEnv -> FE -> Either String FE.FE
 evalFE _ (FE.Var n) = return (FE.Var n)
 evalFE cenv (FE.Ap sym xs) =
     do ys <- mapM (evalFE cenv) xs
@@ -95,8 +95,8 @@ evalFE cenv (FE.Ap sym xs) =
         Just f ->
             if CDT.functArity f == length xs
                then return (FE.Ap f ys)
-               else fail "wrong number of arguments"
+               else Left "wrong number of arguments"
         Nothing ->
-            fail $ "no such functor or variable: " ++ sym
+            Left $ "no such functor or variable: " ++ sym
 
 -----------------------------------------------------------------------------

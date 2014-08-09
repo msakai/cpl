@@ -180,21 +180,25 @@ dispatchCommand l =
         (cmdStr, arg) ->
             case lookup cmdStr commandTable of
             Just cmd -> cmd arg
-            Nothing  -> liftIO $ ioError $ userError $  ("unknown command: " ++ l)
+            Nothing  -> printLine ("unknown command: " ++ l)
 
 ----------------------------------------------------------------------------
 
 defineObject :: Command
-defineObject src =
-    do sys <- get
-       obj <- Sys.parseCDT sys src
-       sys' <- Sys.addCDT sys obj
-       put sys'
-       let lr = case CDT.objectType obj of
-                     LeftObject  -> "left"
-                     RightObject -> "right"
-           msg = concat [lr, " object ", showFunctNameWithVariance obj, " is defined"]
-       printLine msg
+defineObject src = do
+  sys <- get
+  case Sys.parseCDT sys src of
+    Left err -> printLines $ lines $ err
+    Right obj -> do
+      case Sys.addCDT sys obj of
+        Left err -> printLines $ lines $ err
+        Right sys' -> do
+          put sys'
+          let lr = case CDT.objectType obj of
+                      LeftObject  -> "left"
+                      RightObject -> "right"
+              msg = concat [lr, " object ", showFunctNameWithVariance obj, " is defined"]
+          printLine msg
 
 cmdLeft, cmdRight :: Command
 cmdLeft  s = defineObject ("left " ++ s)
@@ -213,13 +217,13 @@ cmdShow arg =
     ("aexp", arg') -> do -- XXX
       sys <- get
       case Sys.parseExp sys (strip arg') of
-        Left err -> fail err
+        Left err -> printLines $ lines $ err
         Right (_, e :! t) ->
           printLines $ [show e, "    : " ++ show t]
     _ -> do
       sys <- get
       case Sys.parseExp sys (strip arg) of
-        Left err -> fail err
+        Left err -> printLines $ lines $ err
         Right (_, e :! t) ->
           printLines $ [show $ AExp.skelton e, "    : " ++ show t]
 
@@ -227,22 +231,24 @@ cmdLet :: Command
 cmdLet arg = do
   sys <- get
   case Sys.parseDef sys (strip arg) of
-    Left err -> fail err
+    Left err -> printLines $ lines $ err
     Right def@(name, args, e, FType _ args' t) -> do
-      sys' <- Sys.letExp sys def
-      put sys'
-      if null args
-        then printLines [name ++ " = " ++ show (AExp.skelton e), "    : " ++ show t]
-        else do
-          let lhs = name ++ "(" ++ intercalate "," args ++ ")"
-              upper = intercalate "  " $ [p ++ ": " ++ show t | (p,t) <- zip args args']
-              lower = lhs ++ ": " ++ show t
-          printLines
-            [ upper
-            , replicate (max (length upper) (length lower)) '-'
-            , lower
-            -- , "    : " ++ intercalate ", " (map show args') ++ " => " ++ show t
-            ]
+      case Sys.letExp sys def of
+        Left err -> printLines $ lines $ err
+        Right sys' -> do
+          put sys'
+          if null args
+            then printLines [name ++ " = " ++ show (AExp.skelton e), "    : " ++ show t]
+            else do
+              let lhs = name ++ "(" ++ intercalate "," args ++ ")"
+                  upper = intercalate "  " $ [p ++ ": " ++ show t | (p,t) <- zip args args']
+                  lower = lhs ++ ": " ++ show t
+              printLines
+                [ upper
+                , replicate (max (length upper) (length lower)) '-'
+                , lower
+                -- , "    : " ++ intercalate ", " (map show args') ++ " => " ++ show t
+                ]
 
 cmdSimp :: Command
 cmdSimp arg =
@@ -254,26 +260,28 @@ cmdSimp arg =
   where
     doSimp full str = do
       sys <- get
-      unless (any isTerminalObject (Sys.objects sys))
-             (fail "No terminal object is defined.")
-      case Sys.parseExp sys str of
-        Left err -> fail err
-        Right (_, e :! t) -> do
-          unless (AExp.isElement e) (fail "not a element")
-          let traces = Sys.simp sys full (AExp.skelton e)
-              loop ((step,(depth,exp,cexp)) : xs) = do
-                let line = show step
-                         ++ (if depth==0 then "" else "[" ++ show depth ++ "]")
-                         ++ ":" ++ show (Simp.decompile exp) ++ "*" ++ show (Simp.decompile cexp)
-                when (Sys.trace sys) $ printLine line
-                if null xs
-                  then do
-                    let it = Simp.decompile cexp
-                    printLines [show it, "    : " ++ show t]
-                    put sys{ Sys.lastExp = Just it }
-                  else
-                    loop xs
-          loop (zip [(0::Int)..] traces)
+      if not (any isTerminalObject (Sys.objects sys)) then do
+        printLine "No terminal object is defined."
+      else
+        case Sys.parseExp sys str of
+          Left err -> printLines $ lines $ err
+          Right (_, e :! t) -> do
+            if not (AExp.isElement e) then printLine "not a element"
+            else do
+              let traces = Sys.simp sys full (AExp.skelton e)
+                  loop ((step,(depth,exp,cexp)) : xs) = do
+                    let line = show step
+                             ++ (if depth==0 then "" else "[" ++ show depth ++ "]")
+                             ++ ":" ++ show (Simp.decompile exp) ++ "*" ++ show (Simp.decompile cexp)
+                    when (Sys.trace sys) $ printLine line
+                    if null xs
+                      then do
+                        let it = Simp.decompile cexp
+                        printLines [show it, "    : " ++ show t]
+                        put sys{ Sys.lastExp = Just it }
+                      else
+                        loop xs
+              loop (zip [(0::Int)..] traces)
 
 cmdLoad :: Command
 cmdLoad s =
@@ -407,23 +415,15 @@ banner =
 
 processOpt :: Flag -> UI ()
 processOpt (Trace s) =
-    do sys <- get
-       val <- case s of
-              "on"  -> return True
-              "off" -> return False
-              _     -> fail "invalid option"
-       put sys{ Sys.trace = val }
-       return ()
+  case s of
+    "on"  -> modify (\sys -> sys{ Sys.trace = True })
+    "off" -> modify (\sys -> sys{ Sys.trace = False })
+    _     -> printLine "invalid option"
 processOpt _ = return ()
 
 mainLoop :: UI ()
 mainLoop = forever $ do
   l <- readLine "cpl> "
-  case shift l of
-    ([], _) -> return ()
-    (cmdStr, arg) -> do
-      case lookup cmdStr commandTable of
-        Just cmd -> cmd arg
-        Nothing  -> printLine ("unknown command: " ++ l)
+  dispatchCommand l
 
 ----------------------------------------------------------------------------

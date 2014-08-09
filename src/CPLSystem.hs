@@ -67,7 +67,7 @@ emptySystem =
 parseExp :: System -> String -> Either String (Int, Typing)
 parseExp sys str =
   case parse ExpParser.exp "" str of
-    Left err -> fail (show err)
+    Left err -> Left (show err)
     Right e ->
       case ExpParser.evalExp (objects sys) (arityEnv sys) e of
         Nothing -> Left "invalid expression" -- FIXME
@@ -82,7 +82,7 @@ type Def = (Id, [Id], AExp.AExp, FType)
 parseDef :: System -> String -> Either String Def
 parseDef sys str =
   case parse ExpParser.def "" str of
-    Left err -> fail (show err)
+    Left err -> Left (show err)
     Right (name,ps,e) ->
       case ExpParser.evalExp (objects sys) (Map.union (Map.fromList (zip ps (repeat 0))) (arityEnv sys)) e of
         Nothing -> Left "invalid definition" -- FIXME
@@ -116,10 +116,10 @@ substIt sys e =
         f (Var "it" [])    = it
         f (Var v args)     = Var v $ map f args
 
-checkName :: Monad m => System -> String -> m ()
+checkName :: System -> String -> Either String ()
 checkName sys name =
   if name `elem` names
-    then fail ("\"" ++ name ++ "\" is already used")
+    then Left $ "\"" ++ name ++ "\" is already used"
     else return ()
   where
     vt = varTable sys
@@ -129,25 +129,25 @@ checkName sys name =
             map CDT.factName objs  ++
             concatMap (map CDT.natName . CDT.nats) objs
 
-parseCDT :: Monad m => System -> String -> m CDT.CDT
+parseCDT :: System -> String -> Either String CDT.CDT
 parseCDT sys src = case parse CDTParser.cdtDecl "" src of
-                   Left err   -> fail (show err)
+                   Left err   -> Left (show err)
                    Right decl -> CDTParser.evalCDTDecl (objects sys) decl
 
-addCDT :: Monad m => System -> CDT.CDT -> m System
+addCDT :: System -> CDT.CDT -> Either String System
 addCDT sys obj =
     if CDT.isComputable obj
     then do checkName sys (CDT.functName obj)
             checkName sys (CDT.factName obj)
             mapM_ (checkName sys . CDT.natName) (CDT.nats obj)
             return sys{ objects = obj : objects sys }
-    else fail "not a computable object"
+    else Left "not a computable object"
 
 compile :: System -> Exp -> Simp.CompiledExp
 compile sys e = Simp.compile env e
   where env = Map.map (\(ps,body,_) -> (ps, body)) (varTable sys)
 
-letExp :: Monad m => System -> Def -> m System
+letExp :: System -> Def -> Either String System
 letExp sys (name,ps,e,ftype) = do
   checkName sys name
   return sys{ varTable = Map.insert name (ps, AExp.skelton e, ftype) (varTable sys) }
