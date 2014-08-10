@@ -10,7 +10,7 @@ Synopsis:	An interpreter of Hagino's Categorical Programming Language (CPL).
 Description:	An interpreter of Hagino's Categorical Programming Language (CPL).
 Extra-Source-Files:
    README,
-   NEWS,
+   CHANGELOG.markdown,
    .travis.yml,
    samples/ack.cpl,
    samples/automata.cdt,
