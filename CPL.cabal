@@ -9,7 +9,7 @@ Cabal-Version:	>=1.10
 Synopsis:	An interpreter of Hagino's Categorical Programming Language (CPL).
 Description:	An interpreter of Hagino's Categorical Programming Language (CPL).
 Extra-Source-Files:
-   README,
+   README.markdown,
    CHANGELOG.markdown,
    .travis.yml,
    samples/ack.cpl,
