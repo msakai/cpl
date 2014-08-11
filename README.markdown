@@ -15,20 +15,15 @@ morphisms. Programs consist of these morphisms, and execution of
 programs is the reduction of elements (i.e. special morphisms) to
 their canonical form.
 
-Requirements
-------------
-
-* GHC-6.10
-
 Install
 -------
 
 De-Compress archive and enter its top directory.
 Then type:
 
-    $ runhaskell Setup.hs configure
-    $ runhaskell Setup.hs build
-    $ runhaskell Setup.hs install
+    $ cabal configure
+    $ cabal build
+    $ cabal install
 
 If you want to compile with readline or haskeline, add -fReadline or
 -fHaskeline respectively to configure command.
@@ -44,7 +39,7 @@ License
 This program is licenced under the BSD-style license.
 (See the file 'COPYING'.)
 
-Copyright (C) 2004-2003 Masahiro Sakai <masahiro.sakai@gmail.com>
+Copyright (C) 2004-2014 Masahiro Sakai <masahiro.sakai@gmail.com>
 
 Author
 ------
