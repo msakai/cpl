@@ -1,6 +1,8 @@
 An implementation of "A Categorical Programing Language"
 ========================================================
 
+[![Build Status](https://secure.travis-ci.org/msakai/cpl.png?branch=master)](http://travis-ci.org/msakai/cpl)
+
 This package is an implementation of "A Categorical Programing Language"
 (CPL for short)[1][2] written in Haskell.
 
