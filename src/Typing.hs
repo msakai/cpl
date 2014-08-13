@@ -48,7 +48,7 @@ instance FEs Typing where
 
 -- Type inference monad
 newtype TI a = TI (RWST Env () TIState (Either String) a)
-  deriving (Functor, Applicative, Monad, MonadState TIState, MonadReader Env, MonadError String)
+  deriving (Functor, Applicative, Monad, MonadReader Env, MonadError String)
 
 type Env = Map.Map E.Id (Either FType Type)
 type TIState = (Int, Subst)
@@ -58,12 +58,12 @@ runTI env (TI m) = liftM fst (evalRWST m env initialState)
   where initialState = (0, nullSubst)
 
 getSubst :: TI Subst
-getSubst = do
+getSubst = TI $ do
   (_,s) <- get
   return s
 
 extSubst :: Subst -> TI ()
-extSubst s2 = do
+extSubst s2 = TI $ do
   (i,s1) <- get
   put (i, s2@@s1)
   return ()
@@ -80,7 +80,7 @@ unify a b = do
   extSubst s2
 
 newFEVar :: TI FE.FE
-newFEVar = do
+newFEVar = TI $ do
   (i,s) <- get
   put (i+1,s)
   return $ FE.Var i
@@ -153,7 +153,7 @@ iFunct obj args = do
 
 iVar :: E.Id -> [Typing] -> TI Typing
 iVar v args = do
-  env <- ask
+  env <- TI ask
   case Map.lookup v env of
     Just (Right t) ->
       return $ Var v [] [] t :! t
