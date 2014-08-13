@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  CDT
@@ -58,7 +59,9 @@ import FE
 import Type
 import Subst (tv, apply)
 
+#if __GLASGOW_HASKELL__ >= 706
 import Prelude hiding (join)
+#endif
 import Data.List (findIndices, transpose, find, findIndex, intercalate)
 
 

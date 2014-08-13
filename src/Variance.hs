@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Variance
@@ -24,7 +25,9 @@ module Variance
     , mnemonic
     ) where
 
+#if __GLASGOW_HASKELL__ >= 706
 import Prelude hiding (join)
+#endif
 
 data Variance
     = Covariance     --- +
