@@ -1,3 +1,8 @@
+Changes since the 0.0.6 release
+-------------------------------
+
+* Clean up internals
+* Enable `-fReadline` and `-fHaskeline` by default
 
 Changes since the 0.0.5 release
 -------------------------------
