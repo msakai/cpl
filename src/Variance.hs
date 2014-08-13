@@ -24,6 +24,8 @@ module Variance
     , mnemonic
     ) where
 
+import Prelude hiding (join)
+
 data Variance
     = Covariance     --- +
     | Contravariance --- -

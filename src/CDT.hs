@@ -58,6 +58,7 @@ import FE
 import Type
 import Subst (tv, apply)
 
+import Prelude hiding (join)
 import Data.List (findIndices, transpose, find, findIndex, intercalate)
 
 
