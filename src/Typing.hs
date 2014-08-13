@@ -24,6 +24,7 @@ import AExp
 import qualified Exp as E
 
 import Data.List (nub)
+import Control.Applicative
 import Control.Monad.Error
 import Control.Monad.RWS
 import qualified Data.Map as Map
@@ -47,7 +48,7 @@ instance FEs Typing where
 
 -- Type inference monad
 newtype TI a = TI (RWST Env () TIState (Either String) a)
-  deriving (Monad, MonadState TIState, MonadReader Env, MonadError String)
+  deriving (Functor, Applicative, Monad, MonadState TIState, MonadReader Env, MonadError String)
 
 type Env = Map.Map E.Id (Either FType Type)
 type TIState = (Int, Subst)
