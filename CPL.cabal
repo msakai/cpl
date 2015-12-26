@@ -11,6 +11,7 @@ Description:	An interpreter of Hagino's Categorical Programming Language (CPL).
 Extra-Source-Files:
    README.markdown,
    CHANGELOG.markdown,
+   appveyor.yml,
    .travis.yml,
    samples/ack.cpl,
    samples/automata.cdt,
