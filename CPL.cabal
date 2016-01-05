@@ -24,7 +24,9 @@ Extra-Source-Files:
    samples/benchmark.cpl,
    samples/ack_3_4.cpl,
    samples/function.cpl,
-   src/CDT.hs-boot
+   src/CDT.hs-boot,
+   windows/COPYING.rtf,
+   windows/CPL.wxs
 Build-Type: Simple
 
 source-repository head
