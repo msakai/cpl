@@ -6,6 +6,8 @@ install:
     $env:Path += ";${env:ProgramFiles}\Haskell Platform\2014.2.0.0\lib\extralibs\bin"
     $env:Path += ";${env:ProgramFiles}\Haskell Platform\2014.2.0.0\mingw\bin"
     $env:Path += ";.\.cabal-sandbox\bin"
+    choco install wixtoolset -version 3.10.1.2213 -y
+    $env:Path += ";${env:ProgramFiles(x86)}\WiX Toolset v3.10\bin"
 - cabal sandbox init
 - cabal update
 - cabal install --only-dependencies --enable-tests --enable-benchmarks -fHaskeline -f-Readline
@@ -14,7 +16,18 @@ build_script:
 - cabal configure --enable-tests --enable-benchmarks -fHaskeline -f-Readline -v2 # -v2 provides useful information for debugging
 - cabal build
 
+after_build:
+- cmd: |
+   cd windows
+   echo Creating msi...
+   runhaskell build_msi.hs
+   cd ..
+
 test_script:
 - cabal test
 - cabal check
 - cabal sdist
+
+artifacts:
+- path: windows\*.msi
+  name: Windows Installer
