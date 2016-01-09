@@ -29,6 +29,11 @@ main = do
           Nothing -> ""
           Just gitHash -> "_" ++ gitHash
       msiFileName = "CPL-" ++ showVersion version ++ suffix_githash ++ "_" ++ SysInfo.arch ++ ".msi"
-  callProcess "candle" ["CPL.wxs"]
+      arch =
+        case SysInfo.arch of
+          "x86_64" -> "x64"
+          "i386" -> "x86"
+          s -> s
+  callProcess "candle" $ ["-arch", arch, "CPL.wxs"]
   callProcess "light" ["-ext", "WixUIExtension", "-out", msiFileName, "CPL.wixobj"]
   return ()
