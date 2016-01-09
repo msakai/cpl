@@ -57,7 +57,7 @@ nat_decl params =
        char' ':'
        let f x = x `elemIndex` params
        a <- fe f
-       string' "->"
+       string' "->" <|> string' "→"
        b <- fe f
        return (name, a :-> b)
 
