@@ -1,12 +1,26 @@
+platform:
+- x86
+- x64
+
 install:
 - ps: |
-    choco install haskellplatform -version 2014.2.0.0 -y
+    # This is necessary because AppVeyor uses 64 bit environemnt even if "platform: x86" is specified.
+    # see also <http://help.appveyor.com/discussions/questions/213-platform-x86-is-not-32-bit>
+    if ("x86".Equals(${env:PLATFORM})) {
+      $env:ChocoOptions = "--x86"
+      $env:HPPath = "${env:ProgramFiles(x86)}\Haskell Platform\2014.2.0.0"
+    } else {
+      $env:ChocoOptions = ""
+      $env:HPPath = "${env:ProgramFiles}\Haskell Platform\2014.2.0.0"
+    }
+    choco install ${env:ChocoOptions} haskellplatform -version 2014.2.0.0 -y
     # Haskell Platfrom package doesn't update PATH for the current shell instance
-    $env:Path += ";${env:ProgramFiles}\Haskell Platform\2014.2.0.0\bin"
-    $env:Path += ";${env:ProgramFiles}\Haskell Platform\2014.2.0.0\lib\extralibs\bin"
-    $env:Path += ";${env:ProgramFiles}\Haskell Platform\2014.2.0.0\mingw\bin"
+    $env:Path += ";${env:HPPath}\bin"
+    $env:Path += ";${env:HPPath}\lib\extralibs\bin"
+    $env:Path += ";${env:HPPath}\mingw\bin"
     $env:Path += ";.\.cabal-sandbox\bin"
-    choco install wixtoolset -version 3.10.1.2213 -y
+    choco install ${env:ChocoOptions} wixtoolset -version 3.10.1.2213 -y
+    $env:Path += ";${env:ProgramFiles}\WiX Toolset v3.10\bin"
     $env:Path += ";${env:ProgramFiles(x86)}\WiX Toolset v3.10\bin"
 - cabal sandbox init
 - cabal update
