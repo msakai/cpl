@@ -28,7 +28,7 @@ main = do
         case gitHashMaybe of
           Nothing -> ""
           Just gitHash -> "_" ++ gitHash
-      msiFileName = "CPL-" ++ showVersion version ++ suffix_githash ++ "_" ++ SysInfo.arch ++ ".msi"
+      msiFileName = "CPL-" ++ showVersion version ++ suffix_githash ++ "-" ++ SysInfo.os ++ "-" ++ SysInfo.arch ++ ".msi"
       arch =
         case SysInfo.arch of
           "x86_64" -> "x64"

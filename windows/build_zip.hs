@@ -31,7 +31,7 @@ main = do
           Nothing -> ""
           Just gitHash -> "_" ++ gitHash
       dir :: IsString a => a
-      dir = fromString $ "CPL-" ++ showVersion version ++ suffix_githash ++ "_" ++ SysInfo.arch
+      dir = fromString $ "CPL-" ++ showVersion version ++ suffix_githash ++ "-" ++ SysInfo.os ++ "-" ++ SysInfo.arch
 
   let binDir = dir </> "bin"
       samplesDir = dir </> "samples"
