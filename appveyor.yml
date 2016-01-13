@@ -39,6 +39,9 @@ after_build:
    cd windows
    echo Creating msi...
    runhaskell build_msi.hs
+   echo Creating zip...
+   cabal install turtle
+   runhaskell build_zip.hs
    cd ..
 
 test_script:
@@ -49,3 +52,5 @@ test_script:
 artifacts:
 - path: windows\*.msi
   name: Windows Installer
+- path: windows\*.zip
+  name: Portable Binary Package
