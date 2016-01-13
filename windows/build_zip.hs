@@ -34,8 +34,11 @@ main = do
       dir = fromString $ "CPL-" ++ showVersion version ++ suffix_githash ++ "_" ++ SysInfo.arch
 
   let binDir = dir </> "bin"
-  let samplesDir = dir </> "samples"
-  rmtree dir
+      samplesDir = dir </> "samples"
+      zipFile :: IsString a => a
+      zipFile = fromString (dir ++ ".zip")
+  testfile zipFile >>= \b -> when b (rm zipFile)
+  testfile dir >>= \b -> when b (rmtree dir)
   mktree dir
   mktree binDir
   mktree samplesDir
@@ -46,5 +49,5 @@ main = do
   cp "../COPYING" (dir </> "COPYING")
   cp "../README.markdown" (dir </> "README.markdown")
   cp "../CHANGELOG.markdown" (dir </> "CHANGELOG.markdown")
-  procs "7z" ["a", "-r", dir <> ".zip", dir] empty
+  procs "7z" ["a", "-r", zipFile, dir] empty
   return ()
