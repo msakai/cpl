@@ -27,6 +27,8 @@ Extra-Source-Files:
    src/CDT.hs-boot,
    windows/COPYING.rtf,
    windows/CPL.wxs
+   windows/build_msi.hs
+   windows/build_zip.hs
 Build-Type: Simple
 
 source-repository head
