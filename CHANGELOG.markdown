@@ -1,3 +1,9 @@
+Changes since the 0.0.7 release
+-------------------------------
+
+* "→" can be used instead of "->"
+* GHC-7.10 support
+
 Changes since the 0.0.6 release
 -------------------------------
 
