@@ -12,7 +12,7 @@ export PATH=/opt/alex/3.1.3/bin:/opt/happy/1.19.4/bin:$PATH
 
 cabal sandbox init
 cabal update
-cabal install -p --only-dependencies -f-Haskeline -f-Readline
+cabal install --only-dependencies -f-Haskeline -f-Readline
 cabal configure -fLinuxStatic -f-Haskeline -f-Readline
 cabal build
 
