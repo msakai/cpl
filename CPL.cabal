@@ -26,9 +26,10 @@ Extra-Source-Files:
    samples/function.cpl,
    src/CDT.hs-boot,
    windows/COPYING.rtf,
-   windows/CPL.wxs
-   windows/build_msi.hs
-   windows/build_zip.hs
+   windows/CPL.wxs,
+   windows/build_msi.hs,
+   windows/build_zip.hs,
+   build_bdist_linux.sh
 Build-Type: Simple
 
 source-repository head
@@ -42,6 +43,11 @@ Flag Readline
 Flag Haskeline
   Description: Use Haskeline
   Default: True
+
+Flag LinuxStatic
+  Description: build statically linked binaries
+  Default: False
+  Manual: True
 
 Executable cpl
   Main-is: Main.hs
@@ -57,3 +63,5 @@ Executable cpl
     if flag(Haskeline)
       CPP-Options: "-DUSE_HASKELINE_PACKAGE"
       Build-Depends: haskeline
+  if flag(LinuxStatic)
+    GHC-Options: -static -optl-static -optl-pthread
