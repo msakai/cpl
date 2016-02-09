@@ -6,6 +6,7 @@ Author:		Masahiro Sakai (masahiro.sakai@gmail.com)
 Maintainer:	masahiro.sakai@gmail.com
 Category:	Compilers/Interpreters
 Cabal-Version:	>=1.10
+Homepage:       https://github.com/msakai/cpl
 Synopsis:	An interpreter of Hagino's Categorical Programming Language (CPL).
 Description:	An interpreter of Hagino's Categorical Programming Language (CPL).
 Extra-Source-Files:
