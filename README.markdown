@@ -53,7 +53,7 @@ Bibliography
 
 (1) Tatsuya Hagino, “A Categorical Programming Languge”.
     Ph.D. Thesis, University of Edinburgh, 1987
-    available at <http://www.tom.sfc.keio.ac.jp/~hagino/index.html.en>
+    available at <http://web.sfc.keio.ac.jp/~hagino/index.html.en>
 
 (2) Tatsuya Hagino, “Categorical Functional Programming Language”.
     Computer Software, Vol 7, No.1.
