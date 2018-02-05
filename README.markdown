@@ -1,7 +1,7 @@
 An implementation of "A Categorical Programing Language"
 ========================================================
 
-[![Build Status](https://secure.travis-ci.org/msakai/cpl.png?branch=master)](http://travis-ci.org/msakai/cpl) [![Build status](https://ci.appveyor.com/api/projects/status/dl935ws9jouy06br/branch/master?svg=true)](https://ci.appveyor.com/project/msakai/cpl/branch/master) [![Hackage](https://budueba.com/hackage/CPL)](https://hackage.haskell.org/package/CPL)
+[![Build Status](https://secure.travis-ci.org/msakai/cpl.png?branch=master)](http://travis-ci.org/msakai/cpl) [![Build status](https://ci.appveyor.com/api/projects/status/dl935ws9jouy06br/branch/master?svg=true)](https://ci.appveyor.com/project/msakai/cpl/branch/master) [![Hackage](https://img.shields.io/hackage/v/CPL.svg)](https://hackage.haskell.org/package/CPL)
 
 This package is an implementation of "A Categorical Programing Language"
 (CPL for short)[1][2] written in Haskell.
