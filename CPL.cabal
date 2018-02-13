@@ -8,7 +8,17 @@ Category:	Compilers/Interpreters
 Cabal-Version:	>=1.10
 Homepage:       https://github.com/msakai/cpl
 Synopsis:	An interpreter of Hagino's Categorical Programming Language (CPL).
-Description:	An interpreter of Hagino's Categorical Programming Language (CPL).
+Description:
+   CPL is a functional programming language based on category
+   theory. Data types are declared in a categorical manner by
+   adjunctions. Data types that can be handled include the terminal
+   object, the initial object, the binary product functor, the binary
+   coproduct functor, the exponential functor, the natural number object,
+   the functor for finite lists, and the functor for infinite lists.
+   Each data type is declared with its basic operations or
+   morphisms. Programs consist of these morphisms, and execution of
+   programs is the reduction of elements (i.e. special morphisms) to
+   their canonical form.
 Extra-Source-Files:
    README.markdown,
    CHANGELOG.markdown,
