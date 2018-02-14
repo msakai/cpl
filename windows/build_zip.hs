@@ -42,7 +42,7 @@ main = do
   mktree dir
   mktree binDir
   mktree samplesDir
-  cp "../dist/build/cpl/cpl.exe" (binDir </> "cpl.exe")
+  cp ("../cpl.exe") (binDir </> "cpl.exe")
   sh $ do
     fpath <- ls "../samples"
     cp fpath (samplesDir </> filename fpath)

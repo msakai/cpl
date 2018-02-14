@@ -17,7 +17,7 @@
                 <Directory Id="INSTALLDIR" Name="CPL">
                     <Directory Id="BINDIR" Name="bin">
                         <Component Id="MainExecutable" Guid="6E979ACB-D17F-4C9D-8BA0-041FD0D5E987">
-                            <File Id="cplEXE" Name="cpl.exe" Source="..\dist\build\cpl\cpl.exe" />
+                            <File Id="cplEXE" Name="cpl.exe" Source="..\cpl.exe" />
                         </Component>
                     </Directory>
                     <Directory Id="SAMPLES" Name="samples">

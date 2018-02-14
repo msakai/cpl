@@ -1,53 +1,40 @@
+cache:
+- "c:\\sr" # stack root, short paths == less problems
+
+# to disable automatic builds
+#build: off
+
 platform:
 - x86
 - x64
 
+environment:
+  global:
+    STACK_ROOT: "c:\\sr"
+
 install:
+- if %PLATFORM%==x86 (curl -ostack.zip -L --insecure http://www.stackage.org/stack/windows-i386) else (curl -ostack.zip -L --insecure http://www.stackage.org/stack/windows-x86_64)
+- 7z x stack.zip stack.exe
+- stack --resolver=lts-9.21 setup > nul
 - ps: |
-    # This is necessary because AppVeyor uses 64 bit environemnt even if "platform: x86" is specified.
-    # see also <http://help.appveyor.com/discussions/questions/213-platform-x86-is-not-32-bit>
-    if ("x86".Equals(${env:PLATFORM})) {
-      $env:HPChocoOptions = "--x86"
-      $env:HPPath = "${env:ProgramFiles(x86)}\Haskell Platform\7.10.3"
-      Invoke-WebRequest -Uri https://haskell.org/platform/download/7.10.3/HaskellPlatform-7.10.3-i386-setup.exe -OutFile HaskellPlatform-7.10.3-i386-setup.exe
-      .\HaskellPlatform-7.10.3-i386-setup.exe /S
-    } else {
-      $env:HPChocoOptions = ""
-      $env:HPPath = "${env:ProgramFiles}\Haskell Platform\7.10.3"
-      Invoke-WebRequest -Uri https://haskell.org/platform/download/7.10.3/HaskellPlatform-7.10.3-x86_64-setup.exe -OutFile HaskellPlatform-7.10.3-x86_64-setup.exe
-      .\HaskellPlatform-7.10.3-x86_64-setup.exe /S
-    }
-    # choco install ${env:HPChocoOptions} haskellplatform -version 2014.2.0.0 -y
-    # Haskell Platfrom package doesn't update PATH for the current shell instance
-    $env:Path += ";${env:HPPath}\bin"
-    $env:Path += ";${env:HPPath}\lib\extralibs\bin"
-    $env:Path += ";${env:HPPath}\mingw\bin"
-    $env:Path += ";.\.cabal-sandbox\bin"
-    choco install wixtoolset -version 3.10.1.2213 -y
-    $env:Path += ";${env:ProgramFiles}\WiX Toolset v3.10\bin"
-    $env:Path += ";${env:ProgramFiles(x86)}\WiX Toolset v3.10\bin"
-- cabal sandbox init
-- cabal update
-- cabal install --only-dependencies --enable-tests --enable-benchmarks -fHaskeline -f-Readline
+    choco --no-progress install wixtoolset -version 3.11.1 -y
+    $env:Path += ";${env:ProgramFiles}\WiX Toolset v3.11\bin"
+    $env:Path += ";${env:ProgramFiles(x86)}\WiX Toolset v3.11\bin"
 
 build_script:
-- cabal configure --enable-tests --enable-benchmarks -fHaskeline -f-Readline -v2 # -v2 provides useful information for debugging
-- cabal build
+# The ugly echo "" hack is to avoid complaints about 0 being an invalid file
+# descriptor
+- echo "" | stack --resolver=lts-9.21 --no-terminal test --bench --no-run-benchmarks --flag CPL:Haskeline --flag CPL:-Readline
 
-after_build:
+after_test:
+- ps: cp "$(./stack --resolver=lts-9.21 path --local-install-root)/bin/cpl.exe" cpl.exe
 - cmd: |
    cd windows
    echo Creating msi...
-   runhaskell build_msi.hs
+   ..\stack --resolver=lts-9.21 runhaskell --package turtle build_msi.hs
    echo Creating zip...
-   cabal install turtle
-   runhaskell build_zip.hs
+   ..\stack --resolver=lts-9.21 runhaskell --package turtle build_zip.hs
    cd ..
-
-test_script:
-- cabal test
-- cabal check
-- cabal sdist
 
 artifacts:
 - path: windows\*.msi
