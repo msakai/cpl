@@ -40,6 +40,7 @@ Extra-Source-Files:
    windows/CPL.wxs,
    windows/build_msi.hs,
    windows/build_zip.hs,
+   misc/build_zip.hs,
    build_bdist_linux.sh
 Build-Type: Simple
 
