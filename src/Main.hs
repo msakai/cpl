@@ -30,7 +30,7 @@ import Data.Version
 import System.Environment
 import System.Exit
 import System.IO
-import Control.Monad.Error
+import Control.Monad.Except
 import Control.Monad.State.Strict -- haskeline's MonadException requries strict version
 import System.Console.GetOpt
 #if defined(USE_READLINE_PACKAGE)
@@ -85,7 +85,7 @@ initialState = Sys.emptySystem
 
 ----------------------------------------------------------------------------
 
-type UI a = ErrorT String (StateT UIState Console) a
+type UI a = ExceptT String (StateT UIState Console) a
 
 readLine :: String -> UI String
 readLine prompt = lift $ lift $ readLine' prompt
@@ -388,7 +388,7 @@ main =
            | ShowVersion `elem` opts -> putStrLn $ showVersion version
          (opts,files,[]) ->
            runConsole $ flip evalStateT initialState $ do
-             ret <- runErrorT $ do
+             ret <- runExceptT $ do
                printLines banner
                mapM_ processOpt opts
                mapM_ cmdLoad files

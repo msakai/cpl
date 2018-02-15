@@ -28,7 +28,7 @@ module Subst
 import FE
 import {-# SOURCE #-} CDT (_eqCDT)
 
-import Control.Monad.Error
+import Control.Monad.Except
 import Data.List (nub, intersect)
 import Data.Maybe (fromMaybe)
 
