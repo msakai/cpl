@@ -80,3 +80,18 @@ script:
 # `cabal install --force-reinstalls dist/*-*.tar.gz`
  - SRC_TGZ=$(cabal info . | awk '{print $2;exit}').tar.gz &&
    (cd dist && cabal install --force-reinstalls "$SRC_TGZ")
+
+before_deploy:
+- cp dist/build/cpl/cpl ./
+- stack runghc --package turtle misc/build_zip.hs
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "JCuU9VnFu3wdhlUT87jqO3t/dBcfP3UnNL6UVk6wEawje9tEoAcxpHj6aV45qo+noMTSzgNrqI5mkWT1ZDjnLfgBJz9ImbeAf0jeMoITNAc4S9aYNku2hHrJ4kQfnEHeS8++2Y5u9bKbXW1MG6RK4iJXOWD9rdc8IK/687DrC4Q="
+  file_glob: true
+  file: '*.zip'
+  skip_cleanup: true
+  on:
+    tags: true
+    condition: "$GHCVER = 8.2.2"
