@@ -46,7 +46,8 @@ deploy:
 - provider: GitHub
   auth_token:
     secure: F8cldz47mQ0lW3O9uCEneU5LRklWcKw8JbPuh5BDYA2TfyeqC//GO8vl8/wmBy3Z
-  artifact: /windows\\.*\.zip/, /windows\\.*\.msi/
+  artifact: Windows Installer, Portable Binary Package
+  force_update: true
   release: $(appveyor_repo_tag_name)
   on:
     appveyor_repo_tag: true
