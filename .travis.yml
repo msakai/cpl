@@ -89,7 +89,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key:
-    secure: "JCuU9VnFu3wdhlUT87jqO3t/dBcfP3UnNL6UVk6wEawje9tEoAcxpHj6aV45qo+noMTSzgNrqI5mkWT1ZDjnLfgBJz9ImbeAf0jeMoITNAc4S9aYNku2hHrJ4kQfnEHeS8++2Y5u9bKbXW1MG6RK4iJXOWD9rdc8IK/687DrC4Q="
+    secure: "hBzyr9MKoa7xYcxjiiEEa+EgOmD/Fi314ojXB0zz6urcxTXzljLQt705r6Ev+2xlRpXlcpxPbpIAz/Quyzrt7grvuHv1K43ZGEh1QrzUQ7X+ke6gjfgwUAOe37BHUtYR5Dd+THJ2HfAJ5nndFbzfnK5tkkxFk+BuDlUVQlIGw00="
   file_glob: true
   file: '*.zip'
   skip_cleanup: true
