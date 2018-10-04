@@ -1,7 +1,10 @@
 An implementation of "A Categorical Programing Language"
 ========================================================
 
-[![Build Status](https://secure.travis-ci.org/msakai/cpl.png?branch=master)](http://travis-ci.org/msakai/cpl) [![Build status](https://ci.appveyor.com/api/projects/status/dl935ws9jouy06br/branch/master?svg=true)](https://ci.appveyor.com/project/msakai/cpl/branch/master) [![Hackage](https://img.shields.io/hackage/v/CPL.svg)](https://hackage.haskell.org/package/CPL)
+[![Build Status](https://secure.travis-ci.org/msakai/cpl.svg?branch=master)](http://travis-ci.org/msakai/cpl)
+[![Build status](https://ci.appveyor.com/api/projects/status/dl935ws9jouy06br/branch/master?svg=true)](https://ci.appveyor.com/project/msakai/cpl/branch/master)
+[![Hackage](https://img.shields.io/hackage/v/CPL.svg)](https://hackage.haskell.org/package/CPL)
+[![Hackage Deps](https://img.shields.io/hackage-deps/v/CPL.svg)](https://packdeps.haskellers.com/feed?needle=CPL)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 This package is an implementation of "A Categorical Programing Language"
