@@ -26,6 +26,7 @@ import qualified CDT
 import qualified FE
 import Exp (Id)
 import Type
+import Control.Monad
 import Control.Monad.RWS
 import Data.Array
 import qualified Data.Map as Map

@@ -30,6 +30,7 @@ import Data.Version
 import System.Environment
 import System.Exit
 import System.IO
+import Control.Monad
 import Control.Monad.Except
 import Control.Monad.State.Strict -- haskeline's MonadException requries strict version
 import System.Console.GetOpt
