@@ -5,7 +5,6 @@ cache:
 #build: off
 
 platform:
-- x86
 - x64
 
 environment:
@@ -13,9 +12,9 @@ environment:
     STACK_ROOT: "c:\\sr"
 
 install:
-- if %PLATFORM%==x86 (curl -ostack.zip -L --insecure http://www.stackage.org/stack/windows-i386) else (curl -ostack.zip -L --insecure http://www.stackage.org/stack/windows-x86_64)
+- curl -ostack.zip -L --insecure http://www.stackage.org/stack/windows-x86_64
 - 7z x stack.zip stack.exe
-- stack --resolver=lts-9.21 setup > nul
+- stack --resolver=lts-20.26 setup > nul
 - ps: |
     choco --no-progress install wixtoolset -version 3.11.1 -y
     $env:Path += ";${env:ProgramFiles}\WiX Toolset v3.11\bin"
@@ -24,16 +23,16 @@ install:
 build_script:
 # The ugly echo "" hack is to avoid complaints about 0 being an invalid file
 # descriptor
-- echo "" | stack --resolver=lts-9.21 --no-terminal test --bench --no-run-benchmarks --flag CPL:Haskeline --flag CPL:-Readline
+- echo "" | stack --resolver=lts-20.26 --no-terminal test --bench --no-run-benchmarks --flag CPL:Haskeline --flag CPL:-Readline
 
 after_test:
-- ps: cp "$(./stack --resolver=lts-9.21 path --local-install-root)/bin/cpl.exe" cpl.exe
+- ps: cp "$(./stack --resolver=lts-20.26 path --local-install-root)/bin/cpl.exe" cpl.exe
 - cmd: |
    cd windows
    echo Creating msi...
-   ..\stack --resolver=lts-9.21 runhaskell --package turtle build_msi.hs
+   ..\stack --resolver=lts-20.26 runhaskell --package turtle build_msi.hs
    echo Creating zip...
-   ..\stack --resolver=lts-9.21 runhaskell --package turtle build_zip.hs
+   ..\stack --resolver=lts-20.26 runhaskell --package turtle build_zip.hs
    cd ..
 
 artifacts:

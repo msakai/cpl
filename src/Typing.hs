@@ -25,6 +25,7 @@ import qualified Exp as E
 
 import Data.List (nub)
 import Control.Applicative
+import Control.Monad
 import Control.Monad.Except
 import Control.Monad.RWS
 import qualified Data.Map as Map
