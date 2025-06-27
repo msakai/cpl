@@ -1,11 +1,17 @@
 {-# OPTIONS_GHC -Wall #-}
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE ScopedTypeVariables, OverloadedStrings #-}
 import Control.Exception
 import Control.Monad
 import Data.String
 import Distribution.Package
 import Distribution.PackageDescription
+#if MIN_VERSION_Cabal(2,2,0)
+import Distribution.PackageDescription.Parsec
+import Distribution.Pretty
+#else
 import Distribution.PackageDescription.Parse
+#endif
 import Distribution.Verbosity
 import Distribution.Version
 import qualified System.Info as SysInfo
@@ -19,7 +25,7 @@ getGitHash =
 
 getVersion :: FilePath -> IO Version
 getVersion cabalFile = do
-  pkg <- readPackageDescription silent cabalFile
+  pkg <- readGenericPackageDescription silent cabalFile
   return $ pkgVersion $ package $ packageDescription $ pkg
 
 main :: IO ()
@@ -31,7 +37,11 @@ main = do
           Nothing -> ""
           Just gitHash -> "_" ++ gitHash
       dir :: IsString a => a
+#if MIN_VERSION_Cabal(2,2,0)
+      dir = fromString $ "CPL-" ++ prettyShow version ++ suffix_githash ++ "-" ++ SysInfo.os ++ "-" ++ SysInfo.arch
+#else
       dir = fromString $ "CPL-" ++ showVersion version ++ suffix_githash ++ "-" ++ SysInfo.os ++ "-" ++ SysInfo.arch
+#endif
 
   let binDir = dir </> "bin"
       samplesDir = dir </> "samples"
