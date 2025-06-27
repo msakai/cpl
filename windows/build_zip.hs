@@ -4,12 +4,13 @@
 import Control.Exception
 import Control.Monad
 import Data.String
-import Data.Version
+import Data.Version (Version, makeVersion, showVersion)
 import Distribution.Package
 import Distribution.PackageDescription
 #if MIN_VERSION_Cabal(2,2,0)
 import Distribution.PackageDescription.Parsec
 import Distribution.Pretty
+import qualified Distribution.Types.Version as Cabal
 #else
 import Distribution.PackageDescription.Parse
 #endif
@@ -26,7 +27,12 @@ getGitHash =
 getVersion :: FilePath -> IO Version
 getVersion cabalFile = do
   pkg <- readGenericPackageDescription silent cabalFile
+#if MIN_VERSION_Cabal(2,2,0)
+  let cabalVersion = pkgVersion $ package $ packageDescription $ pkg
+  return $ makeVersion $ Cabal.versionNumbers cabalVersion
+#else
   return $ pkgVersion $ package $ packageDescription $ pkg
+#endif
 
 main :: IO ()
 main = do

@@ -9,11 +9,12 @@ import Distribution.PackageDescription
 #if MIN_VERSION_Cabal(2,2,0)
 import Distribution.PackageDescription.Parsec
 import Distribution.Pretty
+import qualified Distribution.Types.Version as Cabal
 #else
 import Distribution.PackageDescription.Parse
 #endif
 import Distribution.Verbosity
-import Distribution.Version
+import Distribution.Version (Version, makeVersion, showVersion)
 import qualified System.Info as SysInfo
 import System.Process
 import Turtle hiding (FilePath)
@@ -26,7 +27,12 @@ getGitHash =
 getVersion :: FilePath -> IO Version
 getVersion cabalFile = do
   pkg <- readGenericPackageDescription silent cabalFile
+#if MIN_VERSION_Cabal(2,2,0)
+  let cabalVersion = pkgVersion $ package $ packageDescription $ pkg
+  return $ makeVersion $ Cabal.versionNumbers cabalVersion
+#else
   return $ pkgVersion $ package $ packageDescription $ pkg
+#endif
 
 main :: IO ()
 main = do
