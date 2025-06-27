@@ -40,11 +40,7 @@ main = do
         case gitHashMaybe of
           Nothing -> ""
           Just gitHash -> "_" ++ gitHash
-#if MIN_VERSION_Cabal(2,2,0)
-      msiFileName = "CPL-" ++ prettyShow version ++ suffix_githash ++ "-" ++ SysInfo.os ++ "-" ++ SysInfo.arch ++ ".msi"
-#else
       msiFileName = "CPL-" ++ showVersion version ++ suffix_githash ++ "-" ++ SysInfo.os ++ "-" ++ SysInfo.arch ++ ".msi"
-#endif
       arch =
         case SysInfo.arch of
           "x86_64" -> "x64"
