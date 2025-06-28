@@ -1,11 +1,11 @@
+cabal-version: 2.2
 Name:		CPL
 Version:	0.1.0
-License:	BSD3
+License:	BSD-3-Clause
 License-File:	COPYING
 Author:		Masahiro Sakai (masahiro.sakai@gmail.com)
 Maintainer:	masahiro.sakai@gmail.com
 Category:	Compilers/Interpreters
-Cabal-Version:	>=1.10
 Homepage:       https://github.com/msakai/cpl
 Synopsis:	An interpreter of Hagino's Categorical Programming Language (CPL).
 Description:

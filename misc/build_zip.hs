@@ -5,9 +5,10 @@ import Control.Monad
 import Data.String
 import Distribution.Package
 import Distribution.PackageDescription
-import Distribution.PackageDescription.Parse
+import Distribution.PackageDescription.Parsec
+import qualified Distribution.Types.Version as Cabal
 import Distribution.Verbosity
-import Distribution.Version
+import Distribution.Version (Version, makeVersion, showVersion)
 import qualified System.Info as SysInfo
 import System.Process
 import Turtle hiding (FilePath)
@@ -19,8 +20,9 @@ getGitHash =
 
 getVersion :: FilePath -> IO Version
 getVersion cabalFile = do
-  pkg <- readPackageDescription silent cabalFile
-  return $ pkgVersion $ package $ packageDescription $ pkg
+  pkg <- readGenericPackageDescription silent cabalFile
+  let cabalVersion = pkgVersion $ package $ packageDescription $ pkg
+  return $ makeVersion $ Cabal.versionNumbers cabalVersion
 
 main :: IO ()
 main = do

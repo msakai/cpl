@@ -16,7 +16,7 @@ cabal install --only-dependencies -f-Haskeline -f-Readline
 cabal configure -fLinuxStatic -f-Haskeline -f-Readline
 cabal build
 
-VER=`ghc -e ":m + Control.Monad Distribution.Package Distribution.PackageDescription Distribution.PackageDescription.Parse Distribution.Verbosity Data.Version" -e 'putStrLn =<< liftM (showVersion . pkgVersion . package . packageDescription) (readPackageDescription silent "CPL.cabal")'`
+VER=`ghc -e ":m + Control.Monad Distribution.Package Distribution.PackageDescription Distribution.PackageDescription.Parsec Distribution.Verbosity Data.Version Distribution.Pretty" -e 'putStrLn =<< liftM (prettyShow . pkgVersion . package . packageDescription) (readGenericPackageDescription silent "CPL.cabal")'`
 OS=`ghc -e ":m +System.Info" -e "putStrLn os"`
 ARCH=`ghc -e ":m +System.Info" -e "putStrLn arch"`
 
