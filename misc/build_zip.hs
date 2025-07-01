@@ -3,12 +3,12 @@
 import Control.Exception
 import Control.Monad
 import Data.String
+import Data.Version (Version, makeVersion, showVersion)
 import Distribution.Package
 import Distribution.PackageDescription
 import Distribution.PackageDescription.Parsec
 import qualified Distribution.Types.Version as Cabal
 import Distribution.Verbosity
-import Distribution.Version (Version, makeVersion, showVersion)
 import qualified System.Info as SysInfo
 import System.Process
 import Turtle hiding (FilePath)
