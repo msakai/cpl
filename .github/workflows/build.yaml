@@ -1,0 +1,94 @@
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
+
+name: build
+jobs:
+  build:
+    name: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ghc: '9.2.8'
+            os: ubuntu-latest
+            resolver: 'lts-20.26'
+            flags: ''
+          - ghc: '9.4.8'
+            os: ubuntu-latest
+            resolver: 'lts-21.25'
+            flags: ''
+          - ghc: '9.6.7'
+            os: ubuntu-latest
+            resolver: 'lts-22.44'
+            flags: ''
+          - ghc: '9.8.4'
+            os: ubuntu-latest
+            resolver: 'lts-23.26'
+            flags: '--coverage'
+            coveralls: true
+            release: true
+          - ghc: '9.8.4'
+            os: windows-latest
+            resolver: 'lts-23.26'
+            release: true
+          - ghc: '9.10.2'
+            os: ubuntu-latest
+            resolver: 'nightly-2025-07-01'
+            flags: ''
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: haskell-actions/setup@v2
+        id: setup-haskell
+        name: Setup Haskell
+        with:
+          ghc-version: ${{ matrix.ghc }}
+          enable-stack: true
+          stack-version: latest
+
+      - uses: actions/cache@v4
+        name: Cache ~/.stack
+        with:
+          path: ${{ steps.setup-haskell.outputs.stack-root }}
+          key: ${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('*.cabal') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.ghc }}-
+
+      - name: Build
+        run: |
+          stack config set system-ghc --global true
+          sed -i "s/resolver: .*/resolver: ${{ matrix.resolver }}/" stack.yaml
+          stack build --test --no-run-tests --bench --no-run-benchmarks ${{ matrix.flags }}
+
+      - name: Test
+        run: stack test ${{ matrix.flags }}
+
+      - name: Build Archive (Linux)
+        if: runner.os != 'windows'
+        run: |
+          cp -a $(stack path --local-install-root)/bin/cpl ./
+          stack runhaskell --package turtle misc/build_zip.hs
+
+      - name: Build Archive (Windows)
+        if: runner.os == 'windows'
+        run: |    
+          cp "$(stack path --local-install-root)/bin/cpl.exe" cpl.exe
+          cd windows
+          stack runhaskell --package turtle build_msi.hs
+          stack runhaskell --package turtle build_zip.hs
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: matrix.release
+        with:
+          name: binary-packages-${{ runner.os }}
+          path: |
+            windows/*.msi
+            windows/*.zip
+            *.zip
