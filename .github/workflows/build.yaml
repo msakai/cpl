@@ -29,17 +29,21 @@ jobs:
             flags: ''
           - ghc: '9.8.4'
             os: ubuntu-latest
-            resolver: 'lts-23.26'
+            resolver: 'lts-23.28'
             flags: '--coverage'
             coveralls: true
             release: true
           - ghc: '9.8.4'
             os: windows-latest
-            resolver: 'lts-23.26'
+            resolver: 'lts-23.28'
             release: true
-          - ghc: '9.10.2'
+          - ghc: '9.10.3'
             os: ubuntu-latest
-            resolver: 'nightly-2025-07-01'
+            resolver: 'lts-24.17'
+            flags: ''
+          - ghc: '9.12.2'
+            os: ubuntu-latest
+            resolver: 'nightly-2025-10-26'
             flags: ''
     steps:
       - uses: actions/checkout@v4
