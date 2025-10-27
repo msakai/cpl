@@ -77,6 +77,8 @@ jobs:
         if: runner.os != 'windows'
         run: |
           cp -a $(stack path --local-install-root)/bin/cpl ./
+          echo "allow-newer: true" >> stack.yaml
+          echo "allow-newer-deps: [turtle]" >> stack.yaml
           stack runhaskell --package turtle misc/build_zip.hs
 
       - name: Build Archive (Windows)
