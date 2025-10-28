@@ -6,9 +6,10 @@ import Data.String
 import Data.Version (Version, makeVersion, showVersion)
 import Distribution.Package
 import Distribution.PackageDescription
-import Distribution.PackageDescription.Parsec
 #if MIN_VERSION_Cabal(3,8,0)
 import Distribution.Simple.PackageDescription (readGenericPackageDescription)
+#else
+import Distribution.PackageDescription.Parsec (readGenericPackageDescription)
 #endif
 import qualified Distribution.Types.Version as Cabal
 #if MIN_VERSION_Cabal(3,14,0)
