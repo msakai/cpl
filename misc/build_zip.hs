@@ -11,6 +11,9 @@ import Distribution.PackageDescription.Parsec
 import Distribution.Simple.PackageDescription (readGenericPackageDescription)
 #endif
 import qualified Distribution.Types.Version as Cabal
+#if MIN_VERSION_Cabal(3,14,0)
+import Distribution.Utils.Path (makeSymbolicPath)
+#endif
 import Distribution.Verbosity
 import qualified System.Info as SysInfo
 import System.Process
@@ -23,7 +26,11 @@ getGitHash =
 
 getVersion :: FilePath -> IO Version
 getVersion cabalFile = do
+#if MIN_VERSION_Cabal(3,14,0)
+  pkg <- readGenericPackageDescription silent Nothing (makeSymbolicPath cabalFile)
+#else
   pkg <- readGenericPackageDescription silent cabalFile
+#endif
   let cabalVersion = pkgVersion $ package $ packageDescription $ pkg
   return $ makeVersion $ Cabal.versionNumbers cabalVersion
 
