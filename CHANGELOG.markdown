@@ -1,21 +1,34 @@
-Changes since the 0.0.7 release
+0.1.0 (Unreleased)
+-------------------------------
+
+* Update Cabal-Version requirement from >=1.10 to 2.2
+* Require `mtl` >=2.2.1 for `Control.Monad.Except`
+* Fix compilation error on recent `mtl` package
+
+0.0.9 (2018-02-16)
+-------------------------------
+
+* Use `Control.Monad.Except` instead of deprecated Control.Monad.Error
+
+0.0.8 (2016-01-14)
 -------------------------------
 
 * "→" can be used instead of "->"
 * GHC-7.10 support
+* Add windows installer
 
-Changes since the 0.0.6 release
+0.0.7 (2014-08-13)
 -------------------------------
 
 * Clean up internals
 * Enable `-fReadline` and `-fHaskeline` by default
 
-Changes since the 0.0.5 release
+0.0.6 (2009-10-26)
 -------------------------------
 
 Readline/Haskeline support.
 
-Changes since the 0.0.3 release
+0.0.4
 -------------------------------
 
 Function defintions are added.
