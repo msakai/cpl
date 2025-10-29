@@ -34,7 +34,6 @@ Extra-Source-Files:
    samples/benchmark.cpl,
    samples/ack_3_4.cpl,
    samples/function.cpl,
-   src/CDT.hs-boot,
    windows/COPYING.rtf,
    windows/CPL.wxs,
    windows/build_msi.hs,
