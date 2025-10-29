@@ -33,12 +33,7 @@ Extra-Source-Files:
    samples/rec.cdt,
    samples/benchmark.cpl,
    samples/ack_3_4.cpl,
-   samples/function.cpl,
-   windows/COPYING.rtf,
-   windows/CPL.wxs,
-   windows/build_msi.hs,
-   windows/build_zip.hs,
-   misc/build_zip.hs
+   samples/function.cpl
 Build-Type: Simple
 
 source-repository head
