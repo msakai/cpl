@@ -19,9 +19,10 @@ Description:
    morphisms. Programs consist of these morphisms, and execution of
    programs is the reduction of elements (i.e. special morphisms) to
    their canonical form.
-Extra-Source-Files:
+Extra-Doc-Files:
    README.markdown,
-   CHANGELOG.markdown,
+   CHANGELOG.markdown
+Extra-Source-Files:
    samples/ack.cpl,
    samples/automata.cdt,
    samples/ccc.cdt,
