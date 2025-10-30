@@ -1,12 +1,12 @@
-An implementation of "A Categorical Programing Language"
-========================================================
+An implementation of "A Categorical Programming Language"
+=========================================================
 
 [![Build Status](https://github.com/msakai/cpl/actions/workflows/build.yaml/badge.svg)](https://github.com/msakai/cpl/actions/workflows/build.yaml)
 [![Hackage](https://img.shields.io/hackage/v/CPL.svg)](https://hackage.haskell.org/package/CPL)
 [![Hackage Deps](https://img.shields.io/hackage-deps/v/CPL.svg)](https://packdeps.haskellers.com/feed?needle=CPL)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-This package is an implementation of "A Categorical Programing Language"
+This package is an implementation of "A Categorical Programming Language"
 (CPL for short)[1][2] written in Haskell.
 
 CPL is a functional programming language based on category
@@ -23,15 +23,17 @@ their canonical form.
 Install
 -------
 
-De-Compress archive and enter its top directory.
+De-Compress the archive and enter its top directory.
 Then type:
 
-    $ cabal configure
-    $ cabal build
-    $ cabal install
+```
+$ cabal configure
+$ cabal build
+$ cabal install
+```
 
-If you want to compile with readline or haskeline, add -fReadline or
--fHaskeline respectively to configure command.
+If you want to compile with readline or haskeline, add `-fReadline` or
+`-fHaskeline` respectively to the configure command.
 
 Usage
 -----
@@ -41,8 +43,8 @@ See chapter 5 of [1]
 License
 -------
 
-This program is licenced under the BSD-style license.
-(See the file 'COPYING'.)
+This program is licensed under the BSD-style license.
+(See the file [COPYING](COPYING).)
 
 Copyright (C) 2004-2014 Masahiro Sakai <masahiro.sakai@gmail.com>
 
@@ -54,7 +56,7 @@ Masahiro Sakai <masahiro.sakai@gmail.com>
 Bibliography
 ------------
 
-1. Tatsuya Hagino, “A Categorical Programming Languge”.
+1. Tatsuya Hagino, “A Categorical Programming Language”.
     Ph.D. Thesis, University of Edinburgh, 1987.
     available at <http://web.sfc.keio.ac.jp/~hagino/index.html.en>
 
