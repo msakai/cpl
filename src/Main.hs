@@ -26,6 +26,7 @@ import Paths_CPL
 import Data.Maybe
 import Data.List
 import Data.Char (isSpace)
+import qualified Data.Map as Map
 import Data.Version
 import System.Environment
 import System.Exit
@@ -216,6 +217,23 @@ cmdShow arg =
            case find (\x -> CDT.functName x == name) objects of
              Just obj -> printLines $ lines $ showObjectInfo obj
              Nothing  -> throwError $ "unknown object: " ++ name
+    ("function", arg') ->
+        do sys <- get
+           let name = strip arg'
+           case Map.lookup name (Sys.varTable sys) of
+             Just (args, _e, FType _ args' t) ->
+               if null args
+                 then printLines [name ++ ": " ++ show t]
+                 else do
+                   let lhs = name ++ "(" ++ intercalate "," args ++ ")"
+                       upper = intercalate "  " $ [p ++ ": " ++ show pt | (p,pt) <- zip args args']
+                       lower = lhs ++ ": " ++ show t
+                   printLines
+                     [ upper
+                     , replicate (max (length upper) (length lower)) '-'
+                     , lower
+                     ]
+             Nothing  -> throwError $ "unknown function: " ++ name
     ("aexp", arg') -> do -- XXX
       sys <- get
       case Sys.parseExp sys (strip arg') of
@@ -322,13 +340,14 @@ cmdQuit :: Command
 cmdQuit _ = liftIO $ exitWith ExitSuccess
 
 cmdHelp :: Command
-cmdHelp _ = printLines 
+cmdHelp _ = printLines
               [ "  exit                        exit the interpreter"
               , "  quit                        ditto"
               , "  bye                         ditto"
               , "  edit                        enter editing mode"
               , "  simp [full] <exp>           evaluate expression"
               , "  show <exp>                  print type of expression"
+              , "  show function <name>        print information of function"
               , "  show object <functor>       print information of functor"
               , "  load <filename>             load from file"
               , "  set trace [on|off]          enable/disable trace"
