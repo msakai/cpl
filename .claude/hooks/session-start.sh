@@ -1,6 +1,6 @@
 #!/bin/bash
 # Session start hook for setting up Haskell development environment
-# This script installs GHCup, GHC, and Stack if not already present
+# This script installs GHCup and Stack. GHC is managed by Stack based on resolver.
 
 set -e
 
@@ -28,23 +28,16 @@ if [ -x "$GHCUP_BIN/ghcup" ]; then
         ghcup install stack --set
     fi
 
-    # Verify GHC is available
-    if command -v ghc &> /dev/null; then
-        echo "GHC is available: $(ghc --version)"
-    else
-        echo "Installing GHC via GHCup..."
-        ghcup install ghc --set
-    fi
-
     exit 0
 fi
 
 echo "Installing GHCup (Haskell toolchain installer)..."
 
-# Install GHCup non-interactively
+# Install GHCup non-interactively (Stack only, GHC managed by Stack)
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | \
     BOOTSTRAP_HASKELL_NONINTERACTIVE=1 \
     BOOTSTRAP_HASKELL_INSTALL_STACK=1 \
+    BOOTSTRAP_HASKELL_INSTALL_GHC=0 \
     BOOTSTRAP_HASKELL_INSTALL_HLS=0 \
     BOOTSTRAP_HASKELL_ADJUST_BASHRC=0 \
     sh
@@ -53,7 +46,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | \
 setup_path
 
 echo "Haskell environment setup complete!"
-echo "GHC: $(ghc --version)"
 echo "Stack: $(stack --version)"
+echo "Note: GHC will be installed by Stack on first build based on resolver"
 
 exit 0
