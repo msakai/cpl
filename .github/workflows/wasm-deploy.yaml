@@ -1,8 +1,12 @@
-name: Deploy WASM to GitHub Pages
+name: WASM build and deploy
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -104,6 +108,8 @@ jobs:
 
   deploy:
     needs: build-wasm
+    # Only deploy on push to master branch
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
