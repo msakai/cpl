@@ -63,6 +63,9 @@ foreign import javascript unsafe "terminal_printLine($1)"
 foreign import javascript unsafe "terminal_initialize()"
   js_initialize :: IO ()
 
+-- Export main function for JavaScript to call as hs_start
+foreign export javascript "hs_start" main :: IO ()
+
 type Console = IO
 
 runConsole :: Console a -> IO a
