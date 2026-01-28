@@ -39,7 +39,7 @@ import Control.Monad.Except
 import Control.Monad.State.Strict -- haskeline's MonadException requries strict version
 import System.Console.GetOpt
 #if defined(USE_WASM_BACKEND)
-import GHC.JS.Prim (JSVal, toJSString, fromJSString)
+import GHC.Wasm.Prim (JSString (..), toJSString, fromJSString)
 #elif defined(USE_READLINE_PACKAGE)
 import qualified System.Console.SimpleLineEditor as SLE
 import Control.Exception (bracket)
@@ -55,10 +55,10 @@ import Control.Exception (bracket)
 
 -- JavaScript FFI imports for WebAssembly backend
 foreign import javascript unsafe "terminal_readLine($1)"
-  js_readLine :: JSVal -> IO JSVal
+  js_readLine :: JSString -> IO JSString
 
 foreign import javascript unsafe "terminal_printLine($1)"
-  js_printLine :: JSVal -> IO ()
+  js_printLine :: JSString -> IO ()
 
 foreign import javascript unsafe "terminal_initialize()"
   js_initialize :: IO ()

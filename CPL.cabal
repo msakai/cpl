@@ -73,6 +73,7 @@ Executable cpl
       -optl-mexec-model=reactor
       -optl-Wl,--export=hs_init
       -optl-Wl,--export=hs_start
+    Build-Depends: ghc-experimental
     if impl(ghc >= 9.10)
       Other-Extensions: JavaScriptFFI
   else
