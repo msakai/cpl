@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPL - Categorical Programming Language</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #333;
+    }
+
+    h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2rem;
+      color: #4ec9b0;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #888;
+      margin: 0;
+    }
+
+    #terminal-container {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    #terminal {
+      height: 600px;
+    }
+
+    #loading {
+      text-align: center;
+      padding: 2rem;
+      font-size: 1.1rem;
+      color: #4ec9b0;
+    }
+
+    #loading.hidden {
+      display: none;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(78, 201, 176, 0.3);
+      border-radius: 50%;
+      border-top-color: #4ec9b0;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .error {
+      background: #5a1e1e;
+      border: 1px solid #d32f2f;
+      border-radius: 4px;
+      padding: 1rem;
+      margin-top: 1rem;
+      color: #ff6b6b;
+    }
+
+    .error-title {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .info {
+      background: #2a2a2a;
+      border: 1px solid #4ec9b0;
+      border-radius: 4px;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .info h3 {
+      margin-top: 0;
+      color: #4ec9b0;
+      font-size: 1rem;
+    }
+
+    .info ul {
+      margin: 0.5rem 0;
+      padding-left: 1.5rem;
+    }
+
+    .info code {
+      background: #333;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #333;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: #4ec9b0;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>CPL - Categorical Programming Language</h1>
+      <p class="subtitle">WebAssembly Edition</p>
+    </header>
+
+    <div id="loading">
+      <div class="spinner"></div>
+      Loading CPL interpreter...
+    </div>
+
+    <div id="terminal-container" style="display: none;">
+      <div id="terminal"></div>
+    </div>
+
+    <div class="info">
+      <h3>Quick Start</h3>
+      <p>Try these commands in the terminal:</p>
+      <ul>
+        <li><code>simp 1 + 1</code> - Evaluate an expression</li>
+        <li><code>let id(x) = x</code> - Define a function</li>
+        <li><code>edit</code> - Enter multi-line editing mode (end with semicolon)</li>
+        <li><code>help</code> - Show all available commands</li>
+      </ul>
+    </div>
+
+    <footer>
+      <p>
+        CPL Implementation by Masahiro Sakai |
+        <a href="https://github.com/msakai/cpl" target="_blank">GitHub Repository</a>
+      </p>
+    </footer>
+  </div>
+
+  <script type="module" src="cpl-terminal.js"></script>
+</body>
+</html>

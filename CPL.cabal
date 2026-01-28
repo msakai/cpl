@@ -53,6 +53,11 @@ Flag LinuxStatic
   Default: False
   Manual: True
 
+Flag WASM
+  Description: Build for WebAssembly with JavaScript FFI
+  Default: False
+  Manual: True
+
 Executable cpl
   Main-is: Main.hs
   HS-Source-Dirs: src
@@ -61,12 +66,22 @@ Executable cpl
   Build-Depends: base >=4 && <5, mtl >=2.2.1, containers, array, parsec
   Default-Language: Haskell2010
   Other-Extensions: TypeSynonymInstances, FlexibleInstances, CPP, GeneralizedNewtypeDeriving
-  if flag(Readline)
-    CPP-Options: "-DUSE_READLINE_PACKAGE"
-    Build-Depends: readline
+  if flag(WASM)
+    CPP-Options: "-DUSE_WASM_BACKEND"
+    GHC-Options:
+      -no-hs-main
+      -optl-mexec-model=reactor
+      -optl-Wl,--export=hs_init
+      -optl-Wl,--export=hs_start
+    if impl(ghc >= 9.10)
+      Other-Extensions: JavaScriptFFI
   else
-    if flag(Haskeline)
-      CPP-Options: "-DUSE_HASKELINE_PACKAGE"
-      Build-Depends: haskeline
+    if flag(Readline)
+      CPP-Options: "-DUSE_READLINE_PACKAGE"
+      Build-Depends: readline
+    else
+      if flag(Haskeline)
+        CPP-Options: "-DUSE_HASKELINE_PACKAGE"
+        Build-Depends: haskeline
   if flag(LinuxStatic)
     GHC-Options: -static -optl-static -optl-pthread

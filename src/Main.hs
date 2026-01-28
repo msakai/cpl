@@ -1,10 +1,13 @@
 {-# LANGUAGE CPP #-}
+#if defined(USE_WASM_BACKEND)
+{-# LANGUAGE JavaScriptFFI #-}
+#endif
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Main
 -- Copyright   :  (c) Masahiro Sakai 2004,2009,2014
 -- License     :  BSD-style
--- 
+--
 -- Maintainer  :  masahiro.sakai@gmail.com
 -- Stability   :  provisional
 -- Portability :  portable
@@ -35,7 +38,9 @@ import Control.Monad
 import Control.Monad.Except
 import Control.Monad.State.Strict -- haskeline's MonadException requries strict version
 import System.Console.GetOpt
-#if defined(USE_READLINE_PACKAGE)
+#if defined(USE_WASM_BACKEND)
+import GHC.JS.Prim (JSVal, toJSString, fromJSString)
+#elif defined(USE_READLINE_PACKAGE)
 import qualified System.Console.SimpleLineEditor as SLE
 import Control.Exception (bracket)
 #elif defined(USE_HASKELINE_PACKAGE)
@@ -46,37 +51,76 @@ import Control.Exception (bracket)
 
 ----------------------------------------------------------------------------
 
-#ifdef USE_HASKELINE_PACKAGE
-type Console = Haskeline.InputT IO
-#else
+#if defined(USE_WASM_BACKEND)
+
+-- JavaScript FFI imports for WebAssembly backend
+foreign import javascript unsafe "terminal_readLine($1)"
+  js_readLine :: JSVal -> IO JSVal
+
+foreign import javascript unsafe "terminal_printLine($1)"
+  js_printLine :: JSVal -> IO ()
+
+foreign import javascript unsafe "terminal_initialize()"
+  js_initialize :: IO ()
+
 type Console = IO
-#endif
 
 runConsole :: Console a -> IO a
-#if defined(USE_READLINE_PACKAGE)
-runConsole m = bracket SLE.initialise (const SLE.restore) (const m)
+runConsole m = js_initialize >> m
+
+readLine' :: String -> Console String
+readLine' prompt = do
+  result <- js_readLine (toJSString prompt)
+  return $ fromJSString result
+
+printLine' :: String -> Console ()
+printLine' str = js_printLine (toJSString str)
+
 #elif defined(USE_HASKELINE_PACKAGE)
+
+type Console = Haskeline.InputT IO
+
+runConsole :: Console a -> IO a
 runConsole m = Haskeline.runInputT Haskeline.defaultSettings m
+
+readLine' :: String -> Console String
+readLine' prompt = liftM (fromMaybe "") $ Haskeline.getInputLine prompt
+
+printLine' :: String -> Console ()
+printLine' s = liftIO $ putStrLn $ s
+
+#elif defined(USE_READLINE_PACKAGE)
+
+type Console = IO
+
+runConsole :: Console a -> IO a
+runConsole m = bracket SLE.initialise (const SLE.restore) (const m)
+
+readLine' :: String -> Console String
+readLine' prompt = liftM (fromMaybe "") $ SLE.getLineEdited prompt
+
+printLine' :: String -> Console ()
+printLine' s = liftIO $ putStrLn $ s
+
 #else
+
+type Console = IO
+
+runConsole :: Console a -> IO a
 runConsole m = bracket initialie (hSetBuffering stdout) (const m)
   where
     initialie = do
       x <- hGetBuffering stdout
       hSetBuffering stdout NoBuffering
       return x
-#endif
 
 readLine' :: String -> Console String
-#if defined(USE_READLINE_PACKAGE)
-readLine' prompt = liftM (fromMaybe "") $ SLE.getLineEdited prompt
-#elif defined(USE_HASKELINE_PACKAGE)
-readLine' prompt = liftM (fromMaybe "") $ Haskeline.getInputLine prompt
-#else
 readLine' prompt = putStr prompt >> getLine
-#endif
 
 printLine' :: String -> Console ()
 printLine' s = liftIO $ putStrLn $ s
+
+#endif
 
 ----------------------------------------------------------------------------
 

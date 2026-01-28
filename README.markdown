@@ -9,6 +9,8 @@ An implementation of "A Categorical Programming Language"
 This package is an implementation of "A Categorical Programming Language"
 (CPL for short)[1][2] written in Haskell.
 
+**Try CPL in your browser:** [WebAssembly Demo](https://msakai.github.io/cpl/) (no installation required!)
+
 CPL is a functional programming language based on category
 theory. Data types are declared in a categorical manner by
 adjunctions. Data types that can be handled include the terminal
@@ -23,10 +25,21 @@ their canonical form.
 Install
 -------
 
+### Option 1: Use WebAssembly Version (No Installation)
+
+Try CPL directly in your browser:
+[https://msakai.github.io/cpl/](https://msakai.github.io/cpl/)
+
+No installation required! Works on Chrome, Firefox, Safari, and Edge.
+
+### Option 2: Build from Source
+
+#### Standard Build (Native)
+
 De-Compress the archive and enter its top directory.
 Then type:
 
-```
+```bash
 $ cabal configure
 $ cabal build
 $ cabal install
@@ -35,10 +48,76 @@ $ cabal install
 If you want to compile with readline or haskeline, add `-fReadline` or
 `-fHaskeline` respectively to the configure command.
 
+Alternatively, you can use Stack:
+
+```bash
+$ stack build
+$ stack exec cpl
+```
+
+#### WebAssembly Build
+
+To build the WebAssembly version yourself:
+
+1. Install GHC WebAssembly cross-compiler (GHC 9.10.3 or later):
+   - Download from: https://downloads.haskell.org/~ghc/
+
+2. Build using the provided script:
+   ```bash
+   $ ./scripts/build-wasm.sh
+   ```
+
+3. Test locally:
+   ```bash
+   $ cd wasm
+   $ python3 -m http.server 8000
+   ```
+   Then open http://localhost:8000 in your browser.
+
+The WASM build creates three files in the `wasm/` directory:
+- `cpl.wasm` - The compiled interpreter
+- `index.html` - Web interface
+- `cpl-terminal.js` - Terminal controller
+
 Usage
 -----
 
 See chapter 5 of [1]
+
+### Quick Start
+
+Once you have CPL running (either in browser or terminal), try these commands:
+
+```
+cpl> simp 1 + 1
+2
+    : Nat
+
+cpl> let id(x) = x
+x: a
+----------
+id(x): a
+
+cpl> edit
+| left T() = {}
+| ;
+left object T is defined
+
+cpl> help
+  exit                        exit the interpreter
+  quit                        ditto
+  bye                         ditto
+  edit                        enter editing mode
+  simp [full] <exp>           evaluate expression
+  show <exp>                  print type of expression
+  show function <name>        print information of function
+  show object <functor>       print information of functor
+  load <filename>             load from file
+  set trace [on|off]          enable/disable trace
+  reset                       remove all definitions
+```
+
+For more examples, see the `samples/` directory.
 
 License
 -------

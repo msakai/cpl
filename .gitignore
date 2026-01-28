@@ -2,3 +2,7 @@ cabal.project.local
 dist-newstyle/
 .stack-work/
 stack.yaml.lock
+
+# WebAssembly build artifacts
+wasm/cpl.wasm
+_site/
