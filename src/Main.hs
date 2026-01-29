@@ -40,7 +40,7 @@ import Control.Monad.Except
 import Control.Monad.State.Strict -- haskeline's MonadException requries strict version
 import System.Console.GetOpt
 #if defined(USE_WASM_BACKEND)
-import GHC.Wasm.Prim (JSString (..), toJSString, fromJSString)
+import GHC.Wasm.Prim (JSString (..), toJSString, fromJSString, JSException (..), JSVal)
 import Control.Exception (evaluate, try, SomeException)
 #elif defined(USE_READLINE_PACKAGE)
 import qualified System.Console.SimpleLineEditor as SLE
@@ -67,6 +67,9 @@ foreign import javascript unsafe "terminal_initialize()"
 
 foreign import javascript "terminal_loadFile($1)"
   js_loadFile :: JSString -> IO JSString
+
+foreign import javascript "$1.toString()"
+  js_toString :: JSVal -> IO JSString
 
 -- Export main function for JavaScript to call as hs_start
 foreign export javascript "hs_start" main :: IO ()
@@ -364,7 +367,9 @@ cmdLoad s =
                           _     -> s'
        result <- liftIO $ try $ evaluate =<< (fromJSString <$> js_loadFile (toJSString filename))
        case result of
-         Left (e :: SomeException) -> throwError (show e)
+         Left (JSException val) -> do
+           s2 <- liftIO $ js_toString val
+           throwError (fromJSString s2)
          Right contents -> do
            let src  = unlines (map removeComment (lines contents))
                cmds = split src
