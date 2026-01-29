@@ -54,7 +54,7 @@ import Control.Exception (bracket)
 #if defined(USE_WASM_BACKEND)
 
 -- JavaScript FFI imports for WebAssembly backend
-foreign import javascript unsafe "terminal_readLine($1)"
+foreign import javascript "terminal_readLine($1)"
   js_readLine :: JSString -> IO JSString
 
 foreign import javascript unsafe "terminal_printLine($1)"

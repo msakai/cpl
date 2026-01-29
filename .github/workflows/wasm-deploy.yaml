@@ -95,7 +95,7 @@ jobs:
           LIBDIR=$(wasm32-wasi-ghc --print-libdir)
           if [ -f "$LIBDIR/post-link.mjs" ]; then
             echo "Running post-link processor..."
-            node "$LIBDIR/post-link.mjs" -i _site/cpl.wasm -o _site/cpl.wasm
+            node "$LIBDIR/post-link.mjs" -i _site/cpl.wasm -o _site/cpl.js
             echo "Post-link processing complete"
           else
             echo "No post-link processor found (skipping)"
