@@ -65,11 +65,11 @@ echo ""
 echo "Locating WASM binary..."
 
 # Find the compiled WASM binary
-WASM_BIN=$(find dist-newstyle -name "cpl" -type f | grep wasm32-wasi | head -n1)
+WASM_BIN=$(find dist-newstyle -name "cpl.wasm" -type f | grep wasm32-wasi | head -n1)
 
 if [ -z "$WASM_BIN" ]; then
     echo "Error: Could not find compiled WASM binary"
-    echo "Expected to find 'cpl' in dist-newstyle/build/wasm32-wasi/..."
+    echo "Expected to find 'cpl.wasm' in dist-newstyle/build/wasm32-wasi/..."
     exit 1
 fi
 
