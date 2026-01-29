@@ -3,7 +3,7 @@ name: WASM build and deploy
 on:
   push:
     branches:
-      - master
+      - '*'
     tags:
       - '*'
   pull_request:
@@ -73,7 +73,7 @@ jobs:
   deploy:
     needs: build-wasm
     # Only deploy on push to master branch
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
