@@ -89,20 +89,35 @@ See chapter 5 of [1]
 Once you have CPL running (either in browser or terminal), try these commands:
 
 ```
-cpl> simp 1 + 1
-2
-    : Nat
-
-cpl> let id(x) = x
-x: a
-----------
-id(x): a
-
 cpl> edit
-| left T() = {}
-| ;
-left object T is defined
-
+| right object 1 with !
+| end object;
+right object 1 defined
+cpl> edit
+| right object prod(a,b) with pair is
+|   pi1: prod -> a
+|   pi2: prod -> b
+| end object;
+right object prod(+,+) defined
+cpl> edit
+| right object exp(a,b) with curry is
+|   eval: prod(exp,a) -> b
+| end object;
+right object exp(-,+) defined
+cpl> edit
+| left object nat with pr is
+|   0: 1 -> nat
+|   s: nat -> nat
+| end object;
+left object nat defined
+cpl> show pair(pi2,eval)
+pair(pi2,eval)
+    : prod(exp(*a,*b),*a) -> prod(*a,*b)
+cpl> let add=eval.prod(pr(curry(pi2), curry(s.eval)), I)
+add : prod(nat,nat) -> nat  defined
+cpl> simp add.pair(s.s.0, s.0)
+s.s.s.0
+    : 1 -> nat
 cpl> help
   exit                        exit the interpreter
   quit                        ditto
@@ -115,6 +130,7 @@ cpl> help
   load <filename>             load from file
   set trace [on|off]          enable/disable trace
   reset                       remove all definitions
+cpl> exit
 ```
 
 For more examples, see the `samples/` directory.
