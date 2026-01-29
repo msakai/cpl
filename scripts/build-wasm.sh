@@ -53,6 +53,10 @@ fi
 echo "Updating package index..."
 wasm32-wasi-cabal update
 
+echo "Generating sample files module..."
+"$PROJECT_ROOT/scripts/generate-samples-js.sh"
+echo ""
+
 echo ""
 echo "Configuring CPL for WebAssembly..."
 wasm32-wasi-cabal configure -fWASM -f-Readline -f-Haskeline

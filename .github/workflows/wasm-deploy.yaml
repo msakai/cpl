@@ -58,7 +58,7 @@ jobs:
           mkdir -p _site
 
           echo "Copying files..."
-          cp wasm/index.html wasm/cpl-terminal.js wasm/cpl.js wasm/cpl.wasm _site/
+          cp wasm/index.html wasm/cpl-terminal.js wasm/cpl.js wasm/cpl.wasm wasm/samples.js _site/
 
           echo "Deployment artifacts prepared:"
           ls -lh _site/

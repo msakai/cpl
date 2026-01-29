@@ -6,4 +6,5 @@ stack.yaml.lock
 # WebAssembly build artifacts
 wasm/cpl.wasm
 wasm/cpl.js
+wasm/samples.js
 _site/

@@ -1,6 +1,7 @@
 import { Terminal } from 'https://cdn.jsdelivr.net/npm/xterm@5.3.0/+esm';
 import { FitAddon } from 'https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/+esm';
 import { WASI, OpenFile, File, ConsoleStdout } from 'https://cdn.jsdelivr.net/npm/@bjorn3/browser_wasi_shim@0.3.0/+esm';
+import { sampleFiles } from './samples.js';
 
 /**
  * CPL Terminal Manager
@@ -201,6 +202,47 @@ window.terminal_readLine = async (jsVal) => {
   const prompt = String(jsVal);
   const result = await cplTerminal.readLine(prompt);
   return result;
+};
+
+window.terminal_loadFile = async (jsVal) => {
+  const filename = String(jsVal).trim();
+
+  // 1. Filename specified: look up built-in sample
+  if (filename) {
+    if (sampleFiles[filename] !== undefined) {
+      return sampleFiles[filename];
+    }
+    // Not found: show available files
+    const available = Object.keys(sampleFiles).join(', ');
+    throw new Error(
+      `File not found: ${filename}\n` +
+      `Available files: ${available}\n` +
+      `Type 'load' with no arguments to open a file picker.`
+    );
+  }
+
+  // 2. No filename: open file picker
+  return new Promise((resolve, reject) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.cpl,.cdt,.txt';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+    input.addEventListener('change', async () => {
+      document.body.removeChild(input);
+      const file = input.files[0];
+      if (file) {
+        resolve(await file.text());
+      } else {
+        reject(new Error('No file selected'));
+      }
+    });
+    input.addEventListener('cancel', () => {
+      document.body.removeChild(input);
+      reject(new Error('File selection cancelled'));
+    });
+    input.click();
+  });
 };
 
 /**
