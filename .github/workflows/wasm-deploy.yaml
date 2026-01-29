@@ -1,0 +1,84 @@
+name: WASM build and deploy
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup GHC WebAssembly toolchain
+        run: |
+          curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | sh
+          echo "Verifying installation..."
+          source ${HOME}/.ghc-wasm/env
+          wasm32-wasi-ghc --version
+          wasm32-wasi-cabal --version
+
+      - name: Cache Cabal packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cabal/packages
+            ~/.cabal/store
+            dist-newstyle
+          key: ${{ runner.os }}-wasm-cabal-${{ hashFiles('**/*.cabal', '**/cabal.project') }}
+          restore-keys: |
+            ${{ runner.os }}-wasm-cabal-
+
+      - name: Build WASM binary
+        run: |
+          source ${HOME}/.ghc-wasm/env
+          scripts/build-wasm.sh
+
+      - name: Prepare deployment artifacts
+        run: |
+          echo "Creating _site directory for GitHub Pages..."
+          mkdir -p _site
+
+          echo "Copying files..."
+          cp wasm/index.html wasm/cpl-terminal.js wasm/cpl.js wasm/cpl.wasm _site/
+
+          echo "Deployment artifacts prepared:"
+          ls -lh _site/
+
+          echo "WASM binary size: $(du -h _site/cpl.wasm | cut -f1)"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build-wasm
+    # Only deploy on push to master branch
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
