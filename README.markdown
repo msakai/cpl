@@ -60,7 +60,9 @@ $ stack exec cpl
 To build the WebAssembly version yourself:
 
 1. Install GHC WebAssembly cross-compiler (GHC 9.10.3 or later):
-   - Download from: https://downloads.haskell.org/~ghc/
+   ```bash
+   $ curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | sh
+   ```
 
 2. Build using the provided script:
    ```bash
@@ -76,8 +78,10 @@ To build the WebAssembly version yourself:
 
 The WASM build creates three files in the `wasm/` directory:
 - `cpl.wasm` - The compiled interpreter
+- `cpl.js` - JavaScript glue module
 - `index.html` - Web interface
 - `cpl-terminal.js` - Terminal controller
+- `samples.js` - Sample files
 
 Usage
 -----
