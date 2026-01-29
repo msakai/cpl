@@ -30,21 +30,11 @@ jobs:
 
       - name: Setup GHC WebAssembly toolchain
         run: |
-          echo "Downloading GHC WASM cross-compiler..."
-          curl -L https://downloads.haskell.org/~ghc/9.10.3/ghc-9.10.3-x86_64-linux-wasm-cross.tar.xz -o ghc-wasm.tar.xz
-
-          echo "Extracting toolchain..."
-          tar xJf ghc-wasm.tar.xz
-
-          echo "Installing to /opt/ghc-wasm..."
-          sudo mv ghc-9.10.3 /opt/ghc-wasm
-
-          echo "Adding to PATH..."
-          echo "/opt/ghc-wasm/bin" >> $GITHUB_PATH
-
+          curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstrap.sh | sh
           echo "Verifying installation..."
-          /opt/ghc-wasm/bin/wasm32-wasi-ghc --version
-          /opt/ghc-wasm/bin/wasm32-wasi-cabal --version
+          source ${HOME}/.ghc-wasm/env
+          wasm32-wasi-ghc --version
+          wasm32-wasi-cabal --version
 
       - name: Cache Cabal packages
         uses: actions/cache@v4
@@ -57,49 +47,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-wasm-cabal-
 
-      - name: Update Cabal package index
-        run: wasm32-wasi-cabal update
-
-      - name: Configure CPL for WASM
-        run: wasm32-wasi-cabal configure -fWASM -f-Readline -f-Haskeline
-
       - name: Build WASM binary
-        run: wasm32-wasi-cabal build
+        run: |
+          source ${HOME}/.ghc-wasm/env
+          scripts/build-wasm.sh
 
       - name: Prepare deployment artifacts
         run: |
           echo "Creating _site directory for GitHub Pages..."
           mkdir -p _site
 
-          echo "Copying web interface files..."
-          cp wasm/index.html wasm/cpl-terminal.js _site/
-
-          echo "Finding and copying WASM binary..."
-          WASM_BIN=$(find dist-newstyle -name "cpl" -type f | grep wasm32-wasi | head -n1)
-
-          if [ -z "$WASM_BIN" ]; then
-            echo "Error: Could not find WASM binary"
-            exit 1
-          fi
-
-          echo "Found WASM binary: $WASM_BIN"
-          cp "$WASM_BIN" _site/cpl.wasm
+          echo "Copying files..."
+          cp wasm/index.html wasm/cpl-terminal.js wasm/cpl.js wasm/cpl.wasm _site/
 
           echo "Deployment artifacts prepared:"
           ls -lh _site/
 
           echo "WASM binary size: $(du -h _site/cpl.wasm | cut -f1)"
-
-      - name: Post-link processing (if available)
-        run: |
-          LIBDIR=$(wasm32-wasi-ghc --print-libdir)
-          if [ -f "$LIBDIR/post-link.mjs" ]; then
-            echo "Running post-link processor..."
-            node "$LIBDIR/post-link.mjs" -i _site/cpl.wasm -o _site/cpl.js
-            echo "Post-link processing complete"
-          else
-            echo "No post-link processor found (skipping)"
-          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
