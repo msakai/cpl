@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 #if defined(USE_WASM_BACKEND)
 {-# LANGUAGE JavaScriptFFI #-}
 #endif
@@ -39,7 +40,8 @@ import Control.Monad.Except
 import Control.Monad.State.Strict -- haskeline's MonadException requries strict version
 import System.Console.GetOpt
 #if defined(USE_WASM_BACKEND)
-import GHC.Wasm.Prim (JSString (..), toJSString, fromJSString)
+import GHC.Wasm.Prim (JSString (..), toJSString, fromJSString, JSException (..), JSVal)
+import Control.Exception (evaluate, try, SomeException)
 #elif defined(USE_READLINE_PACKAGE)
 import qualified System.Console.SimpleLineEditor as SLE
 import Control.Exception (bracket)
@@ -62,6 +64,12 @@ foreign import javascript unsafe "terminal_printLine($1)"
 
 foreign import javascript unsafe "terminal_initialize()"
   js_initialize :: IO ()
+
+foreign import javascript "terminal_loadFile($1)"
+  js_loadFile :: JSString -> IO JSString
+
+foreign import javascript "$1.toString()"
+  js_toString :: JSVal -> IO JSString
 
 -- Export main function for JavaScript to call as hs_start
 foreign export javascript "hs_start" main :: IO ()
@@ -351,6 +359,32 @@ cmdSimp arg =
               loop (zip [(0::Int)..] traces)
 
 cmdLoad :: Command
+#if defined(USE_WASM_BACKEND)
+cmdLoad s =
+    do let filename = let s' = strip s in
+                          case s' of
+                          '"':_ -> read s'
+                          _     -> s'
+       result <- liftIO $ try $ evaluate =<< (fromJSString <$> js_loadFile (toJSString filename))
+       case result of
+         Left (JSException val) -> do
+           s2 <- liftIO $ js_toString val
+           throwError (fromJSString s2)
+         Right contents -> do
+           let src  = unlines (map removeComment (lines contents))
+               cmds = split src
+           forM_ cmds $ \cmd -> do
+             printLines ["> " ++ l | l <- lines cmd]
+             dispatchCommand cmd
+    where removeComment []      = []
+          removeComment ('#':_) = []
+          removeComment (x:xs)  = x : removeComment xs
+          split :: String -> [String]
+          split s = map (strip . reverse) (f s [])
+              where f (';':xs) tmp = tmp : (f xs [])
+                    f (x:xs) tmp   = f xs (x:tmp)
+                    f [] tmp       = [tmp]
+#else
 cmdLoad s =
     do contents <- liftIO $ readFile filename
        let src  = unlines (map removeComment (lines contents))
@@ -371,6 +405,7 @@ cmdLoad s =
               where f (';':xs) tmp = tmp : (f xs [])
                     f (x:xs) tmp   = f xs (x:tmp)
                     f [] tmp       = [tmp]
+#endif
 
 cmdEdit :: Command
 cmdEdit _ = loop >>= dispatchCommand
@@ -396,7 +431,12 @@ cmdHelp _ = printLines
               , "  show <exp>                  print type of expression"
               , "  show function <name>        print information of function"
               , "  show object <functor>       print information of functor"
+#if defined(USE_WASM_BACKEND)
+              , "  load <filename>             load built-in sample file"
+              , "  load                        open file picker"
+#else
               , "  load <filename>             load from file"
+#endif
               , "  set trace [on|off]          enable/disable trace"
               , "  reset                       remove all definitions"
               ]
