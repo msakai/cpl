@@ -275,13 +275,13 @@ cmdShow arg =
     ("function", arg') ->
         do sys <- get
            let name = strip arg'
-           case Map.lookup name (Sys.varTable sys) of
-             Just (args, _e, FType _ args' t) ->
+           case Sys.getFunctionSignature sys name of
+             Just (args, t) ->
                if null args
                  then printLines [name ++ ": " ++ show t]
                  else do
-                   let lhs = name ++ "(" ++ intercalate "," args ++ ")"
-                       upper = intercalate "  " $ [p ++ ": " ++ show pt | (p,pt) <- zip args args']
+                   let lhs = name ++ "(" ++ intercalate "," (map fst args) ++ ")"
+                       upper = intercalate "  " $ [p ++ ": " ++ show pt | (p,pt) <- args]
                        lower = lhs ++ ": " ++ show t
                    printLines
                      [ upper
