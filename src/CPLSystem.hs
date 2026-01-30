@@ -22,6 +22,7 @@ module CPLSystem
     , addCDT
     , letExp
     , simp
+    , getFunctionSignature
     ) where
 
 import CDT
@@ -160,3 +161,33 @@ simp sys full e =
                then Simp.simpWithTrace full e'
                else [(0, compile sys Identity, Simp.simp full e')]
     in traces
+
+inferFunctType :: System -> CDT -> Either String ([Type], Type)
+inferFunctType sys obj = Typing.runTI (tiEnv sys) $ do
+  let ps = ["f" ++ show i | (i, _) <- zip [0..] (CDT.functVariance obj)]
+  (ts, t) <- Typing.inferType2 ps (Funct obj [Var v [] | v <- ps])
+  ts2 <- Typing.appSubst ts
+  (_ :! t2) <- Typing.appSubst t
+  let vars = Subst.tv (t2 : ts2)
+      s = zip vars [FE.Var i | i<-[0..]]
+  return (Subst.apply s ts2, Subst.apply s t2)
+
+getFunctionSignature :: System -> String -> Maybe ([(String, Type)], Type)
+getFunctionSignature _sys "I" = Just ([], FE.Var 0 :-> FE.Var 0)
+getFunctionSignature sys name
+  | Just (args, _e, FType _ args' t) <- Map.lookup name (varTable sys) =
+      Just (zip args args', t)
+  | otherwise = listToMaybe $ do
+      obj <- objects sys
+      msum
+        [ do nat <- CDT.nats obj
+             guard $ CDT.natName nat == name
+             return ([], CDT.natType nat)
+        , do guard $ CDT.factName obj == name
+             return (zip ["f" ++ show i | i <- [0..]] (CDT.factParams obj), CDT.factDestType obj)
+        , do guard $ CDT.functName obj == name
+             let ps = ["f" ++ show i | (i, _) <- zip [0..] (CDT.functVariance obj)]
+             case inferFunctType sys obj of
+               Left err -> error err  -- This should not happen
+               Right (ts, t) -> return (zip ps ts, t)
+        ]
