@@ -145,10 +145,11 @@ The Haskell code uses CPP macros to conditionally compile different Console impl
 #endif
 ```
 
-For WASM, three JavaScript FFI functions are exposed:
+For WASM, four JavaScript FFI functions are exposed:
 - `terminal_initialize()` - Initialize xterm.js terminal
 - `terminal_printLine(text)` - Print a line to terminal
 - `terminal_readLine(prompt)` - Read user input (async)
+- `terminal_loadFile(filename)` - Load a file by name or open file picker
 
 ### JavaScript FFI Flow
 
@@ -157,13 +158,31 @@ For WASM, three JavaScript FFI functions are exposed:
    foreign import javascript "terminal_readLine($1)"
      js_readLine :: JSString -> IO JSString
 
+   foreign import javascript "terminal_loadFile($1)"
+     js_loadFile :: JSString -> IO JSString
+
    foreign export javascript "hs_start" main :: IO ()
    ```
 
 2. **JavaScript implements FFI functions** in `cpl-terminal.js`:
    ```javascript
-   window.terminal_readLine = async (prompt) => {
-     return await cplTerminal.readLine(String(prompt));
+   window.terminal_readLine = async (jsVal) => {
+     const prompt = String(jsVal);
+     const result = await cplTerminal.readLine(prompt);
+     return result;
+   };
+
+   window.terminal_loadFile = async (jsVal) => {
+     const filename = String(jsVal).trim();
+     if (filename) {
+       // Look up built-in sample files
+       if (sampleFiles[filename] !== undefined) {
+         return sampleFiles[filename];
+       }
+       throw new Error(`File not found: ${filename}`);
+     }
+     // No filename: open file picker dialog
+     ...
    };
    ```
 
@@ -253,8 +272,6 @@ Two parallel build systems are maintained:
 
 ## Known Limitations
 
-Current WASM implementation does not support:
-- **load/save commands** - No file system access yet
 - **Command history** - Basic line editing only
 - **Tab completion** - Not implemented
 - **Multi-line paste** - May have issues with large pastes
@@ -297,7 +314,7 @@ The WASM version has similar performance to the native version for most operatio
 ## Security
 
 The WASM version runs in the browser's sandbox and has no access to:
-- Local file system (except via browser file picker APIs, not yet implemented)
+- Local file system (except via the browser file picker dialog triggered by `load` with no arguments)
 - Network (except for loading the WASM module itself)
 - Other tabs or browser state
 
