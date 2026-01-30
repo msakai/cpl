@@ -2,6 +2,44 @@
 
 This directory contains the WebAssembly build of the CPL (Categorical Programming Language) interpreter.
 
+## Try Online
+
+Visit https://msakai.github.io/cpl/ and start using CPL immediately!
+
+### Commands to Try
+
+```
+cpl> edit
+| right object 1 with !
+| end object;
+right object 1 defined
+cpl> edit
+| right object prod(a,b) with pair is
+|   pi1: prod -> a
+|   pi2: prod -> b
+| end object;
+right object prod(+,+) defined
+cpl> edit
+| right object exp(a,b) with curry is
+|   eval: prod(exp,a) -> b
+| end object;
+right object exp(-,+) defined
+cpl> edit
+| left object nat with pr is
+|   0: 1 -> nat
+|   s: nat -> nat
+| end object;
+left object nat defined
+cpl> show pair(pi2,eval)
+pair(pi2,eval)
+    : prod(exp(*a,*b),*a) -> prod(*a,*b)
+cpl> let add=eval.prod(pr(curry(pi2), curry(s.eval)), I)
+add : prod(nat,nat) -> nat  defined
+cpl> simp add.pair(s.s.0, s.0)
+s.s.s.0
+    : 1 -> nat
+```
+
 ## Files
 
 - **index.html** - Web interface with xterm.js terminal emulator
@@ -20,6 +58,18 @@ The WASM binary is built using GHC's WebAssembly backend. To build it yourself:
 Requirements:
 - GHC 9.10.3 or later with WASM cross-compiler
 - wasm32-wasi-ghc and wasm32-wasi-cabal in PATH
+
+Build configuration:
+
+```bash
+wasm32-wasi-cabal configure -fWASM -f-Readline -f-Haskeline
+```
+
+To clean and rebuild:
+
+```bash
+./scripts/build-wasm.sh --clean
+```
 
 ## Testing Locally
 
@@ -47,6 +97,14 @@ Tested and working on:
 - Edge 90+
 
 ## Architecture
+
+```
+Browser
+  ├── xterm.js (terminal UI)
+  └── cpl-terminal.js (FFI bridge)
+       └── cpl.wasm (CPL interpreter)
+            └── Haskell runtime
+```
 
 ### Haskell Side (src/Main.hs)
 
@@ -147,3 +205,8 @@ To improve the WASM version:
 4. Submit pull request
 
 See main README.md for general contribution guidelines.
+
+## Resources
+
+- Main README: ../README.markdown
+- GHC WASM guide: https://ghc.gitlab.haskell.org/ghc/doc/users_guide/wasm.html
