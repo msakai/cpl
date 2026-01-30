@@ -188,6 +188,6 @@ getFunctionSignature sys name
         , do guard $ CDT.functName obj == name
              let ps = ["f" ++ show i | (i, _) <- zip [0..] (CDT.functVariance obj)]
              case inferFunctType sys obj of
-               Left err -> error err
+               Left err -> error err  -- This should not happen
                Right (ts, t) -> return (zip ps ts, t)
         ]
