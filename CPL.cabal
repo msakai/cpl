@@ -21,7 +21,8 @@ Description:
    their canonical form.
 Extra-Doc-Files:
    README.markdown,
-   CHANGELOG.markdown
+   CHANGELOG.markdown,
+   wasm/README.md
 Extra-Source-Files:
    samples/ack.cpl,
    samples/automata.cdt,
@@ -33,7 +34,11 @@ Extra-Source-Files:
    samples/rec.cdt,
    samples/benchmark.cpl,
    samples/ack_3_4.cpl,
-   samples/function.cpl
+   samples/function.cpl,
+   scripts/build-wasm.sh,
+   scripts/generate-samples-js.sh,
+   wasm/cpl-terminal.js,
+   wasm/index.html
 Build-Type: Simple
 
 source-repository head
