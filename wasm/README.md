@@ -66,7 +66,7 @@ curl https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta/-/raw/master/bootstra
 source ~/.ghc-wasm/env
 ```
 
-This provides `wasm32-wasi-ghc` and `wasm32-wasi-cabal` in PATH.
+This provides `wasm32-wasi-ghc` and `wasm32-wasi-cabal` in `PATH`.
 
 Build configuration:
 
@@ -283,8 +283,8 @@ These features may be added in future versions.
 ### WASM module fails to load
 
 Check browser console for errors. Common issues:
-- Missing or incorrect MIME type for .wasm files
-- CORS issues (must serve from web server, not file://)
+- Missing or incorrect MIME type for `.wasm` files
+- CORS issues (must serve from web server, not `file://`)
 - Browser doesn't support WebAssembly
 
 ### Terminal not responding
@@ -297,7 +297,7 @@ Check browser console for errors. Common issues:
 
 If `./scripts/build-wasm.sh` fails:
 - Verify GHC WASM toolchain is installed correctly
-- Check that wasm32-wasi-ghc and wasm32-wasi-cabal are in PATH
+- Check that `wasm32-wasi-ghc` and `wasm32-wasi-cabal` are in `PATH`
 - Try `./scripts/build-wasm.sh --clean` to clean build artifacts
 
 ## Performance
