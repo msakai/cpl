@@ -288,8 +288,7 @@ If `./scripts/build-wasm.sh` fails:
 The WASM version has similar performance to the native version for most operations, with slight overhead for JavaScript-Haskell FFI calls.
 
 ### Binary Size
-- Uncompressed: ~20-25 MB (typical for GHC WASM builds, includes runtime system, libraries, and CPL interpreter)
-- Compressed: ~5-7 MB with Brotli/gzip
+- ~2.9 MB (includes GHC runtime system, libraries, and CPL interpreter)
 
 ### Load Time
 - First load depends on network speed and browser WASM compilation
