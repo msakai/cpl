@@ -419,7 +419,11 @@ cmdEdit _ = loop >>= dispatchCommand
           return $ l ++ "\n" ++ s
 
 cmdQuit :: Command
+#if defined(USE_WASM_BACKEND)
+cmdQuit _ = throwError ("'quit' is not supported on WebAssembly backend. Use 'reset' instead.")
+#else
 cmdQuit _ = liftIO $ exitWith ExitSuccess
+#endif
 
 cmdHelp :: Command
 cmdHelp _ = printLines
