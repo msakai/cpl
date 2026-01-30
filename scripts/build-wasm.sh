@@ -49,10 +49,6 @@ if [ "$1" = "--clean" ]; then
     echo ""
 fi
 
-# Update package index
-echo "Updating package index..."
-wasm32-wasi-cabal update
-
 echo "Generating sample files module..."
 "$PROJECT_ROOT/scripts/generate-samples-js.sh"
 echo ""

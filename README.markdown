@@ -57,27 +57,7 @@ $ stack exec cpl
 
 #### WebAssembly Build
 
-To build the WebAssembly version yourself:
-
-1. Install GHC WebAssembly cross-compiler (GHC 9.10.3 or later):
-   - Download from: https://downloads.haskell.org/~ghc/
-
-2. Build using the provided script:
-   ```bash
-   $ ./scripts/build-wasm.sh
-   ```
-
-3. Test locally:
-   ```bash
-   $ cd wasm
-   $ python3 -m http.server 8000
-   ```
-   Then open http://localhost:8000 in your browser.
-
-The WASM build creates three files in the `wasm/` directory:
-- `cpl.wasm` - The compiled interpreter
-- `index.html` - Web interface
-- `cpl-terminal.js` - Terminal controller
+See [wasm/README.md](wasm/README.md) for detailed instructions on building and testing the WebAssembly version.
 
 Usage
 -----

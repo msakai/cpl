@@ -50,6 +50,7 @@ jobs:
       - name: Build WASM binary
         run: |
           source ${HOME}/.ghc-wasm/env
+          wasm32-wasi-cabal update
           scripts/build-wasm.sh
 
       - name: Prepare deployment artifacts
