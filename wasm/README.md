@@ -93,9 +93,23 @@ Then open http://localhost:8000 in your browser.
 
 ## Deployment
 
-The WASM version is automatically built and deployed to GitHub Pages via GitHub Actions whenever changes are pushed to the master branch.
+### Automatic Deployment
 
-See `.github/workflows/wasm-deploy.yaml` for the deployment configuration.
+- **Trigger:** Push to `master` branch
+- **Build trigger:** Also runs on tags, pull requests, and manual dispatch (build only, no deploy)
+- **Workflow:** `.github/workflows/wasm-deploy.yaml`
+- **Destination:** GitHub Pages (https://msakai.github.io/cpl/)
+- **Artifacts:** `cpl.wasm`, `cpl.js`, `index.html`, `cpl-terminal.js`, `samples.js`
+
+### Manual Deployment
+
+```bash
+# Build
+./scripts/build-wasm.sh
+
+# Deploy files from wasm/ directory to your web server
+# Required files: cpl.wasm, cpl.js, index.html, cpl-terminal.js, samples.js
+```
 
 ## Browser Compatibility
 
@@ -115,19 +129,79 @@ Browser
             └── Haskell runtime
 ```
 
-### Haskell Side (src/Main.hs)
+### Console Abstraction
 
-The Haskell code uses CPP macros to conditionally compile different Console implementations:
+The Haskell code uses CPP macros to conditionally compile different Console implementations, allowing the same codebase to support multiple backends:
 
-- `USE_WASM_BACKEND` - JavaScript FFI for WebAssembly
-- `USE_READLINE_PACKAGE` - Readline library (native)
-- `USE_HASKELINE_PACKAGE` - Haskeline library (native)
-- Default - Plain IO (native)
+```haskell
+#if defined(USE_WASM_BACKEND)
+  -- JavaScript FFI implementation (GHC.Wasm.Prim / JSString)
+#elif defined(USE_HASKELINE_PACKAGE)
+  -- Haskeline implementation
+#elif defined(USE_READLINE_PACKAGE)
+  -- Readline implementation
+#else
+  -- Plain IO implementation
+#endif
+```
 
 For WASM, three JavaScript FFI functions are exposed:
 - `terminal_initialize()` - Initialize xterm.js terminal
 - `terminal_printLine(text)` - Print a line to terminal
 - `terminal_readLine(prompt)` - Read user input (async)
+
+### JavaScript FFI Flow
+
+1. **Haskell declares FFI imports/exports** in `src/Main.hs`:
+   ```haskell
+   foreign import javascript "terminal_readLine($1)"
+     js_readLine :: JSString -> IO JSString
+
+   foreign export javascript "hs_start" main :: IO ()
+   ```
+
+2. **JavaScript implements FFI functions** in `cpl-terminal.js`:
+   ```javascript
+   window.terminal_readLine = async (prompt) => {
+     return await cplTerminal.readLine(String(prompt));
+   };
+   ```
+
+3. **JSFFI glue code (`cpl.js`) connects them** at instantiation using a knot-tying pattern:
+   ```javascript
+   const jsffiModule = await import('./cpl.js');
+   const __exports = {};
+   const jsffi = jsffiModule.default(__exports);
+
+   const { instance } = await WebAssembly.instantiate(wasmBytes, {
+     ghc_wasm_jsffi: jsffi,
+     wasi_snapshot_preview1: wasi.wasiImport,
+   });
+   Object.assign(__exports, instance.exports);
+   ```
+
+### WASI Integration
+
+The browser environment requires a WASI shim (`@bjorn3/browser_wasi_shim`) to satisfy the WASI snapshot preview1 imports that GHC's WASM backend emits:
+
+```javascript
+import { WASI, OpenFile, File, ConsoleStdout } from '@bjorn3/browser_wasi_shim';
+
+const fds = [
+  new OpenFile(new File([])),                                       // stdin
+  ConsoleStdout.lineBuffered(msg => console.log(`[CPL] ${msg}`)),   // stdout
+  ConsoleStdout.lineBuffered(msg => console.warn(`[CPL] ${msg}`)),  // stderr
+];
+const wasi = new WASI([], [], fds);
+```
+
+The WASI reactor is initialized before the Haskell RTS:
+
+```javascript
+wasi.initialize(instance);   // calls _initialize
+instance.exports.hs_init();  // init Haskell RTS
+instance.exports.hs_start(); // run main (exported via foreign export)
+```
 
 ### JavaScript Side (cpl-terminal.js)
 
@@ -153,6 +227,29 @@ When enabled:
 - Uses `-no-hs-main` (no standard main entry point)
 - Exports `hs_init` and `hs_start` symbols
 - Enables `JavaScriptFFI` extension for GHC 9.10+
+- Adds `ghc-experimental` dependency for `GHC.Wasm.Prim`
+
+### Post-link Processing
+
+GHC's WASM backend generates a `post-link.mjs` tool that extracts JSFFI information from the compiled `.wasm` binary and produces a JavaScript glue module (`cpl.js`). This glue code implements the knot-tying pattern required for bidirectional FFI:
+
+```bash
+node "$LIBDIR/post-link.mjs" -i wasm/cpl.wasm -o wasm/cpl.js
+```
+
+### Build Systems
+
+Two parallel build systems are maintained:
+
+1. **Stack** (for native builds)
+   - Uses `stack.yaml`
+   - Default for development
+   - Supports readline/haskeline
+
+2. **Cabal** (for both native and WASM builds)
+   - Uses `CPL.cabal` with flags
+   - WASM builds: `wasm32-wasi-cabal configure -fWASM`
+   - Native builds: `cabal configure`
 
 ## Known Limitations
 
@@ -188,12 +285,15 @@ If `./scripts/build-wasm.sh` fails:
 
 ## Performance
 
-The WASM version should have similar performance to the native version for most operations. Initial load time depends on:
-- WASM binary size (~20-25 MB typical)
-- Network speed (for first load)
-- Browser WASM compilation
+The WASM version has similar performance to the native version for most operations, with slight overhead for JavaScript-Haskell FFI calls.
 
-Subsequent loads are faster due to browser caching.
+### Binary Size
+- Uncompressed: ~20-25 MB (typical for GHC WASM builds, includes runtime system, libraries, and CPL interpreter)
+- Compressed: ~5-7 MB with Brotli/gzip
+
+### Load Time
+- First load depends on network speed and browser WASM compilation
+- Subsequent loads are faster due to browser caching
 
 ## Security
 
@@ -215,7 +315,11 @@ To improve the WASM version:
 
 See main README.md for general contribution guidelines.
 
-## Resources
+## References
 
-- Main README: ../README.markdown
-- GHC WASM guide: https://ghc.gitlab.haskell.org/ghc/doc/users_guide/wasm.html
+- [GHC WebAssembly Backend User's Guide](https://ghc.gitlab.haskell.org/ghc/doc/users_guide/wasm.html)
+- [ghc-wasm-meta](https://gitlab.haskell.org/haskell-wasm/ghc-wasm-meta) - GHC WASM toolchain bootstrap
+- [xterm.js Documentation](https://xtermjs.org/)
+- [@bjorn3/browser_wasi_shim](https://github.com/aspect-build/aspect-cli/tree/main/aspect-build/aspect-cli) - WASI shim for browsers
+- [GitHub Pages Documentation](https://docs.github.com/pages)
+- Tatsuya Hagino, "A Categorical Programming Language", PhD Thesis, University of Edinburgh, 1987
