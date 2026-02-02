@@ -1,0 +1,10 @@
+\documentclass{standalone}
+\usepackage{amssymb}
+\usepackage{tikz-cd}
+\begin{document}
+\begin{tikzcd}
+A & & \mathrm{inflist}(A) \arrow[ll, "\mathrm{head}"'] \arrow[rr, "\mathrm{tail}"] & & \mathrm{inflist}(A) \\
+\\
+  & & X \arrow[uull, bend left, "h"] \arrow[rr, "t"'] \arrow[uu, dashed, "{\mathrm{fold}(h,t)}" description] & & X \arrow[uu, dashed, "{\mathrm{fold}(h,t)}" description]
+\end{tikzcd}
+\end{document}

@@ -1,0 +1,12 @@
+\documentclass{standalone}
+\usepackage{amssymb}
+\usepackage{tikz-cd}
+\begin{document}
+\begin{tikzcd}
+A & & A\times B \arrow[ll, "\pi_1"'] \arrow[rr, "\pi_2"] & & B \\
+\\
+  & & X \arrow[lluu, bend left, "f"]
+        \arrow[uu, dashed, "{\langle f, g \rangle}" description]
+        \arrow[rruu, bend right, "g"']
+\end{tikzcd}
+\end{document}
