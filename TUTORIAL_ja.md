@@ -43,6 +43,7 @@ CPL (Categorical Programming Language) は、圏論の概念に基づいて設�
 - [自然数対象の定義](#自然数対象の定義)
 - [直和の定義](#直和の定義)
 - [型の表示](#型の表示)
+- [射の合成と恒等射](#射の合成と恒等射)
 - [式に名前を付ける](#式に名前を付ける)
 - [計算](#計算)
 - [リスト型](#リスト型)
@@ -210,7 +211,7 @@ f0: *a -> *c  f1: *b -> *d
 prod(f0,f1): prod(*a,*b) -> prod(*c,*d)
 ```
 
-また、 `equations` を見ると、
+また、 `equations` を見ると、以下の4つの等式が成り立つことが分かります。なお、ここで使われている `.` は**射の合成** (composition) を表す記法で、`g.f` は「まず `f` を適用し、次に `g` を適用する」という意味です（数学の記法 `g ∘ f` に対応します）。
 
 - (REQ1): `pi1.pair(f0,f1)=f0`
   - (上で直積の満たす性質として述べたもの)
@@ -221,8 +222,6 @@ prod(f0,f1): prod(*a,*b) -> prod(*c,*d)
 - (RCEQ): `pi1.g=f0 & pi2.g=f1 => g=pair(f0,f1)`
   - (`g` が `pair(f0,f1)` と同じ条件を満たすのであれば `g=pair(f0,f1)` 、すなわち `pair(f0,f1)` は一意)
 
-という4つの等式が成り立つことが分かります。
-
 ## 指数対象の定義
 
 次に、関数を値として扱うための構造である **指数対象** (exponential object) を定義します。
@@ -230,10 +229,9 @@ prod(f0,f1): prod(*a,*b) -> prod(*c,*d)
 指数対象 `Bᴬ` (CPLでは `exp(a,b)` と表記) は「`A` から `B` への射全体を表す対象」です。これは以下の性質を持ちます:
 
 - 評価射 `eval: Bᴬ × A → B` が存在し、関数を値に適用できる
-    - (ここでは `eval` という名前で呼んでいますが、関数型プログラミングの文脈では `apply` と呼ぶ方が自然でしょう)
-- 任意の射 `f: X × A → B` に対して、カリー化された射 `curry(f): X → Bᴬ` が一意に存在し、 `eval ∘ (curry(f) × I)` を満たす
-
-
+  - (ここでは `eval` という名前で呼んでいますが、関数型プログラミングの文脈では `apply` と呼ぶ方が自然でしょう)
+- 任意の射 `f: X × A → B` に対して、カリー化された射 `curry(f): X → Bᴬ` が一意に存在し、 `eval ∘ (curry(f) × I) = f` を満たす
+  - (ここで、 `I: A → A` は恒等射を、 `×` は直積の射への作用を表しています)
 
 図式として描くと以下のようになります：
 
@@ -302,7 +300,7 @@ exp(f0,f1): exp(*a,*b) -> exp(*c,*d)
 
 - ゼロ `0: 1 → ℕ`（初期値）
 - 後続関数 `s: ℕ → ℕ`（`succ`、+1する関数）
-- 任意の対象 `a` と射 `z: 1 → X` および `f: X → X` に対して、帰納的に定義された唯一の射 `pr(z,f): ℕ → X` が存在し、 `pr(z,f) ∘ 0 = z` と `pr(z,f) ∘ s = f ∘ pr(z,f)` を満たす
+- 任意の対象 `X` と射 `z: 1 → X` および `f: X → X` に対して、帰納的に定義された唯一の射 `pr(z,f): ℕ → X` が存在し、 `pr(z,f) ∘ 0 = z` と `pr(z,f) ∘ s = f ∘ pr(z,f)` を満たす
 
 この `pr` (primitive recursion、原始再帰) は**数学的帰納法**に対応し、自然数上の関数を定義する基本的な方法です。
 
@@ -362,7 +360,7 @@ left object nat
 直和 `A + B` (CPLでは `coprod(a,b)`) は、二つの対象 `A` と `B` のどちらか一方の値を持つ対象です:
 
 - 入射 `in₁: A → A + B` と `in₂: B → A + B` が存在する（値を直和に「注入」する）
-- 任意の対象 `X` への射 `f: A → B` と `g: B → X` があれば、それらを場合分けで組み合わせた唯一の射 `case(f,g): A + B → B` が存在し、 `case(f,g) ∘ in₁ = f` と `case(f,g) ∘ in₂ = g` を満たす
+- 任意の対象 `X` への射 `f: A → X` と `g: B → X` があれば、それらを場合分けで組み合わせた唯一の射 `case(f,g): A + B → X` が存在し、 `case(f,g) ∘ in₁ = f` と `case(f,g) ∘ in₂ = g` を満たす
 
 これは直積の「矢印を逆にした」双対概念であり、圏論における対称性の良い例です。
 
@@ -420,23 +418,89 @@ pair(pi2,eval)
 
 上の例では、`pair(pi2,eval)` は任意の対象 `*a` と `*b` に対して機能する射であり、`F(*a,*b) = prod(exp(*a,*b),*a)` という関手から `G(*a,*b) = prod(*a,*b)` という関手への自然変換と考えることができます。
 
+## 射の合成と恒等射
+
+ここまでの定義で `.` という記号が等式の中に登場していましたが、ここで改めて射の基本操作を確認しておきましょう。
+
+### 射の合成
+
+`.` は**射の合成** (composition) を表します。射 `f: A → B` と `g: B → C` があるとき、合成射 `g.f: A → C` は「まず `f` を適用し、次に `g` を適用する」射です。数学の記法 `g ∘ f` に対応します（Unicode記号 `∘` もCPLでは使用可能です）。
+
+例えば、後続関数 `s: nat → nat` とゼロ `0: 1 → nat` を合成することで、自然数を表現できます:
+
+```
+cpl> show s.0
+s.0
+    : 1 -> nat
+cpl> show s.s.s.0
+s.s.s.0
+    : 1 -> nat
+```
+
+`s.s.s.0` は「`0` (ゼロ) に `s` (後続関数) を3回合成した射」で、自然数の **3** を表します。同様に `s.s.0` は **2**、`s.0` は **1** です。
+
+### 恒等射
+
+**恒等射** (identity morphism) `I` は「何もしない射」で、任意の対象 `A` に対して `I: A → A` が存在します:
+
+```
+cpl> show I
+I
+    : *a -> *a
+```
+
+恒等射は `f.I = f` かつ `I.f = f` を満たします。一見役に立たないようですが、関手と組み合わせて「一方の成分だけを変換し、他方はそのまま残す」際に頻繁に使います:
+
+```
+cpl> show prod(s, I)
+prod(s,I)
+    : prod(nat,*a) -> prod(nat,*a)
+```
+
+ここで `prod(s, I)` は「直積の第一成分に `s` を適用し、第二成分はそのまま」という射です。
+
 ## 式に名前を付ける
 
 `let` コマンドを使うことで射に名前を付け、後から名前で参照することができます。これにより、複雑な射を段階的に構築できます。
 
-```
-cpl> let add=eval.prod(pr(curry(pi2), curry(s.eval)), I)
-add : prod(nat,nat) -> nat  defined
-```
-
-これは通常の関数型言語の以下のような関数を畳み込みで表現した上でポイントフリーにしたものに対応します。
+最初の例として、自然数の加算 `add: prod(nat, nat) → nat` を定義しましょう。通常の関数型言語では以下のように書ける関数です:
 
 ```haskell
 add 0 y = y
 add (x + 1) y = add x y + 1
 ```
 
-また、パラメータを持つような射の定義も行うことができます。
+CPLでは、これを原始再帰 `pr` とカリー化 `curry` を組み合わせて表現します。順を追って考えてみましょう。
+
+1. **方針**: 第一引数について原始再帰 `pr` を使いたいが、`pr(f0, f1): nat → X` は一引数の射しか定義できない。そこで**カリー化**を使い、第二引数を関数の中に閉じ込める
+
+2. **カリー化された加算 `add'`** を考える:
+   - `add': nat → exp(nat, nat)` — 自然数 `n` を受け取り「`n` を加える関数」を返す射
+   - これは `pr(f0, f1)` の形で定義できる
+
+3. **`f0 = curry(pi2)` (ゼロの場合)**:
+   - `add'(0)` は「0を加える関数」= 恒等関数
+   - `pi2: prod(1, nat) → nat` は直積の第二成分を取り出す射で、ここでは「第一成分（終対象の唯一の値）を捨てて第二引数をそのまま返す」射として機能する
+   - `curry(pi2): 1 → exp(nat, nat)` がゼロの場合の基底
+
+4. **`f1 = curry(s.eval)` (後続の場合)**:
+   - `add'(n+1)` は「`add'(n)` の結果に `s` を適用する関数」
+   - `eval: prod(exp(nat,nat), nat) → nat` は関数適用
+   - `s.eval: prod(exp(nat,nat), nat) → nat` は「関数適用してから後続を取る」
+   - `curry(s.eval): exp(nat,nat) → exp(nat,nat)` が再帰ステップ
+
+5. **アンカリー化**: `add' = pr(curry(pi2), curry(s.eval))` を `eval` と `prod` で元に戻す
+   - `prod(add', I): prod(nat, nat) → prod(exp(nat,nat), nat)` — 第一引数に `add'` を適用
+   - `eval.prod(add', I): prod(nat, nat) → nat` — 得られた関数を第二引数に適用
+
+以上をまとめると:
+
+```
+cpl> let add=eval.prod(pr(curry(pi2), curry(s.eval)), I)
+add : prod(nat,nat) -> nat  defined
+```
+
+`let` では、パラメータを持つ射の定義も行うことができます。
 
 ```
 cpl> let uncurry(f) = eval . prod(f, I)
@@ -458,13 +522,34 @@ s.s.s.0
 
 この結果 `s.s.s.0` は、後続関数 `s` を3回適用したもので、自然数の3を表しています。つまり、2 + 1 = 3 という計算が行われました。
 
-加算と同様に乗算と階乗も定義して計算してみましょう:
+加算と同様に、乗算と階乗も定義して計算してみましょう。
+
+**乗算** `mult: prod(nat, nat) → nat` は加算と同じパターン（カリー化 + 原始再帰 + アンカリー化）で定義できます:
 
 ```
 cpl> let mult=eval.prod(pr(curry(0.!), curry(add.pair(eval, pi2))), I)
 mult : prod(nat,nat) -> nat
+```
+
+`add` との違いはゼロの場合と再帰ステップだけです:
+
+- **ゼロの場合** `curry(0.!)` — `0 × y = 0`（`0.!` は「何を入れてもゼロ」を返す射）
+- **後続の場合** `curry(add.pair(eval, pi2))` — `(n+1) × y = n × y + y`（再帰結果 `eval` に `y` 自身 `pi2` を加える）
+
+**階乗** `fact: nat → nat` は少し異なる方法を使います。`pr` で `prod(nat, nat)` の状態（累積値とカウンタのペア）を持ち運びます:
+
+```
 cpl> let fact=pi1.pr(pair(s.0,0), pair(mult.pair(s.pi2,pi1), s.pi2))
 fact : nat -> nat  defined
+```
+
+- **初期値** `pair(s.0, 0)` — `(1, 0)` すなわち「0! = 1、カウンタ = 0」
+- **再帰ステップ** `pair(mult.pair(s.pi2, pi1), s.pi2)` — `(acc, k)` から `((k+1) × acc, k+1)` を計算
+- **最後に** `pi1` で累積値（階乗の結果）を取り出す
+
+計算してみましょう:
+
+```
 cpl> simp fact.s.s.s.s.0
 s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.0
     : 1 -> nat
@@ -586,9 +671,27 @@ cons.pair(s.pi1,cons).pair(s.pi1,cons).pair(0,nil)
 cpl> simp full seq.s.s.s.0
 cons.pair(s.s.0,cons.pair(s.0,cons.pair(0,nil)))
     : 1 -> list(nat)
+```
+
+`simp` だけでは中間的な形で止まりますが、`simp full` で完全に簡約されます。結果の `cons.pair(s.s.0,cons.pair(s.0,cons.pair(0,nil)))` は、CPLにおけるリストの表現です。これは他の言語で書けば `[2, 1, 0]` に対応します:
+
+| CPLの表現 | 意味 |
+|---|---|
+| `nil` | 空リスト `[]` |
+| `cons.pair(x, xs)` | `x` を先頭に追加 `x : xs` |
+| `cons.pair(s.s.0, cons.pair(s.0, cons.pair(0, nil)))` | `[2, 1, 0]` |
+
+他の関数の計算結果も見てみましょう:
+
+```
 cpl> simp hdp.tl.seq.s.s.s.0
 in1.s.0
     : 1 -> coprod(nat,*a)
+```
+
+`seq.s.s.s.0` は `[2, 1, 0]` なので、`tl` で先頭を除いた `[1, 0]` に対し `hdp` で先頭を取ると `in1.s.0` (= `Just 1`) になります。
+
+```
 cpl> simp full append.pair(seq.s.s.0, seq.s.s.s.0)
 cons.pair(s.0,cons.pair(0,cons.pair(s.s.0,cons.pair(s.0,cons.pair(0,nil)))))
     : 1 -> list(nat)
@@ -596,6 +699,8 @@ cpl> simp full reverse.it
 cons.pair(0,cons.pair(s.0,cons.pair(s.s.0,cons.pair(0,cons.pair(s.0,nil.!)))))
     : 1 -> list(nat)
 ```
+
+`append.pair(seq.s.s.0, seq.s.s.s.0)` は `[1, 0]` と `[2, 1, 0]` の連結で `[1, 0, 2, 1, 0]` に、`reverse.it` はその逆転で `[0, 1, 2, 0, 1]` になります。
 
 最後の例 `simp full reverse.it` では、`it` を使って直前の計算結果（`append.pair(seq.s.s.0, seq.s.s.s.0)` の結果）を参照しています。`it` は直前の `simp` コマンドの結果を自動的に保存する便利な機能です。
 
@@ -660,23 +765,44 @@ right object inflist(+)
 
 それでは、無限リストを用いた射の定義と計算をしてみましょう。
 
+まず、0, 1, 2, 3, ... という増加列を作ります:
+
 ```
 cpl> let incseq=fold(I,s).0
 incseq : 1 -> inflist(nat)  defined
+```
+
+`fold(I,s)` は「現在の状態をそのまま `head` として出力し (`I`)、状態に `s` を適用して次へ進む」という展開規則です。初期状態 `0` から始めると、0, 1, 2, 3, ... という無限列になります。
+
+```
 cpl> simp head.incseq
 0
     : 1 -> nat
 cpl> simp head.tail.tail.tail.incseq
 s.s.s.0
     : 1 -> nat
+```
+
+`head` で先頭要素 0 を、`head.tail.tail.tail` で4番目の要素 3 を取り出せます。
+
+次に、二つの無限リストを交互に組み合わせる `alt` を定義します:
+
+```
 cpl> let alt=fold(head.pi1, pair(pi2, tail.pi1))
 alt : prod(inflist(*a),inflist(*a)) -> inflist(*a)  defined
+```
+
+`alt` は直積 `prod(inflist, inflist)` を状態として、`head.pi1` で第一リストの先頭を出力し、`pair(pi2, tail.pi1)` で二つのリストの役割を入れ替えます（第二を先に、第一のtailを後に）。
+
+```
 cpl> let infseq=fold(I,I).0
 infseq : 1 -> inflist(nat)  defined
 cpl> simp head.tail.tail.alt.pair(incseq, infseq)
 s.0
     : 1 -> nat
 ```
+
+`infseq` は 0, 0, 0, ... という定数列です。`alt.pair(incseq, infseq)` は 0, 0, 1, 0, 2, 0, 3, ... と交互に並べた列になるため、3番目の要素（0始まりで index 2）は `s.0` (= 1) です。
 
 ## 圏論的背景: left と right
 
@@ -693,7 +819,7 @@ CPLでデータ型を定義する際、`left object` と `right object` とい�
   - 直積 `prod(a,b)`: 二つの射`f: x -> a`と`g: x -> b`から`pair(f,g): x -> prod(a,b)`を作る
   - 指数対象 `exp(a,b)`: カリー化により射を作る
   - 無限リスト `inflist`: `fold`により無限の構造を展開する
-- **プログラミングとの対応**: 余帰納的データ型（coinductive types）、振る舞いによって値が規定されるされる型、遅延評価
+- **プログラミングとの対応**: 余帰納的データ型（coinductive types）、振る舞いによって値が規定される型、遅延評価
 
 ### left object（始対象的構造）
 
