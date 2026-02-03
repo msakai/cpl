@@ -53,18 +53,35 @@ jobs:
           wasm32-wasi-cabal update
           scripts/build-wasm.sh
 
+      - name: Install Pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
+          pandoc --version
+
+      - name: Build tutorial pages
+        run: |
+          scripts/build-tutorial.sh
+
       - name: Prepare deployment artifacts
         run: |
-          echo "Creating _site directory for GitHub Pages..."
-          mkdir -p _site
-
-          echo "Copying files..."
+          echo "Copying WASM files to _site directory..."
           cp wasm/index.html wasm/cpl-terminal.js wasm/cpl.js wasm/cpl.wasm wasm/samples.js _site/
+          cp wasm/tutorial.css _site/
 
+          echo ""
           echo "Deployment artifacts prepared:"
-          ls -lh _site/
-
+          echo ""
+          echo "WASM files:"
+          ls -lh _site/*.html _site/*.js _site/*.wasm _site/*.css 2>/dev/null || echo "  (files in _site root)"
+          echo ""
           echo "WASM binary size: $(du -h _site/cpl.wasm | cut -f1)"
+          echo ""
+          echo "Tutorial files:"
+          ls -lh _site/tutorial*.html 2>/dev/null || echo "  No tutorial files found"
+          echo ""
+          echo "Images:"
+          ls -lh _site/doc-images/ 2>/dev/null || echo "  No images found"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
