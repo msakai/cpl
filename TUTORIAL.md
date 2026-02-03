@@ -315,6 +315,8 @@ Visualized graphically, this structure appears as follows:
 
 ![](./doc-images/natural-numbers.png)
 
+Please note the direction of the arrows. Whereas in the terminal objects, products, and exponential objects we have handled so far, there existed a unique morphism with that object as its *codomain*, in the case of the natural numbers object, conversely, there exists a unique morphism with that object as its *domain*.
+
 Correspondences to programming concepts:
 
 - The definition of natural numbers according to Peano's axioms
@@ -326,7 +328,7 @@ Correspondences to programming concepts:
 
 - Recursive computations (folding)
 
-Now, let's define the natural numbers object in CPL:
+Now, let's define the natural numbers object in CPL. While we have previously defined objects as `right object`s when there exists a unique morphism with that object as their *codomain*, we now define the natural numbers object as `left object` as there exists a unique morphism with that object as their *domain*:
 
 ```
 cpl> edit
