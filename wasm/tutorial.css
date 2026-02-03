@@ -99,6 +99,14 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Override Pandoc's default div.sourceCode { margin: 1em 0 } which
+   resets margin-left/right to 0 and breaks the body > * centering
+   due to higher specificity (class selector beats universal selector). */
+div.sourceCode {
+  max-width: 900px;
+  margin: 1em auto;
+}
+
 /* Code blocks and inline code */
 code {
   background: #2a2a2a;
