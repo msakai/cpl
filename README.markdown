@@ -62,7 +62,8 @@ See [wasm/README.md](wasm/README.md) for detailed instructions on building and t
 Usage
 -----
 
-See chapter 5 of [1]
+If you are new to CPL, we recommend starting with the [Tutorial](#tutorial) below.
+For a concise reference of the language syntax, see chapter 5 of [1].
 
 ### Quick Start
 
@@ -114,6 +115,18 @@ cpl> exit
 ```
 
 For more examples, see the `samples/` directory.
+For step-by-step explanations, see the [Tutorial](#tutorial) below.
+
+### Tutorial
+
+A comprehensive tutorial that covers CPL usage and the category theory concepts behind it.
+No prior knowledge of category theory is required.
+
+- [Tutorial (English)](TUTORIAL.md)
+- [チュートリアル (日本語)](TUTORIAL_ja.md)
+
+Topics covered: terminal objects, products, coproducts, exponential objects,
+natural numbers, lists, infinite lists, and the duality between `left object` and `right object`.
 
 License
 -------
