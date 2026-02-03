@@ -1,0 +1,264 @@
+/* Tutorial page styles - matching the CPL WASM terminal dark theme */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  line-height: 1.8;
+  font-size: 16px;
+}
+
+/* Navigation header */
+.nav-header {
+  background: #2a2a2a;
+  border-bottom: 2px solid #4ec9b0;
+  padding: 1rem;
+  margin: -20px -20px 2rem -20px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.nav-header a {
+  color: #4ec9b0;
+  text-decoration: none;
+  margin: 0 0.5rem;
+}
+
+.nav-header a:hover {
+  text-decoration: underline;
+}
+
+/* Main content container */
+#TOC {
+  background: #2a2a2a;
+  border: 1px solid #4ec9b0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 0 auto 2rem auto;
+  max-width: 900px;
+}
+
+#TOC > ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+#TOC a {
+  color: #4ec9b0;
+  text-decoration: none;
+}
+
+#TOC a:hover {
+  text-decoration: underline;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: #4ec9b0;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 2.5rem;
+  border-bottom: 2px solid #4ec9b0;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+  text-align: center;
+}
+
+h2 {
+  font-size: 2rem;
+  border-bottom: 1px solid #333;
+  padding-bottom: 0.5rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+h4 {
+  font-size: 1.2rem;
+  color: #d4d4d4;
+}
+
+/* Links */
+a {
+  color: #4ec9b0;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Code blocks and inline code */
+code {
+  background: #2a2a2a;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: 'Courier New', Consolas, Monaco, monospace;
+  font-size: 0.9em;
+  color: #ce9178;
+}
+
+pre {
+  background: #2a2a2a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+  color: #d4d4d4;
+  font-size: 0.95em;
+}
+
+/* Blockquotes */
+blockquote {
+  border-left: 4px solid #4ec9b0;
+  padding-left: 1rem;
+  margin-left: 0;
+  color: #888;
+  font-style: italic;
+}
+
+/* Lists */
+ul, ol {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+li {
+  margin: 0.5rem 0;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 2rem auto;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+th, td {
+  border: 1px solid #333;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+th {
+  background: #2a2a2a;
+  color: #4ec9b0;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background: #252525;
+}
+
+/* Horizontal rule */
+hr {
+  border: none;
+  border-top: 1px solid #333;
+  margin: 2rem 0;
+}
+
+/* Paragraphs */
+p {
+  margin: 1rem 0;
+}
+
+/* Main content wrapper */
+body > * {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Allow nav-header to be full width */
+.nav-header {
+  max-width: none;
+}
+
+/* Definition lists */
+dt {
+  font-weight: bold;
+  color: #4ec9b0;
+  margin-top: 1rem;
+}
+
+dd {
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
+
+  pre {
+    padding: 0.75rem;
+    font-size: 0.85em;
+  }
+
+  #TOC {
+    padding: 1rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+
+  .nav-header {
+    display: none;
+  }
+
+  a {
+    color: #0066cc;
+  }
+
+  pre, code {
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+  }
+}
