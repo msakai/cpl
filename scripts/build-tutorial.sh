@@ -37,7 +37,6 @@ pandoc "${PROJECT_ROOT}/TUTORIAL.md" \
     --css=tutorial.css \
     --metadata title="CPL Tutorial" \
     --metadata lang="en" \
-    --variable header-includes='<meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script><script>hljs.highlightAll();</script>' \
     --output "${OUTPUT_DIR}/tutorial.html"
 
 # Add navigation header to English tutorial
@@ -60,7 +59,6 @@ pandoc "${PROJECT_ROOT}/TUTORIAL_ja.md" \
     --css=tutorial.css \
     --metadata title="CPL チュートリアル" \
     --metadata lang="ja" \
-    --variable header-includes='<meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script><script>hljs.highlightAll();</script>' \
     --output "${OUTPUT_DIR}/tutorial_ja.html"
 
 # Add navigation header to Japanese tutorial

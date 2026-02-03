@@ -223,6 +223,38 @@ dd {
   margin-bottom: 1rem;
 }
 
+/* Syntax highlighting colors for dark theme
+   (override Pandoc's default light-theme colors) */
+code span.al { color: #ff6b6b; font-weight: bold; } /* Alert */
+code span.an { color: #7ec8e3; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c9d05c; } /* Attribute */
+code span.bn { color: #b5cea8; } /* BaseN */
+code span.bu { color: #4ec9b0; } /* BuiltIn */
+code span.cf { color: #c586c0; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #ce9178; } /* Char */
+code span.cn { color: #d19a66; } /* Constant */
+code span.co { color: #6a9955; font-style: italic; } /* Comment */
+code span.cv { color: #6a9955; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #6a9955; font-style: italic; } /* Documentation */
+code span.dt { color: #4ec9b0; } /* DataType */
+code span.dv { color: #b5cea8; } /* DecVal */
+code span.er { color: #ff6b6b; font-weight: bold; } /* Error */
+code span.ex { color: #dcdcaa; } /* Extension */
+code span.fl { color: #b5cea8; } /* Float */
+code span.fu { color: #dcdcaa; } /* Function */
+code span.im { color: #c586c0; font-weight: bold; } /* Import */
+code span.in { color: #7ec8e3; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #569cd6; font-weight: bold; } /* Keyword */
+code span.op { color: #d4d4d4; } /* Operator */
+code span.ot { color: #9cdcfe; } /* Other */
+code span.pp { color: #c586c0; } /* Preprocessor */
+code span.sc { color: #d7ba7d; } /* SpecialChar */
+code span.ss { color: #ce9178; } /* SpecialString */
+code span.st { color: #ce9178; } /* String */
+code span.va { color: #9cdcfe; } /* Variable */
+code span.vs { color: #ce9178; } /* VerbatimString */
+code span.wa { color: #d19a66; font-weight: bold; font-style: italic; } /* Warning */
+
 /* Responsive design */
 @media (max-width: 768px) {
   body {
