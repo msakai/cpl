@@ -22,8 +22,13 @@ Description:
 Extra-Doc-Files:
    README.markdown,
    CHANGELOG.markdown,
+   TUTORIAL.md,
+   TUTORIAL_ja.md,
+   doc-images/*.png,
    wasm/README.md
 Extra-Source-Files:
+   doc-images/*.tex,
+   doc-images/Makefile,
    samples/ack.cpl,
    samples/automata.cdt,
    samples/ccc.cdt,

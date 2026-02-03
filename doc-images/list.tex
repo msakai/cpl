@@ -1,0 +1,10 @@
+\documentclass{standalone}
+\usepackage{amssymb}
+\usepackage{tikz-cd}
+\begin{document}
+\begin{tikzcd}
+\mathbf{1} \arrow[rr, "\mathrm{nil}"] \arrow[rrdd, bend right, "z"'] & & \mathrm{list}(A) \arrow[dd, "{\mathrm{prl}(z,f)}" description] & & A\times \mathrm{list}(A) \arrow[ll, "\mathrm{cons}"'] \arrow[dd, "{I \times \mathrm{prl}(z,f)}" description] \\
+\\
+& & X & & A\times X \arrow[ll, "f"]
+\end{tikzcd}
+\end{document}

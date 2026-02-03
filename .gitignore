@@ -8,3 +8,9 @@ wasm/cpl.wasm
 wasm/cpl.js
 wasm/samples.js
 _site/
+
+doc-images/*.aux
+doc-images/*.fdb_latexmk
+doc-images/*.fls
+doc-images/*.log
+doc-images/*.pdf

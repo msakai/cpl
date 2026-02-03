@@ -1,0 +1,10 @@
+\documentclass{standalone}
+\usepackage{amssymb}
+\usepackage{tikz-cd}
+\begin{document}
+\begin{tikzcd}
+A \arrow[rrdd, bend right, "f"'] \arrow[rr, "\mathrm{in}_1"] & & A+B \arrow[dd, "{\mathrm{case}(f,g)}" description] & & B \arrow[ll, "\mathrm{in}_2"'] \arrow[lldd, bend left, "g"] \\
+\\
+& & X
+\end{tikzcd}
+\end{document}

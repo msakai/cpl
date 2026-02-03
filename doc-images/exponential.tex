@@ -1,0 +1,10 @@
+\documentclass{standalone}
+\usepackage{amssymb}
+\usepackage{tikz-cd}
+\begin{document}
+\begin{tikzcd}
+B^A \times A \arrow[rr, "\mathrm{eval}"] & & B \\
+\\
+X \times A \arrow[uu, dashed, "\mathrm{curry}(f)\times I" description] \arrow[uurr, bend right, "f"']
+\end{tikzcd}
+\end{document}
