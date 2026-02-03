@@ -152,6 +152,8 @@ img {
   margin: 2rem auto;
   border: 1px solid #333;
   border-radius: 8px;
+  background: white;
+  padding: 1rem;
 }
 
 /* Tables */
