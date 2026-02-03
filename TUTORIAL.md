@@ -145,7 +145,7 @@ Next, we'll define the **product**. The product combines two objects into a sing
 In category theory, the product `A × B` (`prod(a,b)` in CPL) is defined as “an object that preserves the information of both objects `A` and `B`.” It satisfies the following properties:
 
 - Existence of projection morphisms `π₁: A × B → A` and `π₂: A × B → B`
-- For any object `X` with morphisms `f: X → A` and `g: X → B` to `A` and `B` respectively, there exists a unique morphism `⟨f,g⟩: X → A × B` such that `π₁ ∘ ⟨f,g⟩ = f` and `π₂ ∘ ⟨f,g⟩ = g` (this kind of proeprty is referred to as the **universal property**).
+- For any object `X` with morphisms `f: X → A` and `g: X → B` to `A` and `B` respectively, there exists a unique morphism `⟨f,g⟩: X → A × B` such that `π₁ ∘ ⟨f,g⟩ = f` and `π₂ ∘ ⟨f,g⟩ = g` (this kind of property is referred to as the **universal property**).
 
 Visually represented as a diagram:
 
