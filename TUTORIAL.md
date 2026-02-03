@@ -56,7 +56,7 @@ No prior knowledge of category theory is required. Through this tutorial, you'll
 
 The CPL REPL (Read-Eval-Print Loop) supports the following commands. This section provides only an overview, with detailed usage examples to be learned through practical application.
 
-- **`edit`**: Enters multi-line editing mode. Use this for defining data types. End editing mode by pressing semicolon (`;`)
+- **`edit`**: Enters multi-line editing mode. Use this for defining data types. End editing mode by entering semicolon (`;`)
 - **`show <expression>`**: Displays the type (domain and codomain) of an morphism (function)
 - **`show object <functor>`**: Displays detailed information about an object (data type)
 - **`show function <function>`**: Displays the type of a factorizer (higher-order function) or user-defined function
@@ -88,7 +88,7 @@ CPL has no built-in data types, and all data types must be explicitly defined.
 
 Since every operation requires the **terminal object**—corresponding to the unit type in other functional programming languages—we begin by defining this fundamental concept.
 
-In category theory, a **terminal object** `1` is defined as “an object such that for every object `X`, there is exactly one morphism from `X` to `1`.” It serves as an “endpoint” representing an object with no information (or containing only one value). The single morphism is written as `!`.
+In category theory, a **terminal object** `1` is defined as “an object such that for every object `X`, there is exactly one morphism from `X` to `1`.” It serves as an “endpoint” representing an object with no information (or containing only one value). The unique morphism is written as `!`.
 
 Visually, this corresponds to the following situation:
 
@@ -100,7 +100,7 @@ Correspondences to programming concepts:
 - `void` or `unit` types in other languages
 - The concept of “a type containing exactly one value”
 
-Now, let's define the terminal object in CPL. Using the `edit` command, enter multi-line editing mode, input your data type definition, and exit multi-line editing mode by pressing semicolon `;`.
+Now, let's define the terminal object in CPL. Using the `edit` command, enter multi-line editing mode, input your data type definition, and exit multi-line editing mode by entering semicolon `;`.
 
 ```
 cpl> edit
@@ -140,12 +140,12 @@ cpl> show !
 
 ## Defining the Product
 
-Next, we'll define the **product**. In category theory, the product operation combines two objects into a single object.
+Next, we'll define the **product**. The product combines two objects into a single object.
 
 In category theory, the product `A × B` (`prod(a,b)` in CPL) is defined as “an object that preserves the information of both objects `A` and `B`.” It satisfies the following properties:
 
 - Existence of projection morphisms `π₁: A × B → A` and `π₂: A × B → B`
-- For any object `X` with morphisms `f: X → A` and `g: X → B` to `A` and `B` respectively, there exists a unique morphism `⟨f,g⟩: X → A × B` such that `π₁ ∘ ⟨f,g⟩ = f` and `π₂ ∘ ⟨f,g⟩ = g` (this is referred to as the **universal property**).
+- For any object `X` with morphisms `f: X → A` and `g: X → B` to `A` and `B` respectively, there exists a unique morphism `⟨f,g⟩: X → A × B` such that `π₁ ∘ ⟨f,g⟩ = f` and `π₂ ∘ ⟨f,g⟩ = g` (this kind of proeprty is referred to as the **universal property**).
 
 Visually represented as a diagram:
 
@@ -168,7 +168,7 @@ cpl> edit
 right object prod(+,+) defined
 ```
 
-(Note in the definition of `pi1` and `pi2` that the object `prod` we're defining now is omitted from the arguments. This is intended as “we define `prod(a,b)` as the most universal `x` equipped with `x -> a` and `x -> b`,” but think of it as reusing the name `prod` instead of introducing a new name `x`)
+(Note in the definition of `pi1` and `pi2` that the object `prod` we're defining now lacks arguments. The mearning is “Among all `x` equipped with `x -> a` and `x -> b`, we define the most general `x` as `prod(a,b)`,” but resuing the name `prod` instead of introducing a new name `x`)
 
 Unlike in the case of terminal objects, the product `prod(a,b)` is an object that takes parameters, and the resulting definition displays as `prod(+,+)`. The `+` indicates covariance, and we can see that `prod` takes two arguments and is covariant with respect to both arguments. Use `show object` to display detailed information.
 
@@ -193,7 +193,7 @@ right object prod(+,+)
 
 Unlike terminal objects, in the case of products, both projection morphisms `pi1` and `pi2` are defined simultaneously (you can also check their types using the `show` command).
 
-Additionally, a function (factorizer) `pair` is also defined, which constructs `pair(f,g): a -> prod(b,c)` from `f: a -> b` and `g: a -> c`. The morphism previously written as `⟨f,g⟩` in this context is now denoted as `pair(f,g)` in the defined product. The factorizer `pair` itself is not an morphism and cannot be displayed using `show`; instead, use `show function` to display its type.
+Additionally, a function (factorizer) `pair` is also defined, which constructs `pair(f,g): a -> prod(b,c)` from `f: a -> b` and `g: a -> c`. The morphism previously written as `⟨f,g⟩` is now written as `pair(f,g)` in this definition of products in CPL. The factorizer `pair` itself is not an morphism and cannot be displayed using `show`; instead, use `show function` to display its type.
 
 ```
 cpl> show function pair
@@ -239,7 +239,7 @@ Visualized as a diagram, it appears as follows:
 
 **Why Is the Exponential Object Called a “Function Space”?** Let's consider this concretely in the context of the category of sets.
 
-- **Bᴬ is the set of all functions from A to B** — In the category of sets, the exponential object `Bᴬ` becomes the set `{f | f: A → B}` of functions itself.
+- **Bᴬ is the set of all functions from A to B** — In the category of sets, the exponential object `Bᴬ` is the set `{f | f: A → B}` of functions itself.
 - **eval represents function application** — `eval(f, a) = f(a)`. In other words, it performs the operation of “taking a pair of a function `f` and its argument `a`, and returning the result of applying `f` to `a`.”
 - **curry represents argument separation** — For `f: X × A → B`, `curry(f)(x)` returns the function `a ↦ f(x, a)`. In other words, currying transforms a two-argument function into a one-argument function that returns another function — this is precisely the operation of converting a function into a function that returns functions.
 - **Universality characterizes the function space** — The commutativity of the diagram above — the property that “functions from `X × A → B` are in one-to-one correspondence with functions from `X → Bᴬ`” — is what uniquely characterizes `Bᴬ` as a function space. This correspondence is exactly the relationship between currying and function application in programming.
@@ -250,7 +250,7 @@ Correspondences with programming concepts:
 - Currying and function application
 - The concept of “treating functions as first-class values”
 
-A category equipped with terminal objects, product objects, and exponential objects is called a Cartesian Closed Category, which forms the theoretical foundation for lambda calculus and functional programming.
+A category equipped with the terminal object, product objects, and exponential objects is called a Cartesian Closed Category, which forms the theoretical foundation for lambda calculus and functional programming.
 
 Now, let's define the exponential object in CPL:
 
@@ -283,7 +283,7 @@ right object exp(-,+)
 
 We can see that `eval` for function application, `curry` for currying, and the conditions for an exponential object in category theory are all defined.
 
-Using `show function`, let's examine how the functor `exp` operates on morphisms:
+Let's examine how the functor `exp` operates on morphisms using `show function`:
 
 ```
 cpl> show function exp
@@ -292,10 +292,10 @@ f0: *c -> *a  f1: *b -> *d
 exp(f0,f1): exp(*a,*b) -> exp(*c,*d)
 ```
 
-Note the directionality of the morphisms as arguments to `exp`, and how the parameters of `exp` change from domain to codomain:
+Note the directionality of the argument morphisms, and how the parameters of `exp` change from domain to codomain in the result:
 
-- For `f0` with function direction `*c -> *a`, the resulting parameter changes direction from `*a` to `*c`
-- For `f1` with function direction `*b -> *d`, the resulting parameter changes direction from `*b` to `*d`
+- `f0` is a morphism from `*c` to `*a`, but the parameter changes direction from `*a` to `*c` in the result
+- `f1` is a morphism from `*b` to `*d`, and the direction of the parameter is the same, from `*b` to `*d`
 
 This indicates that `exp` is a contravariant functor with respect to the first argument and a covariant functor with respect to the second argument. The notation `exp(-,+)` used during definition and in `show object exp` is a concise representation of this property.
 
@@ -366,12 +366,12 @@ Here, `0` and `s` represent the zero and successor functions respectively, while
 
 The coproduct `A + B` (denoted as `coprod(a,b)` in CPL) is an object that can hold one of two values, either from object `A` or `B`:
 
-- It includes two injection morphisms `in₁: A → A + B` and `in₂: B → A + B` (which “inject” values into the coproduct)
-- For any objects `X` and functions `f: A → X` and `g: B → X`, there exists a unique morphism `case(f,g): A + B → X` that combines them case-by-case, satisfying `case(f,g) ∘ in₁ = f` and `case(f,g) ∘ in₂ = g`
+- It has two injection morphisms `in₁: A → A + B` and `in₂: B → A + B` (which “inject” values into the coproduct)
+- For any objects `X` and morphisms `f: A → X` and `g: B → X`, there exists a unique morphism `case(f,g): A + B → X` that combines them case-by-case, satisfying `case(f,g) ∘ in₁ = f` and `case(f,g) ∘ in₂ = g`
 
-This represents the “reversed morphisms” dual concept to the direct product, demonstrating a good example of symmetry in category theory.
+This is the dual concept of the product, obtained by “reversing the arrow,” and serves as a good example of symmetry in category theory.
 
-Visualized graphically, it appears as follows: (Compare with the direct product diagram to verify the reversed morphisms):
+Visualized graphically, it appears as follows: (Compare with the product diagram to verify that morphisms are reversed):
 
 ![](./doc-images/coproduct.png)
 
@@ -421,7 +421,7 @@ pair(pi2,eval)
     : prod(exp(*a,*b),*a) -> prod(*a,*b)
 ```
 
-Here, `*a` and `*b` are variable representations of objects, and such morphisms actually denote families of functions with various types (domains and codomains). When these families satisfy certain conditions, they are called **natural transformations**, which correspond to **polymorphic functions** in typical functional programming languages.
+Here, `*a` and `*b` are variable ranging over objects, and the morphism actually denotes families of morphisms with varying types (domains and codomains). When these families satisfy certain conditions, they are called **natural transformations**, which correspond to **polymorphic functions** in typical functional programming languages.
 
 In the above example, `pair(pi2,eval)` is an morphism that works for any objects `*a` and `*b`, and can be viewed as a natural transformation from the functor `F(*a,*b) = prod(exp(*a,*b),*a)` to the functor `G(*a,*b) = prod(*a,*b)`.
 
@@ -479,7 +479,7 @@ add (x + 1) y = add x y + 1
 
 In CPL, we express this using primitive recursion `pr` combined with currying `curry`. Let's break it down step by step.
 
-1. **Strategy**: We want to use primitive recursion `pr` on the first argument, but `pr(f0, f1): nat → X` can only define unary morphisms. Therefore, we **curry** the second argument by encapsulating it within the function.
+1. **Strategy**: We want to use primitive recursion `pr` on the first argument, but `pr(f0, f1): nat → X` can only define unary morphisms. Therefore, we **curry** the second argument by encapsulating it within the exponential object.
 
 2. **Curried addition `add'`**:
    - `add': nat → exp(nat, nat)` — An morphism that takes a natural number `n` and returns a “function that adds `n`”
@@ -567,7 +567,7 @@ Since `s` has been applied 24 times, we obtain the correct result 4! = 24.
 
 Next, we'll define a **list type**—a data structure that's very similar to natural numbers but slightly more complex.
 
-Lists, like natural numbers, have an inductive structure, but they differ in that their element type is parameterized:
+Lists, like natural numbers, have an inductive structure, but they differ in that lists are parameterized by their element type:
 
 - Empty list `nil: 1 → list(a)`
 - Element prepend `cons: a × list(a) → list(a)` (adds an element to the front)
@@ -618,7 +618,7 @@ left object list(+)
 - productive: (no)
 ```
 
-The list is also a parameterized object and a functor, just like other objects. Let's examine its action on list morphisms. In functional programming, this action of a list functor on morphisms is often referred to as `map`.
+The list is also a parameterized object, that is, a functor. Let's examine its action on morphisms. In functional programming, this action of the list functor on morphisms is often referred to as `map`.
 
 ```
 cpl> show function list
@@ -649,9 +649,9 @@ cpl> let tl = coprod(pi2,I).prl(in2, in1.prod(I, case(cons,nil)))
 tl : list(*a) -> coprod(list(*a),1)  defined
 ```
 
-We've chosen `hd` / `tl` here because we'll later need to use these names when working with infinite lists. In CPL, since only total functions exist and no partial functions are allowed, the codomain is a disjoint union with `1` (equivalent to the `Maybe` or `Option` types in other languages).
+We've chosen `hd` / `tl` here because we want to use these names when working with infinite lists later. In CPL, since only total functions exist and no partial functions are allowed, the codomain is a coproduct with `1` (equivalent to the `Maybe` or `Option` types in other languages).
 
-For convenience, we've also defined versions that lift the domain to the disjoint union with `1`, allowing us to recursively apply `head` / `tail` to the results of these operations.
+For convenience, we've also defined versions that lift the domain to the coproduct with `1`, allowing us to apply `head` / `tail` to the results of these operations again.
 
 ```
 cpl> let hdp=case(hd,in2)
@@ -683,8 +683,8 @@ While `simp` alone stops at an intermediate form, `simp full` completes the full
 
 | CPL Representation | Meaning |
 |---|---|
-| `nil` | Empty list `[]` |
-| `cons.pair(x, xs)` | Prepend `x`: `x : xs` |
+| `nil` | `[]` (Empty list) |
+| `cons.pair(x, xs)` | `x : xs` (Prepend `x` to the beginning of `xs`) |
 | `cons.pair(s.s.0, cons.pair(s.0, cons.pair(0, nil)))` | `[2, 1, 0]` |
 
 Let's examine the results of computing with other functions as well:
@@ -819,7 +819,7 @@ When defining data types in CPL, there are two types of declarations: `left obje
 A `right object` is a structure based on **limits** in category theory. Limits are characterized by their property of being “defined by **incoming** morphisms from other objects.”
 
 - **Key characteristic**: Morphisms from other objects to this one (incoming morphisms) are crucial
-- **Role in factorization**: Creates new morphisms by **combining** multiple morphisms
+- **Role of factorizer**: Creates new morphisms by **combining** multiple morphisms
 - **Examples in CPL**:
   - Terminal object `1`: The unique morphism `!` from any object to `1`
   - Product `prod(a,b)`: Creates morphism `pair(f,g): x -> prod(a,b)` from two morphisms `f: x -> a` and `g: x -> b`
@@ -832,7 +832,7 @@ A `right object` is a structure based on **limits** in category theory. Limits a
 A `left object` is a structure based on **colimits** in category theory. Colimits are characterized by their property of being “defined by **outgoing** morphisms from this object to others.”
 
 - **Key characteristic**: Morphisms from this object to other objects (outgoing morphisms) are crucial
-- **Role in factorization**: **Breaks down and consumes** multiple cases
+- **Role of factorizer**: **Breaks down and consumes** multiple cases
 - **Examples in CPL**:
   - Natural numbers `nat`: Consumes (folds) natural numbers defined recursively by `pr`
   - Coproduct `coprod(a,b)`: Branches into two cases using `case`
@@ -852,10 +852,10 @@ However, the symmetry between left and right in category theory is profound, and
 
 This left/right distinction corresponds to the following:
 
-| CPL           | Category Theory       | Property                      |
-|---------------|-----------------------|-------------------------------|
-| right object  | Limit                 | Unifies “incoming” morphisms via universal morphisms |
-| left object   | Colimit               | Unifies “outgoing” morphisms via couniversal morphisms |
+| CPL           | Category Theory                    | Property                                               |
+|---------------|------------------------------------|--------------------------------------------------------|
+| right object  | Limit, Right adjoint, F-coalgebra  | Unifies “incoming” morphisms via universal morphisms   |
+| left object   | Colimit, Left adjoing, F-algebra   | Unifies “outgoing” morphisms via couniversal morphisms |
 
 In CPL, these concepts are treated symmetrically, allowing you to learn how category theory concepts are applied in practical programming.
 
