@@ -37,16 +37,8 @@ pandoc "${PROJECT_ROOT}/TUTORIAL.md" \
     --css=tutorial.css \
     --metadata title="CPL Tutorial" \
     --metadata lang="en" \
+    --include-before-body="${PROJECT_ROOT}/wasm/tutorial_header.txt" \
     --output "${OUTPUT_DIR}/tutorial.html"
-
-# Add navigation header to English tutorial
-sed -i.bak '/<body>/a\
-<div class="nav-header">\
-  <a href="index.html">← Back to CPL WASM</a> | \
-  <a href="tutorial_ja.html">日本語版</a> | \
-  <a href="https://github.com/msakai/cpl">GitHub</a>\
-</div>' "${OUTPUT_DIR}/tutorial.html"
-rm -f "${OUTPUT_DIR}/tutorial.html.bak"
 
 # Build Japanese tutorial
 echo "Building Japanese tutorial (tutorial_ja.html)..."
@@ -59,16 +51,8 @@ pandoc "${PROJECT_ROOT}/TUTORIAL_ja.md" \
     --css=tutorial.css \
     --metadata title="CPL チュートリアル" \
     --metadata lang="ja" \
+    --include-before-body="${PROJECT_ROOT}/wasm/tutorial_ja_header.txt" \
     --output "${OUTPUT_DIR}/tutorial_ja.html"
-
-# Add navigation header to Japanese tutorial
-sed -i.bak '/<body>/a\
-<div class="nav-header">\
-  <a href="index.html">← CPL WASM に戻る</a> | \
-  <a href="tutorial.html">English</a> | \
-  <a href="https://github.com/msakai/cpl">GitHub</a>\
-</div>' "${OUTPUT_DIR}/tutorial_ja.html"
-rm -f "${OUTPUT_DIR}/tutorial_ja.html.bak"
 
 echo "✓ Tutorial pages built successfully:"
 echo "  - ${OUTPUT_DIR}/tutorial.html"

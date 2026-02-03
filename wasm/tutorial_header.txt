@@ -1,0 +1,5 @@
+<div class="nav-header">
+  <a href="index.html">← Back to CPL WASM</a> | 
+  <a href="tutorial_ja.html">日本語版</a> | 
+  <a href="https://github.com/msakai/cpl">GitHub</a>
+</div>
