@@ -54,7 +54,9 @@ pandoc "${PROJECT_ROOT}/TUTORIAL_ja.md" \
     --include-before-body="${PROJECT_ROOT}/wasm/tutorial_ja_header.txt" \
     --output "${OUTPUT_DIR}/tutorial_ja.html"
 
+IMAGE_COUNT=$(ls -1 "${OUTPUT_DIR}/doc-images/"*.png 2>/dev/null | wc -l | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
+
 echo "✓ Tutorial pages built successfully:"
 echo "  - ${OUTPUT_DIR}/tutorial.html"
 echo "  - ${OUTPUT_DIR}/tutorial_ja.html"
-echo "  - ${OUTPUT_DIR}/doc-images/ (7 images)"
+echo "  - ${OUTPUT_DIR}/doc-images/ ($IMAGE_COUNT images)"
