@@ -2,7 +2,7 @@
 
 ## Introduction
 
-CPL (Categorical Programming Language) is a programming language designed based on concepts from category theory. In CPL, what are typically referred to as "data types" and "functions" in conventional programming languages are instead treated as "objects" and "morphisms" (or “arrows”) in category theory.
+CPL (Categorical Programming Language) is a programming language designed based on concepts from category theory. In CPL, what are typically referred to as “data types” and “functions” in conventional programming languages are instead treated as “objects” and “morphisms” (or “arrows”) in category theory.
 
 |Set Theory|Functional Programming|CPL|
 |-|-|-|
@@ -88,7 +88,7 @@ CPL has no built-in data types, and all data types must be explicitly defined.
 
 Since every operation requires the **terminal object**—corresponding to the unit type in other functional programming languages—we begin by defining this fundamental concept.
 
-In category theory, a **terminal object** `1` is defined as "an object such that for every object `X`, there is exactly one morphism from `X` to `1`." It serves as an "endpoint" representing an object with no information (or containing only one value). The single morphism is written as `!`.
+In category theory, a **terminal object** `1` is defined as “an object such that for every object `X`, there is exactly one morphism from `X` to `1`.” It serves as an “endpoint” representing an object with no information (or containing only one value). The single morphism is written as `!`.
 
 Visually, this corresponds to the following situation:
 
@@ -98,7 +98,7 @@ Correspondences to programming concepts:
 
 - Haskell's `()` type (unit type)
 - `void` or `unit` types in other languages
-- The concept of "a type containing exactly one value"
+- The concept of “a type containing exactly one value”
 
 Now, let's define the terminal object in CPL. Using the `edit` command, enter multi-line editing mode, input your data type definition, and exit multi-line editing mode by pressing semicolon `;`.
 
@@ -109,7 +109,7 @@ cpl> edit
 right object 1 defined
 ```
 
-The output "`right object 1 defined`" confirms that the terminal object `1` has been successfully defined.
+The output “`right object 1 defined`” confirms that the terminal object `1` has been successfully defined.
 
 Detailed information about a defined object can be viewed using `show object`.
 
@@ -142,7 +142,7 @@ cpl> show !
 
 Next, we'll define the **product**. In category theory, the product operation combines two objects into a single object.
 
-In category theory, the product `A × B` (`prod(a,b)` in CPL) is defined as "an object that preserves the information of both objects `A` and `B`." It satisfies the following properties:
+In category theory, the product `A × B` (`prod(a,b)` in CPL) is defined as “an object that preserves the information of both objects `A` and `B`.” It satisfies the following properties:
 
 - Existence of projection morphisms `π₁: A × B → A` and `π₂: A × B → B`
 - For any object `X` with morphisms `f: X → A` and `g: X → B` to `A` and `B` respectively, there exists a unique morphism `⟨f,g⟩: X → A × B` such that `π₁ ∘ ⟨f,g⟩ = f` and `π₂ ∘ ⟨f,g⟩ = g` (this is referred to as the **universal property**).
@@ -155,7 +155,7 @@ Correspondences with programming concepts:
 
 - Haskell's `(a, b)` type (tuple)
 - Pairs or structures in other languages
-- The concept of "a type that combines two values"
+- The concept of “a type that combines two values”
 
 Now, let's define the product in CPL:
 
@@ -168,7 +168,7 @@ cpl> edit
 right object prod(+,+) defined
 ```
 
-(Note in the definition of `pi1` and `pi2` that the object `prod` we're defining now is omitted from the arguments. This is intended as "we define `prod(a,b)` as the most universal `x` equipped with `x -> a` and `x -> b`," but think of it as reusing the name `prod` instead of introducing a new name `x`)
+(Note in the definition of `pi1` and `pi2` that the object `prod` we're defining now is omitted from the arguments. This is intended as “we define `prod(a,b)` as the most universal `x` equipped with `x -> a` and `x -> b`,” but think of it as reusing the name `prod` instead of introducing a new name `x`)
 
 Unlike in the case of terminal objects, the product `prod(a,b)` is an object that takes parameters, and the resulting definition displays as `prod(+,+)`. The `+` indicates covariance, and we can see that `prod` takes two arguments and is covariant with respect to both arguments. Use `show object` to display detailed information.
 
@@ -211,7 +211,7 @@ f0: *a -> *c  f1: *b -> *d
 prod(f0,f1): prod(*a,*b) -> prod(*c,*d)
 ```
 
-Furthermore, examining `equations` reveals that the following four equalities hold. Here, the `.` notation represents **morphism composition**, meaning `g.f` means "first apply `f`, then apply `g`" (corresponding to the mathematical notation `g ∘ f`).
+Furthermore, examining `equations` reveals that the following four equalities hold. Here, the `.` notation represents **morphism composition**, meaning `g.f` means “first apply `f`, then apply `g`” (corresponding to the mathematical notation `g ∘ f`).
 
 - (REQ1): `pi1.pair(f0,f1)=f0`
   - (As stated earlier as a property of the product)
@@ -226,7 +226,7 @@ Furthermore, examining `equations` reveals that the following four equalities ho
 
 Next, we define the **exponential object**, which is a structure for treating functions as values.
 
-The exponential object `Bᴬ` (denoted as `exp(a,b)` in CPL) represents "the object that encodes all morphisms from `A` to `B`." It possesses the following properties:
+The exponential object `Bᴬ` (denoted as `exp(a,b)` in CPL) represents “the object that encodes all morphisms from `A` to `B`.” It possesses the following properties:
 
 - An evaluation morphism `eval: Bᴬ × A → B` exists, allowing functions to be applied to values
   - (While we call it `eval` here, in functional programming contexts, `apply` would be a more natural name)
@@ -237,18 +237,18 @@ Visualized as a diagram, it appears as follows:
 
 ![](./doc-images/exponential.png)
 
-**Why Is the Exponential Object Called a "Function Space"?** Let's consider this concretely in the context of the category of sets.
+**Why Is the Exponential Object Called a “Function Space”?** Let's consider this concretely in the context of the category of sets.
 
 - **Bᴬ is the set of all functions from A to B** — In the category of sets, the exponential object `Bᴬ` becomes the set `{f | f: A → B}` of functions itself.
-- **eval represents function application** — `eval(f, a) = f(a)`. In other words, it performs the operation of "taking a pair of a function `f` and its argument `a`, and returning the result of applying `f` to `a`."
+- **eval represents function application** — `eval(f, a) = f(a)`. In other words, it performs the operation of “taking a pair of a function `f` and its argument `a`, and returning the result of applying `f` to `a`.”
 - **curry represents argument separation** — For `f: X × A → B`, `curry(f)(x)` returns the function `a ↦ f(x, a)`. In other words, currying transforms a two-argument function into a one-argument function that returns another function — this is precisely the operation of converting a function into a function that returns functions.
-- **Universality characterizes the function space** — The commutativity of the diagram above — the property that "functions from `X × A → B` are in one-to-one correspondence with functions from `X → Bᴬ`" — is what uniquely characterizes `Bᴬ` as a function space. This correspondence is exactly the relationship between currying and function application in programming.
+- **Universality characterizes the function space** — The commutativity of the diagram above — the property that “functions from `X × A → B` are in one-to-one correspondence with functions from `X → Bᴬ`” — is what uniquely characterizes `Bᴬ` as a function space. This correspondence is exactly the relationship between currying and function application in programming.
 
 Correspondences with programming concepts:
 
 - Haskell's `a -> b` type (function type)
 - Currying and function application
-- The concept of "treating functions as first-class values"
+- The concept of “treating functions as first-class values”
 
 A category equipped with terminal objects, product objects, and exponential objects is called a Cartesian Closed Category, which forms the theoretical foundation for lambda calculus and functional programming.
 
@@ -362,14 +362,14 @@ Here, `0` and `s` represent the zero and successor functions respectively, while
 
 ## Defining the Coproduct
 
-**The coproduct** is a structure representing "either-or," serving as the dual concept to the direct product.
+**The coproduct** is a structure representing “either-or,” serving as the dual concept to the direct product.
 
 The coproduct `A + B` (denoted as `coprod(a,b)` in CPL) is an object that can hold one of two values, either from object `A` or `B`:
 
-- It includes two injection morphisms `in₁: A → A + B` and `in₂: B → A + B` (which "inject" values into the coproduct)
+- It includes two injection morphisms `in₁: A → A + B` and `in₂: B → A + B` (which “inject” values into the coproduct)
 - For any objects `X` and functions `f: A → X` and `g: B → X`, there exists a unique morphism `case(f,g): A + B → X` that combines them case-by-case, satisfying `case(f,g) ∘ in₁ = f` and `case(f,g) ∘ in₂ = g`
 
-This represents the "reversed morphisms" dual concept to the direct product, demonstrating a good example of symmetry in category theory.
+This represents the “reversed morphisms” dual concept to the direct product, demonstrating a good example of symmetry in category theory.
 
 Visualized graphically, it appears as follows: (Compare with the direct product diagram to verify the reversed morphisms):
 
@@ -431,7 +431,7 @@ The `.` symbol appearing in the equations above refers to fundamental operations
 
 ### Morphism Composition
 
-`.` represents **morphism composition**. Given morphisms `f: A → B` and `g: B → C`, the composed morphism `g.f: A → C` is the morphism that "first applies `f`, then applies `g`". This corresponds to the mathematical notation `g ∘ f` (the Unicode symbol `∘` is also usable in CPL).
+`.` represents **morphism composition**. Given morphisms `f: A → B` and `g: B → C`, the composed morphism `g.f: A → C` is the morphism that “first applies `f`, then applies `g`”. This corresponds to the mathematical notation `g ∘ f` (the Unicode symbol `∘` is also usable in CPL).
 
 For example, we can represent natural numbers by composing the successor function `s: nat → nat` with the zero `0: 1 → nat`:
 
@@ -444,11 +444,11 @@ s.s.s.0
     : 1 -> nat
 ```
 
-`s.s.s.0` represents the "morphism obtained by composing `s` (successor function) three times with `0`", which corresponds to the natural number **3**. Similarly, `s.s.0` represents **2**, and `s.0` represents **1**.
+`s.s.s.0` represents the “morphism obtained by composing `s` (successor function) three times with `0`”, which corresponds to the natural number **3**. Similarly, `s.s.0` represents **2**, and `s.0` represents **1**.
 
 ### Identity Morphisms
 
-The **identity morphism** `I` is the "do-nothing" morphism, with `I: A → A` existing for any object `A`:
+The **identity morphism** `I` is the “do-nothing” morphism, with `I: A → A` existing for any object `A`:
 
 ```
 cpl> show I
@@ -456,7 +456,7 @@ I
     : *a -> *a
 ```
 
-An identity morphism satisfies `f.I = f` and `I.f = f`. While it may seem trivial at first glance, we frequently use it in conjunction with functors to "transform only one of the components while leaving the other unchanged":
+An identity morphism satisfies `f.I = f` and `I.f = f`. While it may seem trivial at first glance, we frequently use it in conjunction with functors to “transform only one of the components while leaving the other unchanged”:
 
 ```
 cpl> show prod(s, I)
@@ -464,7 +464,7 @@ prod(s,I)
     : prod(nat,*a) -> prod(nat,*a)
 ```
 
-Here, `prod(s, I)` represents the morphism that "applies `s` to the first component of the product while leaving the second component unchanged."
+Here, `prod(s, I)` represents the morphism that “applies `s` to the first component of the product while leaving the second component unchanged.”
 
 ## Naming Expressions
 
@@ -482,18 +482,18 @@ In CPL, we express this using primitive recursion `pr` combined with currying `c
 1. **Strategy**: We want to use primitive recursion `pr` on the first argument, but `pr(f0, f1): nat → X` can only define unary morphisms. Therefore, we **curry** the second argument by encapsulating it within the function.
 
 2. **Curried addition `add'`**:
-   - `add': nat → exp(nat, nat)` — An morphism that takes a natural number `n` and returns a "function that adds `n`"
+   - `add': nat → exp(nat, nat)` — An morphism that takes a natural number `n` and returns a “function that adds `n`”
    - This can be defined in the form of `pr(f0, f1)`
 
 3. **`f0 = curry(pi2)` (zero case)**:
-   - `add'(0)` returns "the function that adds 0" = the identity function
-   - `pi2: prod(1, nat) → nat` is an morphism that extracts the second component of a product, which here functions as "discarding the first component (the unique value of the terminal object) while returning the second argument unchanged"
+   - `add'(0)` returns “the function that adds 0” = the identity function
+   - `pi2: prod(1, nat) → nat` is an morphism that extracts the second component of a product, which here functions as “discarding the first component (the unique value of the terminal object) while returning the second argument unchanged”
    - `curry(pi2): 1 → exp(nat, nat)` serves as the base case for the zero case
 
 4. **`f1 = curry(s.eval)` (successor case)**:
-   - `add'(n+1)` returns "a function that applies `s` to the result of `add'(n)`"
+   - `add'(n+1)` returns “a function that applies `s` to the result of `add'(n)`”
    - `eval: prod(exp(nat,nat), nat) → nat` represents function application
-   - `s.eval: prod(exp(nat,nat), nat) → nat` performs "function application followed by taking the successor"
+   - `s.eval: prod(exp(nat,nat), nat) → nat` performs “function application followed by taking the successor”
    - `curry(s.eval): exp(nat,nat) → exp(nat,nat)` represents the recursive step
 
 5. **Uncurrying**: Revert `add' = pr(curry(pi2), curry(s.eval))` back to `eval` and `prod`:
@@ -549,7 +549,7 @@ cpl> let fact=pi1.pr(pair(s.0,0), pair(mult.pair(s.pi2,pi1), s.pi2))
 fact : nat -> nat  defined
 ```
 
-- **Initial value** `pair(s.0, 0)` — `(1, 0)`, i.e. "0! = 1, counter = 0"
+- **Initial value** `pair(s.0, 0)` — `(1, 0)`, i.e. “0! = 1, counter = 0”
 - **Recursive step** `pair(mult.pair(s.pi2, pi1), s.pi2)` — computes `(acc, k)` to `((k+1) × acc, k+1)`
 - **Final result** `pi1` extracts the accumulator value (the factorial result)
 
@@ -727,7 +727,7 @@ Unlike finite lists, infinite lists are defined as a `right object`. This is an 
 - `tail: inflist(a) → inflist(a)` (obtains the remaining infinite list)
 - `fold(h,t): x → inflist(a)` allows unfolding the infinite list (note that while named `fold`, in modern functional programming conventions this would more appropriately be called `unfold`)
 
-While finite lists operate by "building up and then consuming," infinite lists have the contrasting structure of "unfolding from state."
+While finite lists operate by “building up and then consuming,” infinite lists have the contrasting structure of “unfolding from state.”
 
 Visualized graphically:
 
@@ -778,7 +778,7 @@ cpl> let incseq=fold(I,s).0
 incseq : 1 -> inflist(nat)  defined
 ```
 
-`fold(I,s)` represents the unfolding rule that "outputs the current state as the `head` (`I`), then applies `s` to the state to proceed." Starting from the initial state `0`, this produces the infinite sequence 0, 1, 2, 3, ...
+`fold(I,s)` represents the unfolding rule that “outputs the current state as the `head` (`I`), then applies `s` to the state to proceed.” Starting from the initial state `0`, this produces the infinite sequence 0, 1, 2, 3, ...
 
 ```
 cpl> simp head.incseq
@@ -816,7 +816,7 @@ When defining data types in CPL, there are two types of declarations: `left obje
 
 ### right object (terminal structure)
 
-A `right object` is a structure based on **limits** in category theory. Limits are characterized by their property of being "defined by **incoming** morphisms from other objects."
+A `right object` is a structure based on **limits** in category theory. Limits are characterized by their property of being “defined by **incoming** morphisms from other objects.”
 
 - **Key characteristic**: Morphisms from other objects to this one (incoming morphisms) are crucial
 - **Role in factorization**: Creates new morphisms by **combining** multiple morphisms
@@ -829,7 +829,7 @@ A `right object` is a structure based on **limits** in category theory. Limits a
 
 ### left object (initial structure)
 
-A `left object` is a structure based on **colimits** in category theory. Colimits are characterized by their property of being "defined by **outgoing** morphisms from this object to others."
+A `left object` is a structure based on **colimits** in category theory. Colimits are characterized by their property of being “defined by **outgoing** morphisms from this object to others.”
 
 - **Key characteristic**: Morphisms from this object to other objects (outgoing morphisms) are crucial
 - **Role in factorization**: **Breaks down and consumes** multiple cases
@@ -854,8 +854,8 @@ This left/right distinction corresponds to the following:
 
 | CPL           | Category Theory       | Property                      |
 |---------------|-----------------------|-------------------------------|
-| right object  | Limit                 | Unifies "incoming" morphisms via universal morphisms |
-| left object   | Colimit               | Unifies "outgoing" morphisms via couniversal morphisms |
+| right object  | Limit                 | Unifies “incoming” morphisms via universal morphisms |
+| left object   | Colimit               | Unifies “outgoing” morphisms via couniversal morphisms |
 
 In CPL, these concepts are treated symmetrically, allowing you to learn how category theory concepts are applied in practical programming.
 
@@ -874,8 +874,8 @@ Through this tutorial, you've learned both the basic usage of CPL and fundamenta
 
 **Category theory concepts:**
 
-- **Terminal/initial objects**: The concept of "a point where all paths converge"
-- **Products/coproducts**: The dual operations of "combining/selecting multiple pieces of information"
+- **Terminal/initial objects**: The concept of “a point where all paths converge”
+- **Products/coproducts**: The dual operations of “combining/selecting multiple pieces of information”
 - **Exponential objects**: Structures that treat functions as values (Cartesian closed categories)
 - **Limits/colimits**: Foundational concepts behind `right object` and `left object`
 - **Inductive/coinductive data types**: The contrast between finite and infinite structures
@@ -883,7 +883,7 @@ Through this tutorial, you've learned both the basic usage of CPL and fundamenta
 
 ### Unique features of CPL
 
-In CPL, structures that would typically be "built-in" in other programming languages (such as numbers, lists, and functions) are all explicitly defined using category theory concepts. This results in:
+In CPL, structures that would typically be “built-in” in other programming languages (such as numbers, lists, and functions) are all explicitly defined using category theory concepts. This results in:
 
 - Direct connections between fundamental programming concepts and category theory
 - Hands-on experience with left/right duality through actual code
@@ -895,7 +895,7 @@ To deepen your understanding of CPL, we recommend trying the following:
 
 1. **Exploring sample files**
    - The `samples/` directory contains various program examples
-   - Try loading and executing samples using `load "samples/examples.cpl"`
+   - Try loading and executing samples using `load “samples/examples.cpl”`
 
 2. **Writing more complex programs**
    - The Ackermann function (see `samples/ack.cpl`)
@@ -913,16 +913,16 @@ To deepen your understanding of CPL, we recommend trying the following:
 
 ### Theoretical foundations of CPL
 
-- **Tatsuya Hagino**, "A Categorical Programming Language", PhD Thesis, University of Edinburgh, 1987
+- **Tatsuya Hagino**, “A Categorical Programming Language”, PhD Thesis, University of Edinburgh, 1987
   - The doctoral thesis that established the theoretical foundations of CPL
-- **Tatsuya Hagino**, "Categorical Functional Programming Language", Computer Software Vol 7 No.1, 1992
+- **Tatsuya Hagino**, “Categorical Functional Programming Language”, Computer Software Vol 7 No.1, 1992
   - A paper explaining CPL's overview in Japanese
 
 ### Introductions to category theory
 
-- **Bartosz Milewski**, "Category Theory for Programmers"
+- **Bartosz Milewski**, “Category Theory for Programmers”
   - An introductory category theory textbook for programmers. Available free online.
-- **Steve Awodey**, "Category Theory" (Oxford Logic Guides)
+- **Steve Awodey**, “Category Theory” (Oxford Logic Guides)
   - A more mathematically rigorous textbook on category theory
 
 ### Online resources
