@@ -299,8 +299,59 @@ code span.wa { color: #d19a66; font-weight: bold; font-style: italic; } /* Warni
     color: #0066cc;
   }
 
-  pre, code {
+  /* Table of contents */
+  #TOC {
+    background: white;
+    border: 1px solid #ccc;
+  }
+
+  #TOC a {
+    color: #0066cc;
+  }
+
+  /* Code blocks */
+  pre {
     background: #f5f5f5;
     border: 1px solid #ccc;
+  }
+
+  code {
+    background: #f5f5f5;
+    color: black;
+  }
+
+  pre code {
+    background: transparent;
+    border: none;
+    color: black;
+  }
+
+  /* Reset syntax highlighting colors for print */
+  code span.al, code span.an, code span.at, code span.bn,
+  code span.bu, code span.cf, code span.ch, code span.cn,
+  code span.co, code span.cv, code span.do, code span.dt,
+  code span.dv, code span.er, code span.ex, code span.fl,
+  code span.fu, code span.im, code span.in, code span.kw,
+  code span.op, code span.ot, code span.pp, code span.sc,
+  code span.ss, code span.st, code span.va, code span.vs,
+  code span.wa {
+    color: black;
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  /* Tables */
+  th {
+    background: #f5f5f5;
+    color: black;
+  }
+
+  tr:nth-child(even) {
+    background: white;
+  }
+
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    color: black;
   }
 }
