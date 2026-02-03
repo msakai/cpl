@@ -2,7 +2,7 @@
 
 ## Introduction
 
-CPL (Categorical Programming Language) is a programming language designed based on concepts from category theory. In CPL, what are typically referred to as "data types" and "functions" in conventional programming languages are instead treated as "objects" and "morphisms" in category theory.
+CPL (Categorical Programming Language) is a programming language designed based on concepts from category theory. In CPL, what are typically referred to as "data types" and "functions" in conventional programming languages are instead treated as "objects" and "morphisms" (or “arrows”) in category theory.
 
 |Set Theory|Functional Programming|CPL|
 |-|-|-|
@@ -43,7 +43,7 @@ No prior knowledge of category theory is required. Through this tutorial, you'll
 - [Defining the Natural Numbers Object](#defining-the-natural-numbers-object)
 - [Defining Coproducts](#defining-coproducts)
 - [Displaying Types](#displaying-types)
-- [Composing Arrows and Identity Arrows](#composing-arrows-and-identity-arrows)
+- [Composing Morphisms and Identity Morphisms](#composing-morphisms-and-identity-morphisms)
 - [Assigning Names to Expressions](#assigning-names-to-expressions)
 - [Computation](#computation)
 - [List Types](#list-types)
@@ -57,11 +57,11 @@ No prior knowledge of category theory is required. Through this tutorial, you'll
 The CPL REPL (Read-Eval-Print Loop) supports the following commands. This section provides only an overview, with detailed usage examples to be learned through practical application.
 
 - **`edit`**: Enters multi-line editing mode. Use this for defining data types. End editing mode by pressing semicolon (`;`)
-- **`show <expression>`**: Displays the type (domain and codomain) of an arrow (function)
+- **`show <expression>`**: Displays the type (domain and codomain) of an morphism (function)
 - **`show object <functor>`**: Displays detailed information about an object (data type)
 - **`show function <function>`**: Displays the type of a factorizer (higher-order function) or user-defined function
-- **`let <name> = <expression>`**: Defines an arrow by assigning it a name
-- **`let <name>(<arguments>) = <expression>`**: Defines an arrow with parameters
+- **`let <name> = <expression>`**: Defines an morphism by assigning it a name
+- **`let <name>(<arguments>) = <expression>`**: Defines an morphism with parameters
 - **`simp <expression>`**: Simplifies (computes) the given expression
 - **`simp full <expression>`**: Fully simplifies the expression (use when `simp` alone cannot complete simplification)
 - **`it`**: Refers to the result from the previous computation
@@ -88,7 +88,7 @@ CPL has no built-in data types, and all data types must be explicitly defined.
 
 Since every operation requires the **terminal object**—corresponding to the unit type in other functional programming languages—we begin by defining this fundamental concept.
 
-In category theory, a **terminal object** `1` is defined as "an object such that for every object `X`, there is exactly one arrow from `X` to `1`." It serves as an "endpoint" representing an object with no information (or containing only one value). The single arrow is written as `!`.
+In category theory, a **terminal object** `1` is defined as "an object such that for every object `X`, there is exactly one morphism from `X` to `1`." It serves as an "endpoint" representing an object with no information (or containing only one value). The single morphism is written as `!`.
 
 Visually, this corresponds to the following situation:
 
@@ -128,9 +128,9 @@ right object 1
 - productive: ()
 ```
 
-When object 1 is defined, a special arrow `!` is also defined from any object to the terminal object.
+When object 1 is defined, a special morphism `!` is also defined from any object to the terminal object.
 
-The `show` command can also be used to display the arrow's type (domain and codomain). Here, `*a` is a variable representing an object, so this represents an arrow from any object to the terminal object 1.
+The `show` command can also be used to display the morphism's type (domain and codomain). Here, `*a` is a variable representing an object, so this represents an morphism from any object to the terminal object 1.
 
 ```
 cpl> show !
@@ -144,8 +144,8 @@ Next, we'll define the **product**. In category theory, the product operation co
 
 In category theory, the product `A × B` (`prod(a,b)` in CPL) is defined as "an object that preserves the information of both objects `A` and `B`." It satisfies the following properties:
 
-- Existence of projection arrows `π₁: A × B → A` and `π₂: A × B → B`
-- For any object `X` with arrows `f: X → A` and `g: X → B` to `A` and `B` respectively, there exists a unique arrow `⟨f,g⟩: X → A × B` such that `π₁ ∘ ⟨f,g⟩ = f` and `π₂ ∘ ⟨f,g⟩ = g` (this is referred to as the **universal property**).
+- Existence of projection morphisms `π₁: A × B → A` and `π₂: A × B → B`
+- For any object `X` with morphisms `f: X → A` and `g: X → B` to `A` and `B` respectively, there exists a unique morphism `⟨f,g⟩: X → A × B` such that `π₁ ∘ ⟨f,g⟩ = f` and `π₂ ∘ ⟨f,g⟩ = g` (this is referred to as the **universal property**).
 
 Visually represented as a diagram:
 
@@ -191,9 +191,9 @@ right object prod(+,+)
 - productive: (yes,yes)
 ```
 
-Unlike terminal objects, in the case of products, both projection arrows `pi1` and `pi2` are defined simultaneously (you can also check their types using the `show` command).
+Unlike terminal objects, in the case of products, both projection morphisms `pi1` and `pi2` are defined simultaneously (you can also check their types using the `show` command).
 
-Additionally, a function (factorizer) `pair` is also defined, which constructs `pair(f,g): a -> prod(b,c)` from `f: a -> b` and `g: a -> c`. The arrow previously written as `⟨f,g⟩` in this context is now denoted as `pair(f,g)` in the defined product. The factorizer `pair` itself is not an arrow and cannot be displayed using `show`; instead, use `show function` to display its type.
+Additionally, a function (factorizer) `pair` is also defined, which constructs `pair(f,g): a -> prod(b,c)` from `f: a -> b` and `g: a -> c`. The morphism previously written as `⟨f,g⟩` in this context is now denoted as `pair(f,g)` in the defined product. The factorizer `pair` itself is not an morphism and cannot be displayed using `show`; instead, use `show function` to display its type.
 
 ```
 cpl> show function pair
@@ -202,7 +202,7 @@ f0: *a -> *b  f1: *a -> *c
 pair(f0,f1): *a -> prod(*b,*c)
 ```
 
-Furthermore, while `prod` maps objects `a` and `b` to the object `prod(a,b)`, it also maps arrows `f: a -> c` and `g: b -> d` to `prod(a,b) -> prod(b,d)`. In category theory, a **functor** maps objects to objects and arrows between objects to arrows between mapped objects. Using `show function prod`, you can verify the type of `prod`'s action on arrows.
+Furthermore, while `prod` maps objects `a` and `b` to the object `prod(a,b)`, it also maps morphisms `f: a -> c` and `g: b -> d` to `prod(a,b) -> prod(b,d)`. In category theory, a **functor** maps objects to objects and morphisms between objects to morphisms between mapped objects. Using `show function prod`, you can verify the type of `prod`'s action on morphisms.
 
 ```
 cpl> show function prod
@@ -211,7 +211,7 @@ f0: *a -> *c  f1: *b -> *d
 prod(f0,f1): prod(*a,*b) -> prod(*c,*d)
 ```
 
-Furthermore, examining `equations` reveals that the following four equalities hold. Here, the `.` notation represents **arrow composition**, meaning `g.f` means "first apply `f`, then apply `g`" (corresponding to the mathematical notation `g ∘ f`).
+Furthermore, examining `equations` reveals that the following four equalities hold. Here, the `.` notation represents **morphism composition**, meaning `g.f` means "first apply `f`, then apply `g`" (corresponding to the mathematical notation `g ∘ f`).
 
 - (REQ1): `pi1.pair(f0,f1)=f0`
   - (As stated earlier as a property of the product)
@@ -226,12 +226,12 @@ Furthermore, examining `equations` reveals that the following four equalities ho
 
 Next, we define the **exponential object**, which is a structure for treating functions as values.
 
-The exponential object `Bᴬ` (denoted as `exp(a,b)` in CPL) represents "the object that encodes all arrows from `A` to `B`." It possesses the following properties:
+The exponential object `Bᴬ` (denoted as `exp(a,b)` in CPL) represents "the object that encodes all morphisms from `A` to `B`." It possesses the following properties:
 
-- An evaluation arrow `eval: Bᴬ × A → B` exists, allowing functions to be applied to values
+- An evaluation morphism `eval: Bᴬ × A → B` exists, allowing functions to be applied to values
   - (While we call it `eval` here, in functional programming contexts, `apply` would be a more natural name)
-- For any arrow `f: X × A → B`, there exists a unique curried arrow `curry(f): X → Bᴬ` satisfying `eval ∘ (curry(f) × I) = f`
-  - (Here, `I: A → A` represents the identity arrow, and `×` denotes the product arrow operation)
+- For any morphism `f: X × A → B`, there exists a unique curried morphism `curry(f): X → Bᴬ` satisfying `eval ∘ (curry(f) × I) = f`
+  - (Here, `I: A → A` represents the identity morphism, and `×` denotes the product morphism operation)
 
 Visualized as a diagram, it appears as follows:
 
@@ -369,9 +369,9 @@ The coproduct `A + B` (denoted as `coprod(a,b)` in CPL) is an object that can ho
 - It includes two injection morphisms `in₁: A → A + B` and `in₂: B → A + B` (which "inject" values into the coproduct)
 - For any objects `X` and functions `f: A → X` and `g: B → X`, there exists a unique morphism `case(f,g): A + B → X` that combines them case-by-case, satisfying `case(f,g) ∘ in₁ = f` and `case(f,g) ∘ in₂ = g`
 
-This represents the "reversed arrows" dual concept to the direct product, demonstrating a good example of symmetry in category theory.
+This represents the "reversed morphisms" dual concept to the direct product, demonstrating a good example of symmetry in category theory.
 
-Visualized graphically, it appears as follows: (Compare with the direct product diagram to verify the reversed arrows):
+Visualized graphically, it appears as follows: (Compare with the direct product diagram to verify the reversed morphisms):
 
 ![](./doc-images/coproduct.png)
 
@@ -423,7 +423,7 @@ pair(pi2,eval)
 
 Here, `*a` and `*b` are variable representations of objects, and such morphisms actually denote families of functions with various types (domains and codomains). When these families satisfy certain conditions, they are called **natural transformations**, which correspond to **polymorphic functions** in typical functional programming languages.
 
-In the above example, `pair(pi2,eval)` is an arrow that works for any objects `*a` and `*b`, and can be viewed as a natural transformation from the functor `F(*a,*b) = prod(exp(*a,*b),*a)` to the functor `G(*a,*b) = prod(*a,*b)`.
+In the above example, `pair(pi2,eval)` is an morphism that works for any objects `*a` and `*b`, and can be viewed as a natural transformation from the functor `F(*a,*b) = prod(exp(*a,*b),*a)` to the functor `G(*a,*b) = prod(*a,*b)`.
 
 ## Morphism Composition and Identity Morphisms
 
@@ -431,7 +431,7 @@ The `.` symbol appearing in the equations above refers to fundamental operations
 
 ### Morphism Composition
 
-`.` represents **morphism composition**. Given morphisms `f: A → B` and `g: B → C`, the composed morphism `g.f: A → C` is the arrow that "first applies `f`, then applies `g`". This corresponds to the mathematical notation `g ∘ f` (the Unicode symbol `∘` is also usable in CPL).
+`.` represents **morphism composition**. Given morphisms `f: A → B` and `g: B → C`, the composed morphism `g.f: A → C` is the morphism that "first applies `f`, then applies `g`". This corresponds to the mathematical notation `g ∘ f` (the Unicode symbol `∘` is also usable in CPL).
 
 For example, we can represent natural numbers by composing the successor function `s: nat → nat` with the zero `0: 1 → nat`:
 
@@ -444,11 +444,11 @@ s.s.s.0
     : 1 -> nat
 ```
 
-`s.s.s.0` represents the "arrow obtained by composing `s` (successor function) three times with `0`", which corresponds to the natural number **3**. Similarly, `s.s.0` represents **2**, and `s.0` represents **1**.
+`s.s.s.0` represents the "morphism obtained by composing `s` (successor function) three times with `0`", which corresponds to the natural number **3**. Similarly, `s.s.0` represents **2**, and `s.0` represents **1**.
 
 ### Identity Morphisms
 
-The **identity morphism** `I` is the "do-nothing" arrow, with `I: A → A` existing for any object `A`:
+The **identity morphism** `I` is the "do-nothing" morphism, with `I: A → A` existing for any object `A`:
 
 ```
 cpl> show I
@@ -464,7 +464,7 @@ prod(s,I)
     : prod(nat,*a) -> prod(nat,*a)
 ```
 
-Here, `prod(s, I)` represents the arrow that "applies `s` to the first component of the product while leaving the second component unchanged."
+Here, `prod(s, I)` represents the morphism that "applies `s` to the first component of the product while leaving the second component unchanged."
 
 ## Naming Expressions
 
@@ -482,12 +482,12 @@ In CPL, we express this using primitive recursion `pr` combined with currying `c
 1. **Strategy**: We want to use primitive recursion `pr` on the first argument, but `pr(f0, f1): nat → X` can only define unary morphisms. Therefore, we **curry** the second argument by encapsulating it within the function.
 
 2. **Curried addition `add'`**:
-   - `add': nat → exp(nat, nat)` — An arrow that takes a natural number `n` and returns a "function that adds `n`"
+   - `add': nat → exp(nat, nat)` — An morphism that takes a natural number `n` and returns a "function that adds `n`"
    - This can be defined in the form of `pr(f0, f1)`
 
 3. **`f0 = curry(pi2)` (zero case)**:
    - `add'(0)` returns "the function that adds 0" = the identity function
-   - `pi2: prod(1, nat) → nat` is an arrow that extracts the second component of a product, which here functions as "discarding the first component (the unique value of the terminal object) while returning the second argument unchanged"
+   - `pi2: prod(1, nat) → nat` is an morphism that extracts the second component of a product, which here functions as "discarding the first component (the unique value of the terminal object) while returning the second argument unchanged"
    - `curry(pi2): 1 → exp(nat, nat)` serves as the base case for the zero case
 
 4. **`f1 = curry(s.eval)` (successor case)**:
@@ -507,7 +507,7 @@ cpl> let add=eval.prod(pr(curry(pi2), curry(s.eval)), I)
 add : prod(nat,nat) -> nat  defined
 ```
 
-In the `let` construct, we can also define arrows with parameters.
+In the `let` construct, we can also define morphisms with parameters.
 
 ```
 cpl> let uncurry(f) = eval . prod(f, I)
@@ -518,7 +518,7 @@ uncurry(f): prod(*a,*b) -> *c
 
 ## Computation
 
-In CPL, computation is performed through simplification of arrow expressions using the `simp` command. Let's simplify an arrow using our previously defined addition function `add`.
+In CPL, computation is performed through simplification of morphism expressions using the `simp` command. Let's simplify an morphism using our previously defined addition function `add`.
 
 ```
 cpl> simp add.pair(s.s.0, s.0)
@@ -539,7 +539,7 @@ mult : prod(nat,nat) -> nat
 
 The differences from `add` lie only in the zero case and the recursive step:
 
-- **Zero case** `curry(0.!)` — `0 × y = 0` (`0.!` is an arrow that returns zero regardless of input)
+- **Zero case** `curry(0.!)` — `0 × y = 0` (`0.!` is an morphism that returns zero regardless of input)
 - **Successor case** `curry(add.pair(eval, pi2))` — `(n+1) × y = n × y + y` (adds the recursive result `eval` to `y` itself `pi2`)
 
 **Factorial** `fact: nat → nat` uses a slightly different approach. It carries the state of `prod(nat, nat)` (a pair of accumulator and counter) using `pr`:
@@ -769,7 +769,7 @@ right object inflist(+)
 - productive: (no)
 ```
 
-Now, let's define and compute with arrows using infinite lists.
+Now, let's define and compute with morphisms using infinite lists.
 
 First, we create an ascending sequence 0, 1, 2, 3, ...:
 
