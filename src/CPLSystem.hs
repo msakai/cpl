@@ -125,7 +125,8 @@ checkName sys name =
   where
     vt = varTable sys
     objs = objects sys
-    names = Map.keys vt ++
+    names = ["I", "id"] ++
+            Map.keys vt ++
             map CDT.functName objs ++
             map CDT.factName objs  ++
             concatMap (map CDT.natName . CDT.nats) objs

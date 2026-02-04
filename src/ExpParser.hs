@@ -71,9 +71,9 @@ evalExp cenv env = f
       a' <- f a
       b' <- f b
       return (E.Comp a' b')
-    f (Ident "I" args) = do
+    f (Ident s args) | s `elem` ["I", "id"] = do
       unless (length args == 0) $
-        throwError $ printf "%s: wrong number of arguments (given %d, expected %d)" "I" (length args) (0 :: Int)
+        throwError $ printf "%s: wrong number of arguments (given %d, expected %d)" s (length args) (0 :: Int)
       return E.Identity
     f (Ident s args)  = do
       let arity = length args
