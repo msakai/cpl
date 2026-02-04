@@ -71,8 +71,8 @@ parseExp sys str =
     Left err -> Left (show err)
     Right e ->
       case ExpParser.evalExp (objects sys) (arityEnv sys) e of
-        Nothing -> Left "invalid expression" -- FIXME
-        Just e2 ->
+        Left err -> Left err
+        Right e2 ->
           Typing.runTI (tiEnv sys) $ do
             t <- Typing.inferType (substIt sys e2)
             t2 <- Typing.appSubst t
@@ -86,8 +86,8 @@ parseDef sys str =
     Left err -> Left (show err)
     Right (name,ps,e) ->
       case ExpParser.evalExp (objects sys) (Map.union (Map.fromList (zip ps (repeat 0))) (arityEnv sys)) e of
-        Nothing -> Left "invalid definition" -- FIXME
-        Just e1 ->
+        Left err -> Left err
+        Right e1 ->
           Typing.runTI (tiEnv sys) $ do
             (ts, t) <- Typing.inferType2 ps e1
             ts2 <- Typing.appSubst ts
