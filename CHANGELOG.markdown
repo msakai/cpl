@@ -1,7 +1,11 @@
 Unreleased
 -------------------------------
 
+* Add `show function <name>` subcommand to display information of
+  functions including functors, factorizers, and user-defined
+  parameterized morphisms
 * Add WebAssembly support for browser-based CPL interpreter
+* Add tutorials both in English and Japanese
 
 0.1.0 (2025-10-29)
 -------------------------------
