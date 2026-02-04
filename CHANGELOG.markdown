@@ -6,6 +6,7 @@ Unreleased
   parameterized morphisms
 * Add WebAssembly support for browser-based CPL interpreter
 * Add tutorials both in English and Japanese
+* Drop support for GHC <9.2 (base <4.16)
 
 0.1.0 (2025-10-29)
 -------------------------------

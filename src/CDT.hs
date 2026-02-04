@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, FlexibleContexts #-}
+{-# LANGUAGE FlexibleContexts #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  CDT
@@ -7,7 +7,7 @@
 -- 
 -- Maintainer  :  masahiro.sakai@gmail.com
 -- Stability   :  provisional
--- Portability :  non-portable (CPP, FlexibleContexts)
+-- Portability :  non-portable (FlexibleContexts)
 --
 -- Categorical Data Type
 --
@@ -59,9 +59,7 @@ import FE
 import Type
 import Subst (tv, apply)
 
-#if __GLASGOW_HASKELL__ >= 706
 import Prelude hiding (join)
-#endif
 import Data.List (findIndices, transpose, find, findIndex, intercalate)
 
 
