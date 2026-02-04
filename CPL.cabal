@@ -1,6 +1,6 @@
 cabal-version: 2.2
 Name:		CPL
-Version:	0.1.0
+Version:	0.2.0
 License:	BSD-3-Clause
 License-File:	COPYING
 Author:		Masahiro Sakai (masahiro.sakai@gmail.com)

@@ -1,4 +1,4 @@
-Unreleased
+0.2.0 (Unreleased)
 -------------------------------
 
 * Add `show function <name>` subcommand to display information of
