@@ -106,6 +106,12 @@ echo ""
 echo "Copying web files to $OUTPUT_DIR/..."
 cp "$PROJECT_ROOT/web/index.html" "$OUTPUT_DIR/"
 cp "$PROJECT_ROOT/web/cpl-terminal.js" "$OUTPUT_DIR/"
+cp "$PROJECT_ROOT/web/favicon.ico" "$OUTPUT_DIR/"
+cp "$PROJECT_ROOT/web/favicon-16x16.png" "$OUTPUT_DIR/"
+cp "$PROJECT_ROOT/web/favicon-32x32.png" "$OUTPUT_DIR/"
+cp "$PROJECT_ROOT/web/apple-touch-icon.png" "$OUTPUT_DIR/"
+cp "$PROJECT_ROOT/web/icon-192x192.png" "$OUTPUT_DIR/"
+cp "$PROJECT_ROOT/web/icon-512x512.png" "$OUTPUT_DIR/"
 echo "✓ Copied web files"
 
 # Get file size
@@ -131,7 +137,7 @@ echo ""
 echo "Checking output files..."
 MISSING_FILES=0
 
-for f in index.html cpl-terminal.js cpl.wasm cpl.js samples.js; do
+for f in index.html cpl-terminal.js cpl.wasm cpl.js samples.js favicon.ico favicon-16x16.png favicon-32x32.png apple-touch-icon.png icon-192x192.png icon-512x512.png; do
     if [ -f "$OUTPUT_DIR/$f" ]; then
         echo "  ✓ $f"
     else
