@@ -43,7 +43,10 @@ Extra-Source-Files:
    scripts/build-wasm.sh,
    scripts/generate-samples-js.sh,
    wasm/cpl-terminal.js,
-   wasm/index.html
+   wasm/index.html,
+   wasm/tutorial_header.txt,
+   wasm/tutorial_ja_header.txt,
+   wasm/tutorial.css
 Build-Type: Simple
 
 source-repository head
