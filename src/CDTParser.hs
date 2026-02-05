@@ -44,7 +44,7 @@ cdtDecl =
        string' "with"
        fact_name <- ident
        let endObject  = string' "end" >> string' "object"
-           normalDecl = do string' "is"
+           normalDecl = do optional (try (string' "is"))
                            manyTill (try (nat_decl (name : params)))
                                     (try endObject)
            emptyDecl  = endObject >> return []
