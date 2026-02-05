@@ -3,10 +3,7 @@ dist-newstyle/
 .stack-work/
 stack.yaml.lock
 
-# WebAssembly build artifacts
-wasm/cpl.wasm
-wasm/cpl.js
-wasm/samples.js
+# Build output directory (WebAssembly + tutorial pages)
 _site/
 
 doc-images/*.aux

@@ -3,6 +3,7 @@ set -e
 
 # CPL WebAssembly Build Script
 # Builds CPL interpreter for WebAssembly using GHC's WASM backend
+# Output goes to _site/ directory for local testing and deployment
 
 echo "================================================"
 echo "Building CPL for WebAssembly"
@@ -41,6 +42,9 @@ cd "$PROJECT_ROOT"
 echo "Project root: $PROJECT_ROOT"
 echo ""
 
+# Output directory
+OUTPUT_DIR="$PROJECT_ROOT/_site"
+
 # Clean previous build artifacts (optional)
 if [ "$1" = "--clean" ]; then
     echo "Cleaning previous build artifacts..."
@@ -48,6 +52,9 @@ if [ "$1" = "--clean" ]; then
     echo "✓ Clean complete"
     echo ""
 fi
+
+# Create output directory
+mkdir -p "$OUTPUT_DIR"
 
 echo "Generating sample files module..."
 "$PROJECT_ROOT/scripts/generate-samples-js.sh"
@@ -75,15 +82,11 @@ fi
 
 echo "✓ Found WASM binary: $WASM_BIN"
 
-# Create wasm directory if it doesn't exist
-mkdir -p wasm
-
-# Copy WASM binary
+# Copy WASM binary to output directory
 echo ""
-echo "Copying WASM binary to wasm/cpl.wasm..."
-cp "$WASM_BIN" wasm/cpl.wasm
-
-echo "✓ Copied to wasm/cpl.wasm"
+echo "Copying WASM binary to $OUTPUT_DIR/cpl.wasm..."
+cp "$WASM_BIN" "$OUTPUT_DIR/cpl.wasm"
+echo "✓ Copied WASM binary"
 
 # Post-link processing (if available)
 echo ""
@@ -92,50 +95,58 @@ LIBDIR=$(wasm32-wasi-ghc --print-libdir)
 
 if [ -f "$LIBDIR/post-link.mjs" ]; then
     echo "Running post-link processor..."
-    node "$LIBDIR/post-link.mjs" -i wasm/cpl.wasm -o wasm/cpl.js
+    node "$LIBDIR/post-link.mjs" -i "$OUTPUT_DIR/cpl.wasm" -o "$OUTPUT_DIR/cpl.js"
     echo "✓ Post-link processing complete"
 else
     echo "ℹ No post-link processor found (this is usually fine)"
 fi
 
+# Copy source files from wasm/ to output directory
+echo ""
+echo "Copying web files to $OUTPUT_DIR/..."
+cp "$PROJECT_ROOT/wasm/index.html" "$OUTPUT_DIR/"
+cp "$PROJECT_ROOT/wasm/cpl-terminal.js" "$OUTPUT_DIR/"
+cp "$PROJECT_ROOT/wasm/tutorial.css" "$OUTPUT_DIR/"
+echo "✓ Copied web files"
+
 # Get file size
-WASM_SIZE=$(du -h wasm/cpl.wasm | cut -f1)
+WASM_SIZE=$(du -h "$OUTPUT_DIR/cpl.wasm" | cut -f1)
 
 echo ""
 echo "================================================"
 echo "Build complete!"
 echo "================================================"
 echo ""
-echo "WASM binary: wasm/cpl.wasm ($WASM_SIZE)"
+echo "Output directory: $OUTPUT_DIR"
+echo "WASM binary size: $WASM_SIZE"
 echo ""
 echo "To test locally, run:"
-echo "  cd wasm && python3 -m http.server 8000"
+echo "  python3 -m http.server -d _site 8000"
 echo "Then open: http://localhost:8000"
 echo ""
-echo "Required files in wasm/:"
-echo "  - cpl.wasm (compiled binary)"
-echo "  - index.html (web interface)"
-echo "  - cpl-terminal.js (terminal controller)"
+echo "For full site with tutorials, also run:"
+echo "  ./scripts/build-tutorial.sh"
 echo ""
 
 # Verify required files exist
+echo "Checking output files..."
 MISSING_FILES=0
 
-if [ ! -f "wasm/index.html" ]; then
-    echo "⚠ Warning: wasm/index.html not found"
-    MISSING_FILES=1
-fi
-
-if [ ! -f "wasm/cpl-terminal.js" ]; then
-    echo "⚠ Warning: wasm/cpl-terminal.js not found"
-    MISSING_FILES=1
-fi
+for f in index.html cpl-terminal.js cpl.wasm cpl.js samples.js tutorial.css; do
+    if [ -f "$OUTPUT_DIR/$f" ]; then
+        echo "  ✓ $f"
+    else
+        echo "  ✗ $f (missing)"
+        MISSING_FILES=1
+    fi
+done
 
 if [ $MISSING_FILES -eq 0 ]; then
+    echo ""
     echo "✓ All required files present"
 else
     echo ""
-    echo "⚠ Some required files are missing. The web interface may not work."
+    echo "⚠ Some files are missing. The web interface may not work correctly."
 fi
 
 echo ""
