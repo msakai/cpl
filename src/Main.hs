@@ -391,7 +391,7 @@ cmdLoad s =
        contents <-
          case result of
            Left (e :: SomeException) -> throwError (show e)
-           Right s -> return s
+           Right contents -> return contents
        let src  = unlines (map removeComment (lines contents))
            cmds = split src
        forM_ cmds $ \cmd -> do
