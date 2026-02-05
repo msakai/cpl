@@ -342,7 +342,7 @@ This makes it safe to run untrusted CPL programs in the browser.
 To improve the WASM version:
 
 1. Modify Haskell code in `src/Main.hs` (USE_WEB_BACKEND section)
-2. Update JavaScript in `wasm/cpl-terminal.js`
+2. Update JavaScript in `web/cpl-terminal.js`
 3. Build and test locally with `./scripts/build-wasm.sh && python3 -m http.server -d _site 8000`
 4. Submit pull request
 

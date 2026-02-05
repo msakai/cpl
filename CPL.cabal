@@ -25,7 +25,7 @@ Extra-Doc-Files:
    TUTORIAL.md,
    TUTORIAL_ja.md,
    doc-images/*.png,
-   wasm/README.md
+   web/README.md
 Extra-Source-Files:
    doc-images/*.tex,
    doc-images/Makefile,
@@ -42,11 +42,11 @@ Extra-Source-Files:
    samples/function.cpl,
    scripts/build-wasm.sh,
    scripts/generate-samples-js.sh,
-   wasm/cpl-terminal.js,
-   wasm/index.html,
-   wasm/tutorial_header.txt,
-   wasm/tutorial_ja_header.txt,
-   wasm/tutorial.css
+   web/cpl-terminal.js,
+   web/index.html,
+   web/tutorial_header.txt,
+   web/tutorial_ja_header.txt,
+   web/tutorial.css
 Build-Type: Simple
 
 source-repository head

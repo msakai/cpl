@@ -37,7 +37,7 @@ pandoc "${PROJECT_ROOT}/TUTORIAL.md" \
     --css=tutorial.css \
     --metadata title="CPL Tutorial" \
     --metadata lang="en" \
-    --include-before-body="${PROJECT_ROOT}/wasm/tutorial_header.txt" \
+    --include-before-body="${PROJECT_ROOT}/web/tutorial_header.txt" \
     --output "${OUTPUT_DIR}/tutorial.html"
 
 # Build Japanese tutorial
@@ -51,7 +51,7 @@ pandoc "${PROJECT_ROOT}/TUTORIAL_ja.md" \
     --css=tutorial.css \
     --metadata title="CPL チュートリアル" \
     --metadata lang="ja" \
-    --include-before-body="${PROJECT_ROOT}/wasm/tutorial_ja_header.txt" \
+    --include-before-body="${PROJECT_ROOT}/web/tutorial_ja_header.txt" \
     --output "${OUTPUT_DIR}/tutorial_ja.html"
 
 IMAGE_COUNT=$(ls -1 "${OUTPUT_DIR}/doc-images/"*.png 2>/dev/null | wc -l | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')

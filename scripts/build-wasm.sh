@@ -101,12 +101,12 @@ else
     echo "ℹ No post-link processor found (this is usually fine)"
 fi
 
-# Copy source files from wasm/ to output directory
+# Copy source files from web/ to output directory
 echo ""
 echo "Copying web files to $OUTPUT_DIR/..."
-cp "$PROJECT_ROOT/wasm/index.html" "$OUTPUT_DIR/"
-cp "$PROJECT_ROOT/wasm/cpl-terminal.js" "$OUTPUT_DIR/"
-cp "$PROJECT_ROOT/wasm/tutorial.css" "$OUTPUT_DIR/"
+cp "$PROJECT_ROOT/web/index.html" "$OUTPUT_DIR/"
+cp "$PROJECT_ROOT/web/cpl-terminal.js" "$OUTPUT_DIR/"
+cp "$PROJECT_ROOT/web/tutorial.css" "$OUTPUT_DIR/"
 echo "✓ Copied web files"
 
 # Get file size
