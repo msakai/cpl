@@ -27,6 +27,7 @@ import Typing (Typing(..))
 import qualified Simp
 import Paths_CPL
 
+import Control.Exception (try, SomeException)
 import Data.Maybe
 import Data.List
 import Data.Char (isSpace)
@@ -41,7 +42,7 @@ import Control.Monad.State.Strict -- haskeline's MonadException requries strict 
 import System.Console.GetOpt
 #if defined(USE_WASM_BACKEND)
 import GHC.Wasm.Prim (JSString (..), toJSString, fromJSString, JSException (..), JSVal)
-import Control.Exception (evaluate, try, SomeException)
+import Control.Exception (evaluate)
 #elif defined(USE_READLINE_PACKAGE)
 import qualified System.Console.SimpleLineEditor as SLE
 import Control.Exception (bracket)
@@ -386,7 +387,11 @@ cmdLoad s =
                     f [] tmp       = [tmp]
 #else
 cmdLoad s =
-    do contents <- liftIO $ readFile filename
+    do result <- liftIO $ try $ readFile filename
+       contents <-
+         case result of
+           Left (e :: SomeException) -> throwError (show e)
+           Right s -> return s
        let src  = unlines (map removeComment (lines contents))
            cmds = split src
        forM_ cmds $ \cmd -> do
