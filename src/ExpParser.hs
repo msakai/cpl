@@ -15,6 +15,7 @@ module ExpParser
     , exp
     , def
     , evalExp
+    , identityNames
     ) where
 
 import qualified CDT
@@ -71,9 +72,9 @@ evalExp cenv env = f
       a' <- f a
       b' <- f b
       return (E.Comp a' b')
-    f (Ident "I" args) = do
+    f (Ident s args) | s `elem` identityNames = do
       unless (length args == 0) $
-        throwError $ printf "%s: wrong number of arguments (given %d, expected %d)" "I" (length args) (0 :: Int)
+        throwError $ printf "%s: wrong number of arguments (given %d, expected %d)" s (length args) (0 :: Int)
       return E.Identity
     f (Ident s args)  = do
       let arity = length args
@@ -96,5 +97,8 @@ evalExp cenv env = f
             throwError $ printf "%s: wrong number of arguments (given %d, expected %d)" s arity arity'
           return (E.Var s args')
         _ -> throwError ("unknown symbol: " ++ s)
+
+identityNames :: [String]
+identityNames = ["I", "id"]
 
 ----------------------------------------------------------------------------
