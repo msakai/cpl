@@ -45,8 +45,8 @@ $ cabal build
 $ cabal install
 ```
 
-If you want to compile with readline or haskeline, add `-fReadline` or
-`-fHaskeline` respectively to the configure command.
+If you want to compile with haskeline, add `-fHaskeline` to the configure
+command.
 
 Alternatively, you can use Stack:
 

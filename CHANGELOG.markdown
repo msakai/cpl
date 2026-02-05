@@ -8,6 +8,7 @@
 * Add tutorials both in English and Japanese
 * Accept `id` as a synonym for `I` (identity morphism)
 * Allow the omission of the `is` keyword in data type definitions
+* Remove readline support (the `Readline` cabal flag and `USE_READLINE_PACKAGE` code path)
 * Drop support for GHC <9.2 (base <4.16)
 
 0.1.0 (2025-10-29)
