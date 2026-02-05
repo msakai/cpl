@@ -25,7 +25,8 @@ import ParserUtils
 import Prelude hiding (exp)
 import Control.Monad
 import Control.Monad.Except
-import Text.ParserCombinators.Parsec
+import Text.Parsec hiding (string')
+import Text.Parsec.String (Parser)
 import Data.List (find)
 import Data.Maybe
 import qualified Data.Map as Map

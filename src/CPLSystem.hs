@@ -42,7 +42,7 @@ import qualified Subst
 import Control.Monad
 import Data.Maybe
 import Data.List
-import Text.ParserCombinators.Parsec
+import Text.Parsec
 import qualified Data.Map as Map
 
 type CDTEnv = [CDT]

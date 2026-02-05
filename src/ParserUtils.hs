@@ -6,7 +6,8 @@ module ParserUtils
     , ident
     ) where
 
-import Text.ParserCombinators.Parsec
+import Text.Parsec hiding (string')
+import Text.Parsec.String (Parser)
 import Data.Char
 
 type Ident = String

@@ -24,7 +24,8 @@ import Type (GenType(..))
 import CDT
 import ParserUtils
 
-import Text.ParserCombinators.Parsec
+import Text.Parsec hiding (string')
+import Text.Parsec.String (Parser)
 import Control.Monad
 import Data.List
 
