@@ -41,12 +41,21 @@ Extra-Source-Files:
    samples/ack_3_4.cpl,
    samples/function.cpl,
    scripts/build-wasm.sh,
+   scripts/generate-favicons.sh,
    scripts/generate-samples-js.sh,
    web/cpl-terminal.js,
    web/index.html,
    web/tutorial_header.txt,
    web/tutorial_ja_header.txt,
-   web/tutorial.css
+   web/tutorial.css,
+   web/favicon_header.html,
+   web/favicon.ico,
+   web/favicon-16x16.png,
+   web/favicon-32x32.png,
+   web/apple-touch-icon.png,
+   web/icon-192x192.png,
+   web/icon-512x512.png,
+   web/manifest.json
 Build-Type: Simple
 
 source-repository head

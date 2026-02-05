@@ -37,6 +37,7 @@ pandoc "${PROJECT_ROOT}/TUTORIAL.md" \
     --css=tutorial.css \
     --metadata title="CPL Tutorial" \
     --metadata lang="en" \
+    --include-in-header="${PROJECT_ROOT}/web/favicon_header.html" \
     --include-before-body="${PROJECT_ROOT}/web/tutorial_header.txt" \
     --output "${OUTPUT_DIR}/tutorial.html"
 
@@ -51,12 +52,18 @@ pandoc "${PROJECT_ROOT}/TUTORIAL_ja.md" \
     --css=tutorial.css \
     --metadata title="CPL チュートリアル" \
     --metadata lang="ja" \
+    --include-in-header="${PROJECT_ROOT}/web/favicon_header.html" \
     --include-before-body="${PROJECT_ROOT}/web/tutorial_ja_header.txt" \
     --output "${OUTPUT_DIR}/tutorial_ja.html"
 
 # Copy source files from web/ to output directory
 echo "Copying web files to $OUTPUT_DIR/..."
 cp "$PROJECT_ROOT/web/tutorial.css" "${OUTPUT_DIR}/"
+cp "$PROJECT_ROOT/web/favicon.ico" "${OUTPUT_DIR}/"
+cp "$PROJECT_ROOT/web/favicon-16x16.png" "${OUTPUT_DIR}/"
+cp "$PROJECT_ROOT/web/favicon-32x32.png" "${OUTPUT_DIR}/"
+cp "$PROJECT_ROOT/web/apple-touch-icon.png" "${OUTPUT_DIR}/"
+cp "$PROJECT_ROOT/web/manifest.json" "${OUTPUT_DIR}/"
 
 IMAGE_COUNT=$(ls -1 "${OUTPUT_DIR}/doc-images/"*.png 2>/dev/null | wc -l | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
 
