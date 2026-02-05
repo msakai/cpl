@@ -125,7 +125,7 @@ checkName sys name =
   where
     vt = varTable sys
     objs = objects sys
-    names = ["I", "id"] ++
+    names = ExpParser.identityNames ++
             Map.keys vt ++
             map CDT.functName objs ++
             map CDT.factName objs  ++
@@ -174,7 +174,7 @@ inferFunctType sys obj = Typing.runTI (tiEnv sys) $ do
   return (Subst.apply s ts2, Subst.apply s t2)
 
 getFunctionSignature :: System -> String -> Maybe ([(String, Type)], Type)
-getFunctionSignature _sys "I" = Just ([], FE.Var 0 :-> FE.Var 0)
+getFunctionSignature _sys name | name `elem` ExpParser.identityNames = Just ([], FE.Var 0 :-> FE.Var 0)
 getFunctionSignature sys name
   | Just (args, _e, FType _ args' t) <- Map.lookup name (varTable sys) =
       Just (zip args args', t)
