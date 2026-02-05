@@ -71,7 +71,7 @@ This provides `wasm32-wasi-ghc` and `wasm32-wasi-cabal` in `PATH`.
 Build configuration:
 
 ```bash
-wasm32-wasi-cabal configure -fWASM -f-Readline -f-Haskeline
+wasm32-wasi-cabal configure -fWeb -f-Readline -f-Haskeline
 ```
 
 To clean and rebuild:
@@ -134,7 +134,7 @@ Browser
 The Haskell code uses CPP macros to conditionally compile different Console implementations, allowing the same codebase to support multiple backends:
 
 ```haskell
-#if defined(USE_WASM_BACKEND)
+#if defined(USE_WEB_BACKEND)
   -- JavaScript FFI implementation (GHC.Wasm.Prim / JSString)
 #elif defined(USE_HASKELINE_PACKAGE)
   -- Haskeline implementation
@@ -235,14 +235,14 @@ The JavaScript side provides:
 The WASM flag in CPL.cabal enables WebAssembly-specific build options:
 
 ```cabal
-Flag WASM
-  Description: Build for WebAssembly with JavaScript FFI
+Flag Web
+  Description: Build for browser environment with WebAssembly + JavaScript FFI
   Default: False
   Manual: True
 ```
 
 When enabled:
-- Sets `-DUSE_WASM_BACKEND` CPP flag
+- Sets `-DUSE_WEB_BACKEND` CPP flag
 - Uses `-no-hs-main` (no standard main entry point)
 - Exports `hs_init` and `hs_start` symbols
 - Enables `JavaScriptFFI` extension for GHC 9.10+
@@ -267,7 +267,7 @@ Two parallel build systems are maintained:
 
 2. **Cabal** (for both native and WASM builds)
    - Uses `CPL.cabal` with flags
-   - WASM builds: `wasm32-wasi-cabal configure -fWASM`
+   - WASM builds: `wasm32-wasi-cabal configure -fWeb`
    - Native builds: `cabal configure`
 
 ## Known Limitations
@@ -324,7 +324,7 @@ This makes it safe to run untrusted CPL programs in the browser.
 
 To improve the WASM version:
 
-1. Modify Haskell code in `src/Main.hs` (USE_WASM_BACKEND section)
+1. Modify Haskell code in `src/Main.hs` (USE_WEB_BACKEND section)
 2. Update JavaScript in `wasm/cpl-terminal.js`
 3. Test locally with `python3 -m http.server`
 4. Submit pull request
