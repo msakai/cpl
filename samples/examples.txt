@@ -1,45 +1,50 @@
-% cpl.rb 
-cpl.rb (An Implementation of Categorical Programming Language)
-version 0.0.1
+Categorical Programming Language (Haskell version)
+version 0.2.0
+
+Type help for help
+
 cpl> edit
 | right object 1 with !
 | end object;
-right object 1 defined
+right object 1 is defined
 cpl> edit
 | right object prod(a,b) with pair is
 |   pi1: prod -> a
 |   pi2: prod -> b
 | end object;
-right object prod(+,+) defined
+right object prod(+,+) is defined
 cpl> edit
 | right object exp(a,b) with curry is
 |   eval: prod(exp,a) -> b
 | end object;
-right object exp(-,+) defined
+right object exp(-,+) is defined
 cpl> edit
 | left object nat with pr is
 |   0: 1 -> nat
 |   s: nat -> nat
 | end object;
-left object nat defined
+left object nat is defined
 cpl> edit
 | left object coprod(a,b) with case is
 |   in1: a -> coprod
 |   in2: b -> coprod
 | end object;
-left object coprod(+,+) defined
+left object coprod(+,+) is defined
 cpl> show pair(pi2,eval)
 pair(pi2,eval)
     : prod(exp(*a,*b),*a) -> prod(*a,*b)
 cpl> let add=eval.prod(pr(curry(pi2), curry(s.eval)), I)
-add : prod(nat,nat) -> nat  defined
+add = eval.prod(pr(curry(pi2),curry(s.eval)),I)
+    : prod(nat,nat) -> nat
 cpl> simp add.pair(s.s.0, s.0)
 s.s.s.0
     : 1 -> nat
 cpl> let mult=eval.prod(pr(curry(0.!), curry(add.pair(eval, pi2))), I)
-mult : prod(nat,nat) -> nat
+mult = eval.prod(pr(curry(0.!),curry(add.pair(eval,pi2))),I)
+    : prod(nat,nat) -> nat
 cpl> let fact=pi1.pr(pair(s.0,0), pair(mult.pair(s.pi2,pi1), s.pi2))
-fact : nat -> nat  defined
+fact = pi1.pr(pair(s.0,0),pair(mult.pair(s.pi2,pi1),s.pi2))
+    : nat -> nat
 cpl> simp fact.s.s.s.s.0
 s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.0
     : 1 -> nat
@@ -48,21 +53,28 @@ cpl> edit
 |   nil: 1 -> list
 |   cons: prod(p,list) -> list
 | end object;
-left object list(+) defined
+left object list(+) is defined
 cpl> let append = eval.prod(prl(curry(pi2), curry(cons.pair(pi1.pi1, eval.pair(pi2.pi1, pi2)))), I)
-append : prod(list(*a),list(*a)) -> list(*a)  defined
+append = eval.prod(prl(curry(pi2),curry(cons.pair(pi1.pi1,eval.pair(pi2.pi1,pi2)))),I)
+    : prod(list(*a),list(*a)) -> list(*a)
 cpl> let reverse=prl(nil, append.pair(pi2, cons.pair(pi1, nil.!)))
-reverse : list(*a) -> list(*a)  defined
+reverse = prl(nil,append.pair(pi2,cons.pair(pi1,nil.!)))
+    : list(*a) -> list(*a)
 cpl> let hd = prl(in2, in1.pi1)
-hd : list(*a) -> coprod(*a,1)  defined
+hd = prl(in2,in1.pi1)
+    : list(*a) -> coprod(*a,1)
 cpl> let hdp=case(hd,in2)
-hdp : coprod(list(*a),1) -> coprod(*a,1)  defined
+hdp = case(hd,in2)
+    : coprod(list(*a),1) -> coprod(*a,1)
 cpl> let tl = coprod(pi2,I).prl(in2, in1.prod(I, case(cons,nil)))
-tl : list(*a) -> coprod(list(*a),1)  defined
+tl = coprod(pi2,I).prl(in2,in1.prod(I,case(cons,nil)))
+    : list(*a) -> coprod(list(*a),1)
 cpl> let tlp = case(tl, in2)
-tlp : coprod(list(*a),1) -> coprod(list(*a),1)  defined
+tlp = case(tl,in2)
+    : coprod(list(*a),1) -> coprod(list(*a),1)
 cpl> let seq = pi2.pr(pair(0,nil), pair(s.pi1, cons))
-seq : nat -> list(nat)  defined
+seq = pi2.pr(pair(0,nil),pair(s.pi1,cons))
+    : nat -> list(nat)
 cpl> simp seq.s.s.s.0
 cons.pair(s.pi1,cons).pair(s.pi1,cons).pair(0,nil)
     : 1 -> list(nat)
@@ -71,7 +83,7 @@ cons.pair(s.s.0,cons.pair(s.0,cons.pair(0,nil)))
     : 1 -> list(nat)
 cpl> simp hdp.tl.seq.s.s.s.0
 in1.s.0
-    : 1 -> coprod(nat,*a)
+    : 1 -> coprod(nat,1)
 cpl> simp full append.pair(seq.s.s.0, seq.s.s.s.0)
 cons.pair(s.0,cons.pair(0,cons.pair(s.s.0,cons.pair(s.0,cons.pair(0,nil)))))
     : 1 -> list(nat)
@@ -83,9 +95,10 @@ cpl> edit
 |   head: inflist -> a
 |   tail: inflist -> inflist
 | end object;
-right object inflist(+) defined
+right object inflist(+) is defined
 cpl> let incseq=fold(I,s).0
-incseq : 1 -> inflist(nat)  defined
+incseq = fold(I,s).0
+    : 1 -> inflist(nat)
 cpl> simp head.incseq
 0
     : 1 -> nat
@@ -93,9 +106,11 @@ cpl> simp head.tail.tail.tail.incseq
 s.s.s.0
     : 1 -> nat
 cpl> let alt=fold(head.pi1, pair(pi2, tail.pi1))
-alt : prod(inflist(*a),inflist(*a)) -> inflist(*a)  defined
+alt = fold(head.pi1,pair(pi2,tail.pi1))
+    : prod(inflist(*a),inflist(*a)) -> inflist(*a)
 cpl> let infseq=fold(I,I).0
-infseq : 1 -> inflist(nat)  defined
+infseq = fold(I,I).0
+    : 1 -> inflist(nat)
 cpl> simp head.tail.tail.alt.pair(incseq, infseq)
 s.0
     : 1 -> nat
