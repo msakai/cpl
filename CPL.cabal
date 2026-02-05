@@ -25,7 +25,7 @@ Extra-Doc-Files:
    TUTORIAL.md,
    TUTORIAL_ja.md,
    doc-images/*.png,
-   wasm/README.md
+   web/README.md
 Extra-Source-Files:
    doc-images/*.tex,
    doc-images/Makefile,
@@ -42,8 +42,11 @@ Extra-Source-Files:
    samples/function.cpl,
    scripts/build-wasm.sh,
    scripts/generate-samples-js.sh,
-   wasm/cpl-terminal.js,
-   wasm/index.html
+   web/cpl-terminal.js,
+   web/index.html,
+   web/tutorial_header.txt,
+   web/tutorial_ja_header.txt,
+   web/tutorial.css
 Build-Type: Simple
 
 source-repository head
@@ -63,8 +66,8 @@ Flag LinuxStatic
   Default: False
   Manual: True
 
-Flag WASM
-  Description: Build for WebAssembly with JavaScript FFI
+Flag Web
+  Description: Build for browser environment with WebAssembly + JavaScript FFI
   Default: False
   Manual: True
 
@@ -76,8 +79,8 @@ Executable cpl
   Build-Depends: base >=4.16 && <5, mtl >=2.2.1, containers, array, parsec
   Default-Language: Haskell2010
   Other-Extensions: TypeSynonymInstances, FlexibleInstances, CPP, GeneralizedNewtypeDeriving
-  if flag(WASM)
-    CPP-Options: "-DUSE_WASM_BACKEND"
+  if flag(Web)
+    CPP-Options: "-DUSE_WEB_BACKEND"
     GHC-Options:
       -no-hs-main
       -optl-mexec-model=reactor

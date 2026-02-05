@@ -1,6 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-#if defined(USE_WASM_BACKEND)
+#if defined(USE_WEB_BACKEND)
 {-# LANGUAGE JavaScriptFFI #-}
 #endif
 -----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ import Control.Monad
 import Control.Monad.Except
 import Control.Monad.State.Strict -- haskeline's MonadException requries strict version
 import System.Console.GetOpt
-#if defined(USE_WASM_BACKEND)
+#if defined(USE_WEB_BACKEND)
 import GHC.Wasm.Prim (JSString (..), toJSString, fromJSString, JSException (..), JSVal)
 import Control.Exception (evaluate)
 #elif defined(USE_READLINE_PACKAGE)
@@ -54,7 +54,7 @@ import Control.Exception (bracket)
 
 ----------------------------------------------------------------------------
 
-#if defined(USE_WASM_BACKEND)
+#if defined(USE_WEB_BACKEND)
 
 -- JavaScript FFI imports for WebAssembly backend
 foreign import javascript "terminal_readLine($1)"
@@ -360,7 +360,7 @@ cmdSimp arg =
               loop (zip [(0::Int)..] traces)
 
 cmdLoad :: Command
-#if defined(USE_WASM_BACKEND)
+#if defined(USE_WEB_BACKEND)
 cmdLoad s =
     do let filename = let s' = strip s in
                           case s' of
@@ -424,7 +424,7 @@ cmdEdit _ = loop >>= dispatchCommand
           return $ l ++ "\n" ++ s
 
 cmdQuit :: Command
-#if defined(USE_WASM_BACKEND)
+#if defined(USE_WEB_BACKEND)
 cmdQuit _ = throwError ("'quit' is not supported on WebAssembly backend. Use 'reset' instead.")
 #else
 cmdQuit _ = liftIO $ exitWith ExitSuccess
@@ -440,7 +440,7 @@ cmdHelp _ = printLines
               , "  show <exp>                  print type of expression"
               , "  show function <name>        print information of function"
               , "  show object <functor>       print information of functor"
-#if defined(USE_WASM_BACKEND)
+#if defined(USE_WEB_BACKEND)
               , "  load <filename>             load built-in sample file"
               , "  load                        open file picker"
 #else

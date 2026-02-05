@@ -1,12 +1,14 @@
 #!/bin/bash
 set -e
 
-# Generate wasm/samples.js from samples/ directory
+# Generate _site/samples.js from samples/ directory
 # This script converts .cpl and .cdt files into a JavaScript module
-# that can be imported by the WASM frontend.
+# that can be imported by the web frontend.
 
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-OUTPUT="$PROJECT_ROOT/wasm/samples.js"
+OUTPUT_DIR="$PROJECT_ROOT/_site"
+mkdir -p "$OUTPUT_DIR"
+OUTPUT="$OUTPUT_DIR/samples.js"
 
 echo "// Auto-generated from samples/ directory. Do not edit manually." > "$OUTPUT"
 echo "export const sampleFiles = {" >> "$OUTPUT"

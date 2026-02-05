@@ -37,7 +37,7 @@ pandoc "${PROJECT_ROOT}/TUTORIAL.md" \
     --css=tutorial.css \
     --metadata title="CPL Tutorial" \
     --metadata lang="en" \
-    --include-before-body="${PROJECT_ROOT}/wasm/tutorial_header.txt" \
+    --include-before-body="${PROJECT_ROOT}/web/tutorial_header.txt" \
     --output "${OUTPUT_DIR}/tutorial.html"
 
 # Build Japanese tutorial
@@ -51,12 +51,17 @@ pandoc "${PROJECT_ROOT}/TUTORIAL_ja.md" \
     --css=tutorial.css \
     --metadata title="CPL チュートリアル" \
     --metadata lang="ja" \
-    --include-before-body="${PROJECT_ROOT}/wasm/tutorial_ja_header.txt" \
+    --include-before-body="${PROJECT_ROOT}/web/tutorial_ja_header.txt" \
     --output "${OUTPUT_DIR}/tutorial_ja.html"
+
+# Copy source files from web/ to output directory
+echo "Copying web files to $OUTPUT_DIR/..."
+cp "$PROJECT_ROOT/web/tutorial.css" "${OUTPUT_DIR}/"
 
 IMAGE_COUNT=$(ls -1 "${OUTPUT_DIR}/doc-images/"*.png 2>/dev/null | wc -l | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
 
 echo "✓ Tutorial pages built successfully:"
 echo "  - ${OUTPUT_DIR}/tutorial.html"
 echo "  - ${OUTPUT_DIR}/tutorial_ja.html"
+echo "  - ${OUTPUT_DIR}/tutorial.css"
 echo "  - ${OUTPUT_DIR}/doc-images/ ($IMAGE_COUNT images)"

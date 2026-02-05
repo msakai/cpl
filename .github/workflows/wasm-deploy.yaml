@@ -63,14 +63,9 @@ jobs:
         run: |
           scripts/build-tutorial.sh
 
-      - name: Prepare deployment artifacts
+      - name: Show deployment artifacts
         run: |
-          echo "Copying WASM files to _site directory..."
-          cp wasm/index.html wasm/cpl-terminal.js wasm/cpl.js wasm/cpl.wasm wasm/samples.js _site/
-          cp wasm/tutorial.css _site/
-
-          echo ""
-          echo "Deployment artifacts prepared:"
+          echo "Deployment artifacts in _site/:"
           echo ""
           echo "WASM files:"
           ls -lh _site/*.html _site/*.js _site/*.wasm _site/*.css 2>/dev/null || echo "  (files in _site root)"
