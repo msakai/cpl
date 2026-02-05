@@ -54,7 +54,8 @@ Extra-Source-Files:
    web/favicon-32x32.png,
    web/apple-touch-icon.png,
    web/icon-192x192.png,
-   web/icon-512x512.png
+   web/icon-512x512.png,
+   web/manifest.json
 Build-Type: Simple
 
 source-repository head

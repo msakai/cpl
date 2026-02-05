@@ -63,6 +63,7 @@ cp "$PROJECT_ROOT/web/favicon.ico" "${OUTPUT_DIR}/"
 cp "$PROJECT_ROOT/web/favicon-16x16.png" "${OUTPUT_DIR}/"
 cp "$PROJECT_ROOT/web/favicon-32x32.png" "${OUTPUT_DIR}/"
 cp "$PROJECT_ROOT/web/apple-touch-icon.png" "${OUTPUT_DIR}/"
+cp "$PROJECT_ROOT/web/manifest.json" "${OUTPUT_DIR}/"
 
 IMAGE_COUNT=$(ls -1 "${OUTPUT_DIR}/doc-images/"*.png 2>/dev/null | wc -l | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
 
