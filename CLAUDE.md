@@ -28,6 +28,7 @@ stack test
 - `-fReadline`: Enable readline support (default: True)
 - `-fHaskeline`: Enable haskeline support (default: True)
 - `-fLinuxStatic`: Build statically linked binaries on Linux
+- `-fWeb`: Build for browser environment with WebAssembly + JavaScript FFI (default: False)
 
 ## Architecture
 
@@ -79,6 +80,35 @@ The `samples/` directory contains example programs:
 - `*.cdt` files - Category definitions (automata, ccc, misc, rec)
 - `*.cpl` files - CPL programs (examples, ack, benchmark, function)
 - `examples.txt` - Interactive session transcript
+
+## WebAssembly Build
+
+### web/ Directory
+
+Source files for the browser-based WebAssembly version:
+
+- `index.html` - Web interface with xterm.js terminal emulator
+- `cpl-terminal.js` - JavaScript terminal controller and WASM loader
+- `tutorial.css` - Stylesheet for tutorial pages
+
+See `web/README.md` for detailed documentation.
+
+### _site/ Directory
+
+Build output directory for WebAssembly version. Contains generated files:
+
+- `cpl.wasm` - Compiled CPL interpreter
+- `cpl.js` - JavaScript glue module
+- `samples.js` - Sample files module
+- Tutorial HTML files (generated from `TUTORIAL.md` and `TUTORIAL_ja.md`)
+
+Build with: `./scripts/build-wasm.sh`
+
+## GitHub Actions Workflows
+
+- `build.yaml` - Native build and test across multiple GHC versions (9.2-9.12), runs on push/PR
+- `wasm-deploy.yaml` - WASM build and [GitHub Pages](https://msakai.github.io/cpl/) deployment
+- `claude.yml` - Claude Code action for issue/PR automation
 
 ## References
 
