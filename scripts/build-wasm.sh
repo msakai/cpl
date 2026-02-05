@@ -106,7 +106,6 @@ echo ""
 echo "Copying web files to $OUTPUT_DIR/..."
 cp "$PROJECT_ROOT/web/index.html" "$OUTPUT_DIR/"
 cp "$PROJECT_ROOT/web/cpl-terminal.js" "$OUTPUT_DIR/"
-cp "$PROJECT_ROOT/web/tutorial.css" "$OUTPUT_DIR/"
 echo "✓ Copied web files"
 
 # Get file size
@@ -132,7 +131,7 @@ echo ""
 echo "Checking output files..."
 MISSING_FILES=0
 
-for f in index.html cpl-terminal.js cpl.wasm cpl.js samples.js tutorial.css; do
+for f in index.html cpl-terminal.js cpl.wasm cpl.js samples.js; do
     if [ -f "$OUTPUT_DIR/$f" ]; then
         echo "  ✓ $f"
     else

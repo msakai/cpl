@@ -54,9 +54,14 @@ pandoc "${PROJECT_ROOT}/TUTORIAL_ja.md" \
     --include-before-body="${PROJECT_ROOT}/web/tutorial_ja_header.txt" \
     --output "${OUTPUT_DIR}/tutorial_ja.html"
 
+# Copy source files from web/ to output directory
+echo "Copying web files to $OUTPUT_DIR/..."
+cp "$PROJECT_ROOT/web/tutorial.css" "${OUTPUT_DIR}/"
+
 IMAGE_COUNT=$(ls -1 "${OUTPUT_DIR}/doc-images/"*.png 2>/dev/null | wc -l | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
 
 echo "✓ Tutorial pages built successfully:"
 echo "  - ${OUTPUT_DIR}/tutorial.html"
 echo "  - ${OUTPUT_DIR}/tutorial_ja.html"
+echo "  - ${OUTPUT_DIR}/tutorial.css"
 echo "  - ${OUTPUT_DIR}/doc-images/ ($IMAGE_COUNT images)"
