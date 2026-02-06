@@ -4,7 +4,7 @@
 -- Copyright   :  (c) Masahiro Sakai 2004,2009
 
 -- License     :  BSD-style
--- 
+--
 -- Maintainer  :  masahiro.sakai@gmail.com
 -- Stability   :  provisional
 -- Portability :  portable
@@ -104,7 +104,7 @@ tiEnv :: System -> Map.Map Id (Either FType Type)
 tiEnv sys = Map.map (\(_, _, t) -> Left t) (varTable sys)
 
 substIt :: System -> Exp -> Exp
-substIt sys e = 
+substIt sys e =
   case lastExp sys of
     Nothing -> e
     Just it -> f e

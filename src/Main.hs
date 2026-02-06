@@ -502,7 +502,7 @@ main =
          (_,_,errs) -> do
            forM_ errs $ \err -> hPutStr stderr err
            hPutStrLn stderr $ usageInfo header options
-           exitFailure             
+           exitFailure
 
 header :: String
 header = "Usage: cpl [OPTION...] files..."

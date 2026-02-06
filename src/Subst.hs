@@ -4,10 +4,10 @@
 -- Module      :  Subst
 -- Copyright   :  (c) Masahiro Sakai 2006,2009
 -- License     :  BSD-style
--- 
+--
 -- Maintainer  :  masahiro.sakai@gmail.com
 -- Stability   :  provisional
--- Portability :  
+-- Portability :
 --
 -- Based on "Typing Haskell in Haskell".
 -- http://www.cse.ogi.edu/~mpj/thih/
@@ -92,7 +92,7 @@ matchList (a:as) (b:bs) =
        s2 <- matchList (apply s1 as) (apply s1 bs)
        return (s2 @@ s1)
 matchList [] [] = return nullSubst
-matchList _ _   = throwError "types do not unify"    
+matchList _ _   = throwError "types do not unify"
 
 varBind :: MonadError String m => VarId -> FE -> m Subst
 varBind u t | t == Var u    = return nullSubst

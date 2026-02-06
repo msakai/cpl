@@ -4,7 +4,7 @@
 -- Module      :  CDT
 -- Copyright   :  (c) Masahiro Sakai 2004,2009
 -- License     :  BSD-style
--- 
+--
 -- Maintainer  :  masahiro.sakai@gmail.com
 -- Stability   :  provisional
 -- Portability :  non-portable (FlexibleContexts)
@@ -240,7 +240,7 @@ feIsProductiveIn (Ap functObj args) n =
 ----------------------------------------------------------------------------
 
 makeProjectionSequence :: FE -> [Int]
-makeProjectionSequence fe = 
+makeProjectionSequence fe =
   case fe of
     FE.Var 0 -> []
     FE.Var _ ->
@@ -256,7 +256,7 @@ getProjection obj i =
     Just nat -> natIndex nat : makeProjectionSequence (natDeclDom nat)
     _        -> error "BUG"
   where
-    f nat = i+1 `elem` tv (natDeclCod nat) && 
+    f nat = i+1 `elem` tv (natDeclCod nat) &&
             case natDeclDom nat of
               FE.Var 0 -> True
               _        -> False

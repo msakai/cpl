@@ -4,7 +4,7 @@
 -- Module      :  Type
 -- Copyright   :  (c) Masahiro Sakai 2006,2009
 -- License     :  BSD-style
--- 
+--
 -- Maintainer  :  masahiro.sakai@gmail.com
 -- Stability   :  provisional
 -- Portability :  portable

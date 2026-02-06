@@ -3,7 +3,7 @@
 -- Module      :  Exp
 -- Copyright   :  (c) Masahiro Sakai 2009
 -- License     :  BSD-style
--- 
+--
 -- Maintainer  :  masahiro.sakai@gmail.com
 -- Stability   :  provisional
 -- Portability :  portable

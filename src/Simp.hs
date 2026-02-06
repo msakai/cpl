@@ -4,7 +4,7 @@
 -- Module      :  Simp
 -- Copyright   :  (c) Masahiro Sakai 2004-2009
 -- License     :  BSD-style
--- 
+--
 -- Maintainer  :  masahiro.sakai@gmail.com
 -- Stability   :  provisional
 -- Portability :  portable
@@ -107,27 +107,27 @@ simpImpl full startExp = seq full $ simp1 startExp Identity
     simp1 :: CompiledExp -> CompiledExp -> CompiledExp
 
     simp1 Identity c = c --- IDENT
-    
+
     simp1 (Comp a b) c = simp1 a (simp1 b c) --- COMP
-    
+
     simp1 e@(LNat _) c = e `comp` c -- L-NAT
     simp1 (RNat sym) c
       | full = simp1_FULL_R_NAT sym c --- FULL-R-NAT
       | otherwise = simp1_R_NAT sym c --- R-NAT
-    
+
     simp1 (LFact _ _ table) c = --- L-FACT
       case split c of
       (LNat sym, c') -> simp1 (table ! (CDT.natIndex sym)) c'
       _ -> impossible
-    
+
     simp1 e@(RFact obj args) c
       | full && CDT.isUnconditioned obj = simp1_FULL_C_FACT obj args c
       | otherwise = e `comp` c -- R-FACT
-    
+
     simp1 (Var _ e) c = simp1 e c
-    
+
     ----------------------------------
-    
+
     simp1_R_NAT :: CDT.Nat -> CompiledExp -> CompiledExp
     simp1_R_NAT sym c =
       case simp2 c sym of
@@ -137,7 +137,7 @@ simpImpl full startExp = seq full $ simp1 startExp Identity
         else simp1 (subst1 factR (CDT.natDeclCod sym))
                    (simp1 (args !! CDT.natIndex sym) c'')
       _ -> impossible
-    
+
     simp1_FULL_R_NAT :: CDT.Nat -> CompiledExp -> CompiledExp
     simp1_FULL_R_NAT sym factP =
         case pickupFactR sym factP of
@@ -147,7 +147,7 @@ simpImpl full startExp = seq full $ simp1 startExp Identity
             else simp1 (subst1 factR (CDT.natDeclCod sym))
                        (simp1 (args !! CDT.natIndex sym) factP')
         _ -> impossible
-    
+
     simp1_FULL_C_FACT :: CDT.CDT -> [CompiledExp] -> CompiledExp -> CompiledExp
     simp1_FULL_C_FACT obj args p = RFact obj (zipWith f args (CDT.nats obj))
         {- 並列処理出来るのって、ここのzipWithくらいだろうか -}
@@ -156,9 +156,9 @@ simpImpl full startExp = seq full $ simp1 startExp Identity
             case CDT.natDeclDom nat of
               FE.Var 0 -> simp1 e p
               fe       -> e `comp` subst1 p fe -- ack(3,3)で16000回くらい
-    
+
     ----------------------------------
-    
+
     simp2 :: CompiledExp -> CDT.Nat -> (CompiledExp, CompiledExp)
     simp2 c sym = f (CDT.natProjectionSequence sym) c
         where

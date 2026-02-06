@@ -3,7 +3,7 @@
 -- Module      :  AExp
 -- Copyright   :  (c) Masahiro Sakai 2004,2009
 -- License     :  BSD-style
--- 
+--
 -- Maintainer  :  masahiro.sakai@gmail.com
 -- Stability   :  provisional
 -- Portability :  portable
@@ -95,7 +95,7 @@ skelton = f
 -- XXX
 aexpType :: AExp -> Type
 aexpType = f
-  where 
+  where
     f (Identity a) = a :-> a
     f (Comp g h) = dom (f h) :-> cod (f g)
     f (Nat nat annotation) =

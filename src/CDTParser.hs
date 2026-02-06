@@ -3,7 +3,7 @@
 -- Module      :  CDTParser
 -- Copyright   :  (c) Masahiro Sakai 2006,2009
 -- License     :  BSD-style
--- 
+--
 -- Maintainer  :  masahiro.sakai@gmail.com
 -- Stability   :  provisional
 -- Portability :  portable
@@ -34,7 +34,7 @@ type Type = T.GenType String
 data CDTDecl = CDTDecl !ObjectType String !Int String [(String, Type)]
 
 cdtDecl :: Parser CDTDecl
-cdtDecl = 
+cdtDecl =
     do t <- mplus (string' "left"  >> return LeftObject)
                   (string' "right" >> return RightObject)
        string' "object"
@@ -53,7 +53,7 @@ cdtDecl =
        return $ CDTDecl t name (length params) fact_name nat_decls
 
 nat_decl :: [String] -> Parser (String, Type)
-nat_decl params = 
+nat_decl params =
     do name <- ident
        char' ':'
        let f x = x `elemIndex` params
@@ -64,7 +64,7 @@ nat_decl params =
 
 fe :: (String -> Maybe Int) -> Parser FE
 fe lookupVar = fe'
-    where fe' = 
+    where fe' =
             do name <- ident
                params <- option [] $ between (char' '(') (char' ')')
                                    $ sepBy fe' (char' ',')

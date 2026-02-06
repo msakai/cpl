@@ -3,7 +3,7 @@
 -- Module      :  ExpParser
 -- Copyright   :  (c) Masahiro Sakai 2009
 -- License     :  BSD-style
--- 
+--
 -- Maintainer  :  masahiro.sakai@gmail.com
 -- Stability   :  provisional
 -- Portability :  portable
@@ -43,7 +43,7 @@ exp :: Parser Exp
 exp =
     do xs <- sepBy1 pident (tok (char '.' `mplus` char '\x2218'))
        return (foldr1 Comp xs)
-    where pident = 
+    where pident =
               do s  <- ident
                  xs <- option [] $ between (char' '(') (char' ')')
                                  $ exp `sepBy` char' ','
