@@ -83,10 +83,11 @@ jobs:
 
       - name: Build Archive (Windows)
         if: runner.os == 'windows'
-        run: |    
+        run: |
           cp "$(stack path --local-install-root)/bin/cpl.exe" cpl.exe
+          echo "allow-newer: true" >> stack.yaml
+          echo "allow-newer-deps: [turtle]" >> stack.yaml
           cd windows
-          stack runhaskell --package turtle build_msi.hs
           stack runhaskell --package turtle build_zip.hs
 
       - name: Upload artifacts
@@ -95,6 +96,5 @@ jobs:
         with:
           name: binary-packages-${{ runner.os }}
           path: |
-            windows/*.msi
             windows/*.zip
             *.zip
