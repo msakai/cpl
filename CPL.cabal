@@ -25,6 +25,7 @@ Extra-Doc-Files:
    TUTORIAL.md,
    TUTORIAL_ja.md,
    doc-images/*.png,
+   images/*.png,
    web/README.md
 Extra-Source-Files:
    doc-images/*.tex,

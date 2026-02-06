@@ -11,6 +11,8 @@ This package is an implementation of "A Categorical Programming Language"
 
 🚀 **Try CPL in your browser:** [WebAssembly Demo](https://msakai.github.io/cpl/) (no installation required!)
 
+![CPL WebAssembly Demo](images/screenshot.png)
+
 CPL is a functional programming language based on category
 theory. Data types are declared in a categorical manner by
 adjunctions. Data types that can be handled include the terminal
