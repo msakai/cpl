@@ -24,6 +24,7 @@
 * Assume that files loaded via the `load` command use UTF-8 encoding
 * Remove readline support (the `Readline` cabal flag and `USE_READLINE_PACKAGE` code path)
 * Drop support for GHC <9.2 (base <4.16)
+* Stop providing MSI installer
 
 0.1.0 (2025-10-29)
 -------------------------------
