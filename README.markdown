@@ -9,7 +9,9 @@ An implementation of "A Categorical Programming Language"
 This package is an implementation of "A Categorical Programming Language"
 (CPL for short)[1][2] written in Haskell.
 
-**Try CPL in your browser:** [WebAssembly Demo](https://msakai.github.io/cpl/) (no installation required!)
+🚀 **Try CPL in your browser:** [WebAssembly Demo](https://msakai.github.io/cpl/) (no installation required!)
+
+![CPL WebAssembly Demo](images/screenshot.png)
 
 CPL is a functional programming language based on category
 theory. Data types are declared in a categorical manner by
@@ -22,17 +24,19 @@ morphisms. Programs consist of these morphisms, and execution of
 programs is the reduction of elements (i.e. special morphisms) to
 their canonical form.
 
-Install
+📦 Install
 -------
 
-### Option 1: Use WebAssembly Version (No Installation)
+### Option 1: Use WebAssembly Version (No Installation) 🌐
 
 Try CPL directly in your browser:
 [https://msakai.github.io/cpl/](https://msakai.github.io/cpl/)
 
 No installation required! Works on Chrome, Firefox, Safari, and Edge.
 
-### Option 2: Build from Source
+### Option 2: Build from Source 🔧
+
+**Supported GHC versions:** >=9.2
 
 #### Standard Build (Native)
 
@@ -45,7 +49,7 @@ $ cabal build
 $ cabal install
 ```
 
-If you want to compile with haskeline, add `-fHaskeline` to the configure
+If you want to compile without haskeline, add `-f-Haskeline` to the configure
 command.
 
 Alternatively, you can use Stack:
@@ -55,17 +59,23 @@ $ stack build
 $ stack exec cpl
 ```
 
+To disable haskeline with Stack, use the `--flag` option:
+
+```bash
+$ stack build --flag CPL:-Haskeline
+```
+
 #### WebAssembly Build
 
-See [wasm/README.md](wasm/README.md) for detailed instructions on building and testing the WebAssembly version.
+See [web/README.md](web/README.md) for detailed instructions on building and testing the WebAssembly version.
 
-Usage
+📖 Usage
 -----
 
 If you are new to CPL, we recommend starting with the [Tutorial](#tutorial) below.
 For a concise reference of the language syntax, see chapter 5 of [1].
 
-### Quick Start
+### Quick Start ⚡
 
 Once you have CPL running (either in browser or terminal), try these commands:
 
@@ -134,19 +144,19 @@ License
 This program is licensed under the BSD-style license.
 (See the file [COPYING](COPYING).)
 
-Copyright (C) 2004-2014 Masahiro Sakai <masahiro.sakai@gmail.com>
+Copyright (C) 2004-2026 Masahiro Sakai <masahiro.sakai@gmail.com>
 
 Author
 ------
 
 Masahiro Sakai <masahiro.sakai@gmail.com>
 
-Bibliography
+📖 Bibliography
 ------------
 
 1. Tatsuya Hagino, “A Categorical Programming Language”.
     Ph.D. Thesis, University of Edinburgh, 1987.
-    available at <http://web.sfc.keio.ac.jp/~hagino/index.html.en>
+    available at <https://web.sfc.keio.ac.jp/~hagino/index.html.en>
 
 2. Tatsuya Hagino, “Categorical Functional Programming Language”.
     Computer Software, Vol 7, No.1.
