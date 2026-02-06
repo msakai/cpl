@@ -39,20 +39,28 @@ main = do
       dir = fromString $ "CPL-" ++ showVersion version ++ suffix_githash ++ "-" ++ SysInfo.os ++ "-" ++ SysInfo.arch
 
   let binDir = dir </> "bin"
-      samplesDir = dir </> "samples"
       zipFile :: IsString a => a
       zipFile = fromString (dir ++ ".zip")
   testfile zipFile >>= \b -> when b (rm zipFile)
   testfile dir >>= \b -> when b (rmtree dir)
+
   mktree dir
   mktree binDir
-  mktree samplesDir
   cp ("../cpl.exe") (binDir </> "cpl.exe")
-  sh $ do
-    fpath <- ls "../samples"
-    cp fpath (samplesDir </> filename fpath)
   cp "../COPYING" (dir </> "COPYING")
   cp "../README.md" (dir </> "README.md")
   cp "../CHANGELOG.md" (dir </> "CHANGELOG.md")
+  cp "../TUTORIAL.md" (dir </> "TUTORIAL.md")
+  cp "../TUTORIAL_ja.md" (dir </> "TUTORIAL_ja.md")
+  cptree "../images" (dir </> "images")
+  cptree "../samples" (dir </> "samples")
+  mktree (dir </> "doc-images")
+  sh $ do
+    fname <- ls "../doc-images"
+    when (extension fname == Just "png") $
+      cp fname (dir </> "doc-images" </> filename fname)
+  mktree (dir </> "web")
+  cp "../web/README.md" (dir </> "web" </> "README.md")
+
   procs "7z" ["a", "-r", zipFile, dir] empty
   return ()
