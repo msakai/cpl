@@ -1,13 +1,27 @@
 0.2.0 (Unreleased)
 -------------------------------
 
-* Add `show function <name>` subcommand to display information of
-  functions including functors, factorizers, and user-defined
-  parameterized morphisms
-* Add WebAssembly support for browser-based CPL interpreter
+* Add `show function <name>` subcommand to display information of functions including functors, factorizers, and user-defined parameterized morphisms:
+    ```
+    cpl> show function exp  
+    f0: *c -> *a  f1: *b -> *d
+    ------------------------------------
+    exp(f0,f1): exp(*a,*b) -> exp(*c,*d)
+    cpl> show function curry
+    f0: prod(*a,*b) -> *c
+    ---------------------------
+    curry(f0): *a -> exp(*b,*c)
+    cpl> let uncurry(f) = eval . prod(f, I)
+    cpl> show function uncurry
+    f: *a -> exp(*b,*c)
+    -----------------------------
+    uncurry(f): prod(*a,*b) -> *c
+    ```
+* Add WebAssembly support for browser-based CPL interpreter (<https://msakai.github.io/cpl/>)
 * Add tutorials both in English and Japanese
 * Accept `id` as a synonym for `I` (identity morphism)
 * Allow the omission of the `is` keyword in data type definitions
+* Assume that files loaded via the `load` command use UTF-8 encoding
 * Remove readline support (the `Readline` cabal flag and `USE_READLINE_PACKAGE` code path)
 * Drop support for GHC <9.2 (base <4.16)
 
