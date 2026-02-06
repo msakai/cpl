@@ -79,7 +79,7 @@ jobs:
           cp -a $(stack path --local-install-root)/bin/cpl ./
           echo "allow-newer: true" >> stack.yaml
           echo "allow-newer-deps: [turtle]" >> stack.yaml
-          stack runhaskell --package turtle misc/build_zip.hs
+          stack runhaskell --package turtle scripts/build_bdist.hs
 
       - name: Build Archive (Windows)
         if: runner.os == 'Windows'
@@ -87,7 +87,7 @@ jobs:
           cp "$(stack path --local-install-root)/bin/cpl.exe" cpl.exe
           echo "allow-newer: true" >> stack.yaml
           echo "allow-newer-deps: [turtle]" >> stack.yaml
-          stack runhaskell --package turtle misc/build_zip.hs
+          stack runhaskell --package turtle scripts/build_bdist.hs
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
