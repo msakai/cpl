@@ -35,6 +35,9 @@ getVersion cabalFile = do
   let cabalVersion = pkgVersion $ package $ packageDescription $ pkg
   return $ makeVersion $ Cabal.versionNumbers cabalVersion
 
+isWindows :: Bool
+isWindows = SysInfo.os == "mingw32"
+
 main :: IO ()
 main = do
   gitHashMaybe <- getGitHash
@@ -49,12 +52,13 @@ main = do
   let binDir = dir </> "bin"
       zipFile :: IsString a => a
       zipFile = fromString (dir ++ ".zip")
+      exeName = if isWindows then "cpl.exe" else "cpl"
   testfile zipFile >>= \b -> when b (rm zipFile)
   testfile dir >>= \b -> when b (rmtree dir)
 
   mktree dir
   mktree binDir
-  cp ("cpl") (binDir </> "cpl")
+  cp (fromString exeName) (binDir </> fromString exeName)
   cp "COPYING" (dir </> "COPYING")
   cp "README.md" (dir </> "README.md")
   cp "CHANGELOG.md" (dir </> "CHANGELOG.md")
@@ -70,5 +74,7 @@ main = do
   mktree (dir </> "web")
   cp "web/README.md" (dir </> "web" </> "README.md")
 
-  procs "zip" ["-r", zipFile, dir] empty
+  if isWindows
+    then procs "7z" ["a", "-r", zipFile, dir] empty
+    else procs "zip" ["-r", zipFile, dir] empty
   return ()

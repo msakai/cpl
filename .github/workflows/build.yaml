@@ -74,7 +74,7 @@ jobs:
         run: stack test ${{ matrix.flags }}
 
       - name: Build Archive (Linux)
-        if: runner.os != 'windows'
+        if: runner.os != 'Windows'
         run: |
           cp -a $(stack path --local-install-root)/bin/cpl ./
           echo "allow-newer: true" >> stack.yaml
@@ -82,19 +82,16 @@ jobs:
           stack runhaskell --package turtle misc/build_zip.hs
 
       - name: Build Archive (Windows)
-        if: runner.os == 'windows'
+        if: runner.os == 'Windows'
         run: |
           cp "$(stack path --local-install-root)/bin/cpl.exe" cpl.exe
           echo "allow-newer: true" >> stack.yaml
           echo "allow-newer-deps: [turtle]" >> stack.yaml
-          cd windows
-          stack runhaskell --package turtle build_zip.hs
+          stack runhaskell --package turtle misc/build_zip.hs
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: matrix.release
         with:
           name: binary-packages-${{ runner.os }}
-          path: |
-            windows/*.zip
-            *.zip
+          path: '*.zip'
