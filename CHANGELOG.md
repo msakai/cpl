@@ -1,4 +1,4 @@
-0.2.0 (Unreleased)
+0.2.0 (2026-02-06)
 -------------------------------
 
 * Add `show function <name>` subcommand to display information of functions including functors, factorizers, and user-defined parameterized morphisms:
