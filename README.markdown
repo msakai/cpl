@@ -9,7 +9,7 @@ An implementation of "A Categorical Programming Language"
 This package is an implementation of "A Categorical Programming Language"
 (CPL for short)[1][2] written in Haskell.
 
-**Try CPL in your browser:** [WebAssembly Demo](https://msakai.github.io/cpl/) (no installation required!)
+🚀 **Try CPL in your browser:** [WebAssembly Demo](https://msakai.github.io/cpl/) (no installation required!)
 
 CPL is a functional programming language based on category
 theory. Data types are declared in a categorical manner by
@@ -22,17 +22,17 @@ morphisms. Programs consist of these morphisms, and execution of
 programs is the reduction of elements (i.e. special morphisms) to
 their canonical form.
 
-Install
+📦 Install
 -------
 
-### Option 1: Use WebAssembly Version (No Installation)
+### Option 1: Use WebAssembly Version (No Installation) 🌐
 
 Try CPL directly in your browser:
 [https://msakai.github.io/cpl/](https://msakai.github.io/cpl/)
 
 No installation required! Works on Chrome, Firefox, Safari, and Edge.
 
-### Option 2: Build from Source
+### Option 2: Build from Source 🔧
 
 **Supported GHC versions:** >=9.2
 
@@ -67,13 +67,13 @@ $ stack build --flag CPL:-Haskeline
 
 See [web/README.md](web/README.md) for detailed instructions on building and testing the WebAssembly version.
 
-Usage
+📖 Usage
 -----
 
 If you are new to CPL, we recommend starting with the [Tutorial](#tutorial) below.
 For a concise reference of the language syntax, see chapter 5 of [1].
 
-### Quick Start
+### Quick Start ⚡
 
 Once you have CPL running (either in browser or terminal), try these commands:
 
@@ -149,7 +149,7 @@ Author
 
 Masahiro Sakai <masahiro.sakai@gmail.com>
 
-Bibliography
+📖 Bibliography
 ------------
 
 1. Tatsuya Hagino, “A Categorical Programming Language”.
