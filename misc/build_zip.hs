@@ -60,7 +60,7 @@ main = do
     fpath <- ls "samples"
     cp fpath (samplesDir </> filename fpath)
   cp "COPYING" (dir </> "COPYING")
-  cp "README.markdown" (dir </> "README.markdown")
-  cp "CHANGELOG.markdown" (dir </> "CHANGELOG.markdown")
+  cp "README.md" (dir </> "README.md")
+  cp "CHANGELOG.md" (dir </> "CHANGELOG.md")
   procs "zip" ["-r", zipFile, dir] empty
   return ()

@@ -56,13 +56,13 @@
                         </Component>
                     </Directory>
                     <Component Id="ReadmeFile" Guid="EF38BFDC-5DF3-4F57-8307-75F91183FECF">
-                        <File Id="READMEMD" Name="README.markdown" Source="..\README.markdown" />
+                        <File Id="READMEMD" Name="README.md" Source="..\README.md" />
                     </Component>
                     <Component Id="LicenseFile" Guid="0019EBA5-97D6-44F3-A451-84D8D9D4F89E">
                         <File Id="COPYING" Name="COPYING" Source="..\COPYING" />
                     </Component>
                     <Component Id="ChangeLogFile" Guid="778D69A3-F428-44DD-B9CD-55F976D98F33">
-                        <File Id="CHANGELOGMD" Name="CHANGELOG.markdown" Source="..\CHANGELOG.markdown" />
+                        <File Id="CHANGELOGMD" Name="CHANGELOG.md" Source="..\CHANGELOG.md" />
                     </Component>
                 </Directory>
             </Directory>

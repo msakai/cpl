@@ -20,8 +20,8 @@ Description:
    programs is the reduction of elements (i.e. special morphisms) to
    their canonical form.
 Extra-Doc-Files:
-   README.markdown,
-   CHANGELOG.markdown,
+   README.md,
+   CHANGELOG.md,
    TUTORIAL.md,
    TUTORIAL_ja.md,
    doc-images/*.png,
