@@ -34,6 +34,8 @@ No installation required! Works on Chrome, Firefox, Safari, and Edge.
 
 ### Option 2: Build from Source
 
+**Supported GHC versions:** >=9.2
+
 #### Standard Build (Native)
 
 De-Compress the archive and enter its top directory.
@@ -45,7 +47,7 @@ $ cabal build
 $ cabal install
 ```
 
-If you want to compile with haskeline, add `-fHaskeline` to the configure
+If you want to compile without haskeline, add `-f-Haskeline` to the configure
 command.
 
 Alternatively, you can use Stack:
@@ -55,9 +57,15 @@ $ stack build
 $ stack exec cpl
 ```
 
+To disable haskeline with Stack, use the `--flag` option:
+
+```bash
+$ stack build --flag CPL:-Haskeline
+```
+
 #### WebAssembly Build
 
-See [wasm/README.md](wasm/README.md) for detailed instructions on building and testing the WebAssembly version.
+See [web/README.md](web/README.md) for detailed instructions on building and testing the WebAssembly version.
 
 Usage
 -----
@@ -134,7 +142,7 @@ License
 This program is licensed under the BSD-style license.
 (See the file [COPYING](COPYING).)
 
-Copyright (C) 2004-2014 Masahiro Sakai <masahiro.sakai@gmail.com>
+Copyright (C) 2004-2026 Masahiro Sakai <masahiro.sakai@gmail.com>
 
 Author
 ------
@@ -146,7 +154,7 @@ Bibliography
 
 1. Tatsuya Hagino, “A Categorical Programming Language”.
     Ph.D. Thesis, University of Edinburgh, 1987.
-    available at <http://web.sfc.keio.ac.jp/~hagino/index.html.en>
+    available at <https://web.sfc.keio.ac.jp/~hagino/index.html.en>
 
 2. Tatsuya Hagino, “Categorical Functional Programming Language”.
     Computer Software, Vol 7, No.1.
