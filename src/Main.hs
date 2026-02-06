@@ -43,9 +43,6 @@ import System.Console.GetOpt
 #if defined(USE_WEB_BACKEND)
 import GHC.Wasm.Prim (JSString (..), toJSString, fromJSString, JSException (..), JSVal)
 import Control.Exception (evaluate)
-#elif defined(USE_READLINE_PACKAGE)
-import qualified System.Console.SimpleLineEditor as SLE
-import Control.Exception (bracket)
 #elif defined(USE_HASKELINE_PACKAGE)
 import qualified System.Console.Haskeline as Haskeline
 #else
@@ -97,19 +94,6 @@ runConsole m = Haskeline.runInputT Haskeline.defaultSettings m
 
 readLine' :: String -> Console String
 readLine' prompt = liftM (fromMaybe "") $ Haskeline.getInputLine prompt
-
-printLine' :: String -> Console ()
-printLine' s = liftIO $ putStrLn $ s
-
-#elif defined(USE_READLINE_PACKAGE)
-
-type Console = IO
-
-runConsole :: Console a -> IO a
-runConsole m = bracket SLE.initialise (const SLE.restore) (const m)
-
-readLine' :: String -> Console String
-readLine' prompt = liftM (fromMaybe "") $ SLE.getLineEdited prompt
 
 printLine' :: String -> Console ()
 printLine' s = liftIO $ putStrLn $ s

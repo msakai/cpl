@@ -62,7 +62,7 @@ echo ""
 
 echo ""
 echo "Configuring CPL for WebAssembly..."
-wasm32-wasi-cabal configure -fWeb -f-Readline -f-Haskeline
+wasm32-wasi-cabal configure -fWeb -f-Haskeline
 
 echo ""
 echo "Building CPL..."

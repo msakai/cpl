@@ -25,7 +25,6 @@ stack test
 
 ### Build Flags
 
-- `-fReadline`: Enable readline support (default: True)
 - `-fHaskeline`: Enable haskeline support (default: True)
 - `-fLinuxStatic`: Build statically linked binaries on Linux
 - `-fWeb`: Build for browser environment with WebAssembly + JavaScript FFI (default: False)
@@ -57,13 +56,13 @@ stack test
 
 **Integration:**
 - `CPLSystem.hs` - System environment (`System` record) integrating parser, type checker, and simplifier
-- `Main.hs` - REPL with command dispatch, file loading, and console abstraction (readline/haskeline/plain)
+- `Main.hs` - REPL with command dispatch, file loading, and console abstraction (haskeline/plain)
 
 ### Key Design Patterns
 
 - **Monad Stack**: `UI a = ExceptT String (StateT UIState Console) a` for error handling and state
 - **Variance Lattice**: Four levels (Covariance, Contravariance, FixedVariance, FreeVariance) critical for categorical type soundness
-- **CPP Console Abstraction**: Conditional compilation for readline/haskeline/plain I/O
+- **CPP Console Abstraction**: Conditional compilation for haskeline/plain I/O
 
 ## REPL Commands
 

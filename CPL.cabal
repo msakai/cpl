@@ -62,10 +62,6 @@ source-repository head
   type:     git
   location: git://github.com/msakai/cpl.git
 
-Flag Readline
-  Description: Use Readline
-  Default: True
-
 Flag Haskeline
   Description: Use Haskeline
   Default: True
@@ -99,12 +95,8 @@ Executable cpl
     if impl(ghc >= 9.10)
       Other-Extensions: JavaScriptFFI
   else
-    if flag(Readline)
-      CPP-Options: "-DUSE_READLINE_PACKAGE"
-      Build-Depends: readline
-    else
-      if flag(Haskeline)
-        CPP-Options: "-DUSE_HASKELINE_PACKAGE"
-        Build-Depends: haskeline
+    if flag(Haskeline)
+      CPP-Options: "-DUSE_HASKELINE_PACKAGE"
+      Build-Depends: haskeline
   if flag(LinuxStatic)
     GHC-Options: -static -optl-static -optl-pthread

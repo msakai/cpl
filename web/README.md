@@ -82,7 +82,7 @@ This provides `wasm32-wasi-ghc` and `wasm32-wasi-cabal` in `PATH`.
 Build configuration:
 
 ```bash
-wasm32-wasi-cabal configure -fWeb -f-Readline -f-Haskeline
+wasm32-wasi-cabal configure -fWeb -f-Haskeline
 ```
 
 To clean and rebuild:
@@ -155,8 +155,6 @@ The Haskell code uses CPP macros to conditionally compile different Console impl
   -- JavaScript FFI implementation (GHC.Wasm.Prim / JSString)
 #elif defined(USE_HASKELINE_PACKAGE)
   -- Haskeline implementation
-#elif defined(USE_READLINE_PACKAGE)
-  -- Readline implementation
 #else
   -- Plain IO implementation
 #endif
@@ -280,7 +278,7 @@ Two parallel build systems are maintained:
 1. **Stack** (for native builds)
    - Uses `stack.yaml`
    - Default for development
-   - Supports readline/haskeline
+   - Supports haskeline
 
 2. **Cabal** (for both native and WASM builds)
    - Uses `CPL.cabal` with flags
