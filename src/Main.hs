@@ -371,7 +371,10 @@ cmdLoad s =
                     f [] tmp       = [tmp]
 #else
 cmdLoad s =
-    do result <- liftIO $ try $ readFile filename
+    do result <- liftIO $ try $ do
+         h <- openFile filename ReadMode
+         hSetEncoding h utf8
+         hGetContents h
        contents <-
          case result of
            Left (e :: SomeException) -> throwError (show e)
