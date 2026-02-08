@@ -34,7 +34,22 @@ Try CPL directly in your browser:
 
 No installation required! Works on Chrome, Firefox, Safari, and Edge.
 
-### Option 2: Build from Source 🔧
+### Option 2: Homebrew (macOS/Linux) 🍺
+
+Install CPL using [Homebrew](https://brew.sh/):
+
+```bash
+$ brew install msakai/tap/cpl
+```
+
+Alternatively, you can tap the repository first:
+
+```bash
+$ brew tap msakai/tap
+$ brew install cpl
+```
+
+### Option 3: Build from Source 🔧
 
 **Supported GHC versions:** >=9.2
 
