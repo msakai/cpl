@@ -22,7 +22,7 @@ import Turtle hiding (FilePath)
 
 getGitHash :: IO (Maybe String)
 getGitHash =
-  liftM (Just . takeWhile (/='\n')) (readProcess "git" ["rev-parse", "--short", "HEAD"] "")
+  fmap (Just . takeWhile (/='\n')) (readProcess "git" ["rev-parse", "--short", "HEAD"] "")
   `catch` \(_::SomeException) -> return Nothing
 
 getVersion :: FilePath -> IO Version
@@ -32,7 +32,7 @@ getVersion cabalFile = do
 #else
   pkg <- readGenericPackageDescription silent cabalFile
 #endif
-  let cabalVersion = pkgVersion $ package $ packageDescription $ pkg
+  let cabalVersion = pkgVersion $ package $ packageDescription pkg
   return $ makeVersion $ Cabal.versionNumbers cabalVersion
 
 isWindows :: Bool

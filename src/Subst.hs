@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances, FlexibleContexts #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Subst
@@ -51,7 +51,7 @@ instance FEs FE where
 
 instance FEs a => FEs [a] where
     apply s = map (apply s)
-    tv      = nub . concat . map tv
+    tv      = nub . concatMap tv
 
 infixr 4 @@
 (@@) :: Subst -> Subst -> Subst

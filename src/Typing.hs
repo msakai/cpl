@@ -55,7 +55,7 @@ type Env = Map.Map E.Id (Either FType Type)
 type TIState = (Int, Subst)
 
 runTI :: Env -> TI a -> Either String a
-runTI env (TI m) = liftM fst (evalRWST m env initialState)
+runTI env (TI m) = fmap fst (evalRWST m env initialState)
   where initialState = (0, nullSubst)
 
 getSubst :: TI Subst
@@ -101,7 +101,7 @@ inferType (E.Var v args) = iVar v =<< mapM inferType args
 
 inferType2 :: [E.Id] -> E.Exp -> TI ([Type], Typing)
 inferType2 ps e = do
-  ps <- liftM Map.fromList $ forM ps $ \p -> do
+  ps <- fmap Map.fromList $ forM ps $ \p -> do
     dom <- newFEVar
     cod <- newFEVar
     return (p, dom :-> cod)
@@ -124,12 +124,12 @@ iComp (f :! domf :-> codf) (g :! domg :-> codg) = do
 
 iNat :: CDT.Nat -> TI Typing
 iNat nat = do
-  annotation <- sequence $ replicate (CDT.natNTypeParams nat) newFEVar
+  annotation <- replicateM (CDT.natNTypeParams nat) newFEVar
   return $ Nat nat annotation :! apply (zip [0..] annotation) (CDT.natType nat)
 
 iFact :: CDT.CDT -> [Typing] -> TI Typing
 iFact obj args = do
-  annotation <- sequence $ replicate (CDT.factNTypeParams obj) newFEVar
+  annotation <- replicateM (CDT.factNTypeParams obj) newFEVar
   let s = zip [0..] annotation
   unifyParams (apply s (CDT.factParams obj)) args
   return $ Fact obj (map tm args) annotation :! apply s (CDT.factDestType obj)
@@ -159,7 +159,7 @@ iVar v args = do
     Just (Right t) ->
       return $ Var v [] [] t :! t
     Just (Left (FType n typs typ)) -> do
-      annotation <- sequence (replicate n newFEVar)
+      annotation <- replicateM n newFEVar
       let s = zip [0..] annotation
       unifyParams (apply s typs) args
       let t = apply s typ

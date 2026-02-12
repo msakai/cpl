@@ -42,7 +42,7 @@ data CompiledExp
   | RFact !CDT.CDT [CompiledExp]
   | Var E.Exp CompiledExp
 
-compile :: (Map.Map E.Id ([E.Id], E.Exp)) -> E.Exp -> CompiledExp
+compile :: Map.Map E.Id ([E.Id], E.Exp) -> E.Exp -> CompiledExp
 compile env = f
   where
     f E.Identity         = Identity
@@ -168,7 +168,7 @@ simpImpl full startExp = seq full $ simp1 startExp Identity
             case split c_ of
             (RFact p args, c) ->
                 case g 0 args (CDT.nats p) of
-                    (factR, args') -> (factR, (RFact p args'))
+                    (factR, args') -> (factR, RFact p args')
                 where
                   g i (arg:args) (nat:nats)
                       | i==j =
@@ -295,7 +295,7 @@ simpWithTrace full startExp = seq full $ runM $ do
           case split c_ of
             (RFact p args, c) -> do
               (factR, args') <- g 0 args (CDT.nats p)
-              return (factR, (RFact p args'))
+              return (factR, RFact p args')
               where
                 g _ [] [] = return (undefined, [])
                 g i (arg:args) (nat:nats)

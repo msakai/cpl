@@ -65,7 +65,7 @@ def = do
 
 type CDTEnv = [CDT.CDT]
 
-evalExp :: CDTEnv -> (Map.Map String Int) -> Exp -> Either String E.Exp
+evalExp :: CDTEnv -> Map.Map String Int -> Exp -> Either String E.Exp
 evalExp cenv env = f
   where
     f :: Exp -> Either String E.Exp
@@ -74,7 +74,7 @@ evalExp cenv env = f
       b' <- f b
       return (E.Comp a' b')
     f (Ident s args) | s `elem` identityNames = do
-      unless (length args == 0) $
+      unless (null args) $
         throwError $ printf "%s: wrong number of arguments (given %d, expected %d)" s (length args) (0 :: Int)
       return E.Identity
     f (Ident s args)  = do

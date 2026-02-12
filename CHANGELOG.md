@@ -7,7 +7,7 @@
 
 * Add `show function <name>` subcommand to display information of functions including functors, factorizers, and user-defined parameterized morphisms:
     ```
-    cpl> show function exp  
+    cpl> show function exp
     f0: *c -> *a  f1: *b -> *d
     ------------------------------------
     exp(f0,f1): exp(*a,*b) -> exp(*c,*d)
@@ -63,7 +63,7 @@ Readline/Haskeline support.
 0.0.4
 -------------------------------
 
-Function defintions are added.
+Function definitions are added.
 
 Examples:
 
