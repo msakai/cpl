@@ -66,6 +66,9 @@ foreign import javascript unsafe "terminal_initialize()"
 foreign import javascript "terminal_loadFile($1)"
   js_loadFile :: JSString -> IO JSString
 
+foreign import javascript "terminal_editModal()"
+  js_editModal :: IO JSString
+
 foreign import javascript "$1.toString()"
   js_toString :: JSVal -> IO JSString
 
@@ -400,6 +403,29 @@ cmdLoad s =
 #endif
 
 cmdEdit :: Command
+#if defined(USE_WEB_BACKEND)
+cmdEdit _ = do
+  result <- liftIO $ try $ evaluate =<< (fromJSString <$> js_editModal)
+  case result of
+    Left (JSException val) -> do
+      s <- liftIO $ js_toString val
+      throwError (fromJSString s)
+    Right text -> do
+      let trimmed = strip text
+      if null trimmed then return ()
+      else do
+        -- Ensure the input is semicolon-terminated, then strip the trailing semicolon
+        let withSemicolon = case dropWhile isSpace (reverse trimmed) of
+              ';':_ -> trimmed
+              _     -> trimmed ++ ";"
+            -- Strip trailing semicolon for dispatchCommand (matching original cmdEdit behavior)
+            forDispatch = case dropWhile isSpace (reverse withSemicolon) of
+              ';':s -> reverse s
+              _     -> withSemicolon
+        -- Display in terminal with "| " prefix per line
+        printLines ["| " ++ l | l <- lines withSemicolon]
+        dispatchCommand forDispatch
+#else
 cmdEdit _ = loop >>= dispatchCommand
   where
     loop = do
@@ -409,6 +435,7 @@ cmdEdit _ = loop >>= dispatchCommand
         _ -> do
           s <- loop
           return $ l ++ "\n" ++ s
+#endif
 
 cmdQuit :: Command
 #if defined(USE_WEB_BACKEND)

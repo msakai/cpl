@@ -204,6 +204,58 @@ window.terminal_readLine = async (jsVal) => {
   return result;
 };
 
+/**
+ * Open a modal dialog with a textarea for multi-line editing.
+ * Returns a Promise that resolves with the entered text, or rejects on cancel.
+ */
+window.terminal_editModal = () => {
+  return new Promise((resolve, reject) => {
+    const overlay = document.getElementById('edit-modal-overlay');
+    const textarea = document.getElementById('edit-modal-textarea');
+    const okBtn = document.getElementById('edit-modal-ok');
+    const cancelBtn = document.getElementById('edit-modal-cancel');
+
+    textarea.value = '';
+    overlay.classList.add('active');
+    textarea.focus();
+
+    function cleanup() {
+      overlay.classList.remove('active');
+      okBtn.removeEventListener('click', onOk);
+      cancelBtn.removeEventListener('click', onCancel);
+      textarea.removeEventListener('keydown', onKeydown);
+    }
+
+    function onOk() {
+      const text = textarea.value;
+      cleanup();
+      resolve(text);
+    }
+
+    function onCancel() {
+      cleanup();
+      reject(new Error('edit cancelled'));
+    }
+
+    function onKeydown(e) {
+      // Ctrl+Enter or Cmd+Enter to submit
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        onOk();
+      }
+      // Escape to cancel
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onCancel();
+      }
+    }
+
+    okBtn.addEventListener('click', onOk);
+    cancelBtn.addEventListener('click', onCancel);
+    textarea.addEventListener('keydown', onKeydown);
+  });
+};
+
 window.terminal_loadFile = async (jsVal) => {
   const filename = String(jsVal).trim();
 
