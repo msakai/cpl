@@ -79,7 +79,7 @@ version 0.1.0
 
 Type help for help
 
-cpl> 
+cpl>
 ```
 
 ## Defining the Terminal Object
@@ -118,7 +118,7 @@ cpl> show object 1
 right object 1
 - natural transformations:
 - factorizer:
-    
+
     ----------
     !: *a -> 1
 - equations:
@@ -168,7 +168,7 @@ cpl> edit
 right object prod(+,+) defined
 ```
 
-(Note in the definition of `pi1` and `pi2` that the object `prod` we're defining now lacks arguments. The mearning is “Among all `x` equipped with `x -> a` and `x -> b`, we define the most general `x` as `prod(a,b)`,” but resuing the name `prod` instead of introducing a new name `x`)
+(Note in the definition of `pi1` and `pi2` that the object `prod` we're defining now lacks arguments. The mearning is “Among all `x` equipped with `x -> a` and `x -> b`, we define the most general `x` as `prod(a,b)`,” but reusing the name `prod` instead of introducing a new name `x`)
 
 Unlike in the case of terminal objects, the product `prod(a,b)` is an object that takes parameters, and the resulting definition displays as `prod(+,+)`. The `+` indicates covariance, and we can see that `prod` takes two arguments and is covariant with respect to both arguments. Use `show object` to display detailed information.
 

@@ -146,7 +146,7 @@ mkCDT t functName functArity factName natDecls = object
       CDT
       { objectType      = t
       , nats            = nats
-      , nNats           = length (natDecls)
+      , nNats           = length natDecls
       , isUnconditioned = isUnconditioned
 
       , functName       = functName
@@ -191,8 +191,8 @@ mkCDT t functName functArity factName natDecls = object
                            RightObject -> makeProjectionSequence dom
                      , natIsUnconditioned =
                          case t of
-                           LeftObject  -> not (0 `elem` tv dom)
-                           RightObject -> not (0 `elem` tv cod)
+                           LeftObject  -> 0 `notElem` tv dom
+                           RightObject -> 0 `notElem` tv cod
                      }
             s = [(x, h x) | x <- [0..functArity]]
               where

@@ -105,7 +105,7 @@ aexpType = f
     f (Funct obj args) = FE.Ap obj xs :-> FE.Ap obj ys
       where
         (xs,ys) = foldr phi ([],[]) (zip (variance obj) (map aexpType args))
-        phi (v, (x:->y)) (xs,ys) =
+        phi (v, x:->y) (xs,ys) =
           case v of
             Contravariance -> (y:xs, x:ys)
             _ -> (x:xs, y:ys)
@@ -147,7 +147,7 @@ simp orig@(Fact obj args _) =
     f (nat, Nat sym _) = nat==sym
     f _ = False
 simp orig@(Funct _ args) =
-  if a==b && all f (map simp args)
+  if a==b && all (f . simp) args
     then Identity a
     else orig
   where

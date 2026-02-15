@@ -38,7 +38,7 @@ import System.Exit
 import System.IO
 import Control.Monad
 import Control.Monad.Except
-import Control.Monad.State.Strict -- haskeline's MonadException requries strict version
+import Control.Monad.State.Strict -- haskeline's MonadException requires strict version
 import System.Console.GetOpt
 #if defined(USE_WEB_BACKEND)
 import GHC.Wasm.Prim (JSString (..), toJSString, fromJSString, JSException (..), JSVal)
@@ -103,9 +103,9 @@ printLine' s = liftIO $ putStrLn $ s
 type Console = IO
 
 runConsole :: Console a -> IO a
-runConsole m = bracket initialie (hSetBuffering stdout) (const m)
+runConsole m = bracket initialize (hSetBuffering stdout) (const m)
   where
-    initialie = do
+    initialize = do
       x <- hGetBuffering stdout
       hSetBuffering stdout NoBuffering
       return x
@@ -114,7 +114,7 @@ readLine' :: String -> Console String
 readLine' prompt = putStr prompt >> getLine
 
 printLine' :: String -> Console ()
-printLine' s = liftIO $ putStrLn $ s
+printLine' s = liftIO $ putStrLn s
 
 #endif
 
@@ -184,7 +184,7 @@ showObjectInfo obj =
                         show (factDestType obj)
                     factArgs = map f (CDT.nats obj)
                         where f nat = Var ("f" ++ show (CDT.natIndex nat)) []
-          equations = concat (map (++"\n") (eqs ++ [feq, ceq]))
+          equations = unlines (eqs ++ [feq, ceq])
               where eqs = zipWith g [(1::Int)..] (Statement.eqs obj)
                         where g n eq = "("++lr++"EQ" ++ show n ++ "): " ++
                                        show eq
@@ -277,15 +277,15 @@ cmdShow arg =
     ("aexp", arg') -> do -- XXX
       sys <- get
       case Sys.parseExp sys (strip arg') of
-        Left err -> printLines $ lines $ err
+        Left err -> printLines $ lines err
         Right (_, e :! t) ->
-          printLines $ [show e, "    : " ++ show t]
+          printLines [show e, "    : " ++ show t]
     _ -> do
       sys <- get
       case Sys.parseExp sys (strip arg) of
-        Left err -> throwError $ err
+        Left err -> throwError err
         Right (_, e :! t) ->
-          printLines $ [show $ AExp.skelton e, "    : " ++ show t]
+          printLines [show $ AExp.skelton e, "    : " ++ show t]
 
 cmdLet :: Command
 cmdLet arg = do
@@ -414,7 +414,7 @@ cmdQuit :: Command
 #if defined(USE_WEB_BACKEND)
 cmdQuit _ = throwError ("'quit' is not supported on WebAssembly backend. Use 'reset' instead.")
 #else
-cmdQuit _ = liftIO $ exitWith ExitSuccess
+cmdQuit _ = liftIO exitSuccess
 #endif
 
 cmdHelp :: Command
@@ -495,7 +495,7 @@ main =
                printLines banner
                mapM_ processOpt opts
                mapM_ cmdLoad files
-               when (null files || Interactive `elem` opts) $ mainLoop
+               when (null files || Interactive `elem` opts) mainLoop
              case ret of
                Left err -> lift $ mapM_ printLine' (lines err)
                Right () -> return ()
@@ -527,6 +527,6 @@ processOpt _ = return ()
 mainLoop :: UI ()
 mainLoop = forever $ do
   l <- readLine "cpl> "
-  dispatchCommand l `catchError` (\err -> printLines $ lines $ err)
+  dispatchCommand l `catchError` (\err -> printLines $ lines err)
 
 ----------------------------------------------------------------------------
